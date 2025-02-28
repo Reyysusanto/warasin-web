@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState } from 'react';
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaUserAlt, FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from "react-icons/fc";
 import Header from '../_components/header';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const Login = () => {
+const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -19,6 +19,19 @@ const Login = () => {
       <div className="w-1/2 flex items-center justify-center">
         <form className="w-full max-w-md p-6 rounded-lg">
           <Header />
+          <div className="mb-4">
+            <label htmlFor="nama" className="block text-primaryTextColor font-medium mb-2">Nama</label>
+            <div className="relative flex items-center">
+              <FaUserAlt className="absolute left-3 text-tertiaryTextColor" />
+              <input
+                type="text"
+                id="nama"
+                placeholder="Masukkan nama anda"
+                className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
+              />
+            </div>
+          </div>
+
           <div className="mb-4">
             <label htmlFor="email" className="block text-primaryTextColor font-medium mb-2">Email</label>
             <div className="relative flex items-center">
@@ -52,21 +65,14 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="flex justify-between items-center mb-4">
-            <label className="flex items-center text-tertiaryTextColor">
-              <input type="checkbox" className="mr-2" /> Ingat saya
-            </label>
-            <a href="#" className="text-primaryColor hover:underline">Lupa Password?</a>
-          </div>
-
-          <button type="submit" className="w-full p-2 bg-primaryColor text-secondaryTextColor rounded-md hover:bg-secondaryColor">Sign In</button>
+          <button type="submit" className="w-full p-2 bg-primaryColor text-secondaryTextColor rounded-md hover:bg-secondaryColor">Sign Up</button>
 
           <button className="flex w-full p-2 bg-backgroundPrimaryColor text-primaryTextColor rounded-md mt-4 items-center justify-center border border-tertiaryTextColor shadow-sm hover:shadow-md transition">
             <FcGoogle className="mr-2 text-2xl" />
-            Sign in with Google
+            Sign up with Google
           </button>
 
-          <p className="mt-4 text-tertiaryTextColor text-sm text-center">Tidak punya akun? <Link href="/register" className="text-primaryColor hover:underline">Sign Up!</Link></p>
+          <p className="mt-4 text-tertiaryTextColor text-sm text-center">Sudah punya akun? <Link href="/login" className="text-primaryColor hover:underline">Sign In!</Link></p>
         </form>
       </div>
 
@@ -83,4 +89,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
