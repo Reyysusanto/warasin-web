@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"log"
-
 	"github.com/Reyysusanto/warasin-web/backend/handler"
 	"github.com/Reyysusanto/warasin-web/backend/service"
 	"github.com/gin-gonic/gin"
@@ -10,8 +8,7 @@ import (
 
 func User(route *gin.Engine, userHandler handler.IUserHandler, jwtService service.IJWTService) {
 	routes := route.Group("/api/v1/user")
-	log.Println(routes)
 	{
-
+		routes.POST("/register", userHandler.Register)
 	}
 }
