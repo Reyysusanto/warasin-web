@@ -128,7 +128,6 @@ export default function Home() {
         </section>
 
         <section className="px-4 md:px-10 py-8 md:py-16 flex flex-col md:flex-row items-center md:items-start gap-10">
-          {/* Image Section */}
           <div className="relative w-full md:w-1/2 flex justify-center">
             <Image
               src={"/Images/landing_1.png"}
@@ -146,7 +145,6 @@ export default function Home() {
             />
           </div>
 
-          {/* Text Section */}
           <div className="w-full md:w-1/2 flex flex-col gap-6">
             <h3 className="text-primaryColor font-medium text-lg md:text-xl">
               Tentang Kami
@@ -155,7 +153,7 @@ export default function Home() {
               <h2 className="text-primaryTextColor font-semibold text-2xl md:text-3xl">
                 Perawatan yang Berpusat pada Pasien
               </h2>
-              <p className="text-primaryTextColor font-light text-sm md:text-base mt-2">
+              <p className="text-primaryTextColor text-sm md:text-base mt-2">
                 Kami berdedikasi untuk memberikan layanan kesehatan mental yang
                 luar biasa dalam lingkungan yang hangat dan ramah. Tim kami yang
                 terdiri dari para profesional yang berpengalaman, penuh kasih,
@@ -167,7 +165,7 @@ export default function Home() {
               <h4 className="text-primaryTextColor font-medium text-lg">
                 Visi & Misi Kami
               </h4>
-              <p className="text-primaryTextColor font-light text-sm md:text-base mt-2">
+              <p className="text-primaryTextColor text-sm md:text-base mt-2">
                 Warasin hadir untuk memberikan akses mudah dan terjangkau ke
                 layanan kesehatan mental, meningkatkan kesadaran akan pentingnya
                 kesejahteraan psikologis, serta membantu individu mencapai
@@ -188,7 +186,6 @@ export default function Home() {
         </section>
 
         <section className="px-4 md:px-10 py-8 md:py-16 flex flex-col-reverse md:flex-row items-center gap-10">
-          {/* Text Section */}
           <div className="w-full md:w-1/2 flex flex-col gap-6">
             <h3 className="text-primaryColor font-medium text-lg md:text-xl">
               Layanan Kami
@@ -225,7 +222,7 @@ export default function Home() {
               ].map((service, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <FaCheckCircle className="text-primaryColor text-xl mt-1" />
-                  <span className="text-primaryTextColor font-medium text-base md:text-lg">
+                  <span className="text-primaryTextColor text-base md:text-lg">
                     <strong>{service.title}:</strong> {service.desc}
                   </span>
                 </li>
@@ -257,7 +254,7 @@ export default function Home() {
           <div className="mt-6 md:mt-0">
             <Link
               href={""}
-              className="bg-primaryColor text-white px-6 py-3 rounded-lg text-lg font-semibold"
+              className="bg-primaryColor text-white px-20 py-2 rounded-lg text-base"
             >
               Jadwal
             </Link>
