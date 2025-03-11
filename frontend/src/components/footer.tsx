@@ -12,7 +12,7 @@ import {
   
   export default function Footer() {
     return (
-      <footer className="bg-white text-primaryTextColor py-10 px-6 md:px-20">
+      <footer className="text-primaryTextColor md:px-20">
         <div className="max-w-6xl mx-auto flex items-center gap-3 mb-8">
           <Image
             className="w-12 h-12"
