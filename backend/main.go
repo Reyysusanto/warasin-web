@@ -7,6 +7,7 @@ import (
 	"github.com/Reyysusanto/warasin-web/backend/cmd"
 	"github.com/Reyysusanto/warasin-web/backend/config/database"
 	"github.com/Reyysusanto/warasin-web/backend/handler"
+	"github.com/Reyysusanto/warasin-web/backend/middleware"
 	"github.com/Reyysusanto/warasin-web/backend/repository"
 	"github.com/Reyysusanto/warasin-web/backend/routes"
 	"github.com/Reyysusanto/warasin-web/backend/service"
@@ -30,6 +31,7 @@ func main() {
 	)
 
 	server := gin.Default()
+	server.Use(middleware.CORSMiddleware())
 
 	routes.User(server, userHandler, jwtService)
 
