@@ -2,7 +2,6 @@
 
 import Experience from "@/components/experience";
 import Footer from "@/components/footer";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,8 +14,8 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-backgroundPrimaryColor min-h-screen overflow-hidden pb-8">
-      <nav className="flex flex-col md:flex-row px-4 md:gap-x-2 py-4 justify-between items-center relative">
+    <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white">
+      <nav className="flex flex-col md:flex-row px-6 md:px-10 py-4 justify-between items-center relative">
         <div className="flex items-center w-full justify-between md:justify-start">
           <div className="flex gap-4 items-center">
             <Image src={"/Images/logo.png"} width={60} height={60} alt="Logo" />
@@ -29,7 +28,7 @@ export default function Home() {
           </div>
 
           <button
-            className="md:hidden text-primaryTextColor focus:outline-none"
+            className="md:hidden text-primaryTextColor focus:outline-none transition-transform duration-200 hover:scale-110"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <HiX size={24} /> : <HiMenu size={24} />}
@@ -42,18 +41,18 @@ export default function Home() {
           } md:flex flex-col md:flex-row gap-4 md:gap-10 text-primaryTextColor font-normal text-base mt-4 md:mt-0 w-full bg-backgroundPrimaryColor md:bg-transparent z-10`}
         >
           <Link
-            className="text-primaryColor underline font-semibold"
+            className="text-primaryColor underline font-semibold hover:text-primaryColor/80 transition-colors duration-200"
             href={"/"}
           >
             Home
           </Link>
-          <Link className="hover:text-primaryColor" href={""}>
+          <Link className="hover:text-primaryColor transition-colors duration-200" href={""}>
             About
           </Link>
-          <Link className="hover:text-primaryColor" href={""}>
+          <Link className="hover:text-primaryColor transition-colors duration-200" href={""}>
             Services
           </Link>
-          <Link className="hover:text-primaryColor" href={""}>
+          <Link className="hover:text-primaryColor transition-colors duration-200" href={""}>
             Our Team
           </Link>
         </div>
@@ -65,21 +64,21 @@ export default function Home() {
         >
           <Link
             href={"/login"}
-            className="pointer rounded-lg bg-primaryColor text-backgroundPrimaryColor px-6 md:px-10 w-full md:w-auto text-center"
+            className="pointer rounded-lg bg-primaryColor text-backgroundPrimaryColor px-6 md:px-10 py-2 w-full md:w-auto text-center hover:bg-primaryColor/90 transition-colors duration-200"
           >
             Login
           </Link>
           <Link
             href={"/register"}
-            className="pointer rounded-lg bg-transparent text-primaryColor border-primaryColor px-6 md:px-10 border-2 w-full md:w-auto text-center"
+            className="pointer rounded-lg bg-transparent text-primaryColor border-primaryColor px-6 md:px-10 py-2 border-2 w-full md:w-auto text-center hover:bg-primaryColor/10 transition-colors duration-200"
           >
             Register
           </Link>
         </div>
       </nav>
 
-      <main className="px-4 md:px-10 py-8 md:py-16">
-        <section className="flex flex-col md:flex-row  items-center justify-between">
+      <main className="px-6 md:px-10 py-8 md:py-16">
+        <section className="flex flex-col md:flex-row items-center justify-between">
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-primaryTextColor leading-tight">
               Brighter Days{" "}
@@ -92,13 +91,13 @@ export default function Home() {
             </p>
 
             <div className="mt-6 flex flex-col md:flex-row gap-4 justify-center md:justify-start">
-              <Button className="bg-primaryColor text-white px-6 py-4 md:py-5 rounded-lg text-base font-normal">
+              <button className="bg-primaryColor text-white px-6 py-2 md:py-3 rounded-lg text-base font-normal hover:bg-primaryColor/90 transition-colors duration-200">
                 Our Services
-              </Button>
-              <Button className="border-primaryColor text-primaryColor border-2 px-6 py-4 md:py-5 rounded-lg items-center gap-2">
+              </button>
+              <button className="border-primaryColor flex text-primaryColor border-2 px-6 py-2 md:py-3 rounded-lg items-center gap-2 hover:bg-primaryColor/10 transition-colors duration-200">
                 <TbCalendarCheck className="text-3xl" />
                 <p className="text-base font-normal">Book an Appointment</p>
-              </Button>
+              </button>
             </div>
 
             <div className="mt-10 flex flex-col md:flex-row gap-6 md:gap-10 text-primaryTextColor text-xl font-semibold justify-center md:justify-start">
@@ -110,14 +109,6 @@ export default function Home() {
 
           <div className="w-full md:w-1/2 flex justify-center md:justify-end relative mt-8 md:mt-0">
             <Image
-              className="absolute top-1/2 left-2/3 transform -translate-x-1/2 object-cover -translate-y-1/2 z-0"
-              src={"/Images/bg_effect.png"}
-              width={800}
-              height={600}
-              alt="BG effect"
-            />
-
-            <Image
               className="relative z-10 w-[80%] md:w-[800px] h-auto translate-x-10"
               src={"/Images/concultation.png"}
               width={700}
@@ -127,21 +118,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="px-4 md:px-10 py-8 md:py-16 flex flex-col md:flex-row items-center md:items-start gap-10">
-          <div className="relative w-full md:w-1/2 flex justify-center">
+        <section className="flex px-4 md:px-10 py-8 md:py-16 flex-col md:flex-row items-center md:items-start gap-10">
+          <div className="w-full md:w-1/2 flex justify-center">
             <Image
               src={"/Images/landing_1.png"}
               width={450}
               height={600}
               alt="landing_1"
               className="rounded-lg shadow-lg w-full md:w-auto"
-            />
-            <Image
-              className="absolute -z-10 translate-y-10 hidden md:block"
-              src={"/Images/landing_decoration.png"}
-              width={200}
-              height={200}
-              alt="landing_decoration"
             />
           </div>
 
@@ -177,7 +161,7 @@ export default function Home() {
             </div>
             <Link
               href={"#"}
-              className="bg-primaryColor flex items-center w-fit px-4 py-2 rounded-2xl text-white font-semibold hover:shadow-lg transition-all"
+              className="bg-primaryColor flex items-center w-fit px-4 py-2 rounded-2xl text-white font-semibold hover:shadow-lg transition-all duration-200"
             >
               Learn More
               <GoArrowDownRight className="text-lg ml-2" />
@@ -254,7 +238,7 @@ export default function Home() {
           <div className="mt-6 md:mt-0">
             <Link
               href={""}
-              className="bg-primaryColor text-white px-20 py-2 rounded-lg text-base"
+              className="bg-primaryColor text-white px-20 py-2 rounded-lg text-base hover:bg-primaryColor/90 transition-colors duration-200"
             >
               Jadwal
             </Link>

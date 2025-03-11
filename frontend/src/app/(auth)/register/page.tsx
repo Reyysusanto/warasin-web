@@ -13,7 +13,6 @@ import Header from "../_components/header";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 const RegisterPage = () => {
@@ -31,24 +30,27 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('ioioio')
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    console.log("Mengirim data:", { name, email, password });
 
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/user/register`,
-        { name, email, password },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true
+          name,
+          email,
+          password,
         }
       );
-      console.log(response);
-      setSuccessMessage(response.data?.message || "Registrasi berhasil");
-      router.push('/')
-    } catch (err: any) {
-      setErrorMessage(err.response?.data?.message || "Terjadi kesalahan saat registrasi");
+
+      if(response.status === 200) {
+        setSuccessMessage("Registrasi berhasil")
+      }
+      router.push("/");
+    } catch (err) {
+      setErrorMessage("Terjadi kesalahan saat registrasi");
     }
   };
 
@@ -57,10 +59,12 @@ const RegisterPage = () => {
       <div className="w-full md:w-1/2 flex items-center justify-center p-4">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-md p-6 rounded-lg bg-white shadow-lg"
+          className="w-full max-w-md p-6 rounded-lg"
         >
           <Header />
-          {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
+          {errorMessage && (
+            <p className="text-red-500 text-center mb-4">{errorMessage}</p>
+          )}
           {successMessage && (
             <p className="text-green-500 text-center mb-4">{successMessage}</p>
           )}
@@ -134,12 +138,12 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          <Button
+          <button
             type="submit"
             className="w-full p-2 bg-primaryColor text-secondaryTextColor rounded-md hover:bg-secondaryColor transition duration-300"
           >
             Sign Up
-          </Button>
+          </button>
 
           <button className="flex w-full p-2 bg-backgroundPrimaryColor text-primaryTextColor rounded-md mt-4 items-center justify-center border border-tertiaryTextColor shadow-sm hover:shadow-md transition duration-300">
             <FcGoogle className="mr-2 text-2xl" />
