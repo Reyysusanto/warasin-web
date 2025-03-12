@@ -38,7 +38,7 @@ export default function Home() {
         <div
           className={`${
             isOpen ? "flex" : "hidden"
-          } md:flex flex-col md:flex-row gap-4 md:gap-10 text-primaryTextColor font-normal text-base mt-4 md:mt-0 w-full bg-backgroundPrimaryColor md:bg-transparent z-10`}
+          } md:flex flex-col md:flex-row gap-4 md:gap-10 text-primaryTextColor font-normal text-base mt-4 md:mt-0 w-full md:bg-transparent z-10`}
         >
           <Link
             className="text-primaryColor underline font-semibold hover:text-primaryColor/80 transition-colors duration-200"
