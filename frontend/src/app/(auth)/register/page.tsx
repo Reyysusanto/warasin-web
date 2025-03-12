@@ -45,13 +45,18 @@ const RegisterPage = () => {
         }
       );
 
-      if(response.status === 200) {
-        setSuccessMessage("Registrasi berhasil")
+      if (response.status === 200) {
+        setSuccessMessage("Registrasi berhasil");
       }
-      router.push("/");
+      router.push("/login");
     } catch (err) {
       setErrorMessage("Terjadi kesalahan saat registrasi");
     }
+  };
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   return (
@@ -68,7 +73,7 @@ const RegisterPage = () => {
           {successMessage && (
             <p className="text-green-500 text-center mb-4">{successMessage}</p>
           )}
-          <div className="mb-4">
+          <div className="mb-3">
             <label
               htmlFor="nama"
               className="block text-primaryTextColor font-medium mb-2"
@@ -87,9 +92,16 @@ const RegisterPage = () => {
                 className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
               />
             </div>
+            <div className="flex justify-center">
+              {name.length <= 7 && name != "" && (
+                <p className="text-sm text-dangerColor">
+                  Nama minimal harus 8 karakter!
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-3">
             <label
               htmlFor="email"
               className="block text-primaryTextColor font-medium mb-2"
@@ -108,9 +120,16 @@ const RegisterPage = () => {
                 className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
               />
             </div>
+            <div className="flex justify-center">
+              {!isValidEmail(email) && email != "" && (
+                <p className="text-sm text-dangerColor">
+                  Tolong masukkan email dengan benar!
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-3">
             <label
               htmlFor="password"
               className="block text-primaryTextColor font-medium mb-1"
@@ -128,16 +147,21 @@ const RegisterPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
               />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 text-tertiaryTextColor focus:outline-none"
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
+            </div>
+            <div className="flex justify-center">
+              {password.length <= 7 && password != "" && (
+                <p className="text-sm text-dangerColor">Password minimal harus 8 karakter!</p>
+              )}
             </div>
           </div>
 
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute right-3 text-tertiaryTextColor focus:outline-none"
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
           <button
             type="submit"
             className="w-full p-2 bg-primaryColor text-secondaryTextColor rounded-md hover:bg-secondaryColor transition duration-300"
