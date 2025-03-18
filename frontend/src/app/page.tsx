@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white">
-      <nav className="flex flex-col md:flex-row px-6 md:px-10 py-4 justify-between items-center relative">
+      <nav className="flex flex-col md:flex-row px-6 md:px-10 pt-4 pb-2 justify-between items-center relative">
         <div className="flex items-center w-full justify-between md:justify-start">
           <div className="flex gap-4 items-center">
             <Image src={"/Images/logo.png"} width={60} height={60} alt="Logo" />
@@ -46,13 +46,22 @@ export default function Home() {
           >
             Home
           </Link>
-          <Link className="hover:text-primaryColor transition-colors duration-200" href={""}>
+          <Link
+            className="hover:text-primaryColor transition-colors duration-200"
+            href={"/tentang-kami"}
+          >
             About
           </Link>
-          <Link className="hover:text-primaryColor transition-colors duration-200" href={""}>
+          <Link
+            className="hover:text-primaryColor transition-colors duration-200"
+            href={""}
+          >
             Services
           </Link>
-          <Link className="hover:text-primaryColor transition-colors duration-200" href={""}>
+          <Link
+            className="hover:text-primaryColor transition-colors duration-200"
+            href={""}
+          >
             Our Team
           </Link>
         </div>
@@ -77,13 +86,12 @@ export default function Home() {
         </div>
       </nav>
 
-      <main className="px-6 md:px-10 py-8 md:py-16">
+      <main className="px-6 md:px-10 py-4 md:py-4">
         <section className="flex flex-col md:flex-row items-center justify-between">
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-primaryTextColor leading-tight">
-              Brighter Days{" "}
-              <span className="text-primaryColor">Mental Health</span> and
-              Recovery Center
+              Konsultasi dengan Ahli yang Tepat untuk{" "}
+              <span className="text-primaryColor">Mental Health</span> Anda
             </h1>
             <p className="text-primaryTextColor mt-4 text-base md:text-lg">
               We provide mental health services by finding a list of reputable
@@ -169,7 +177,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="px-4 md:px-10 py-8 md:py-16 flex flex-col-reverse md:flex-row items-center gap-10">
+        <section className="md:px-10 py-8 md:py-16 flex flex-col-reverse md:flex-row items-center gap-10">
           <div className="w-full md:w-1/2 flex flex-col gap-6">
             <h3 className="text-primaryColor font-medium text-lg md:text-xl">
               Layanan Kami
@@ -225,7 +233,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-12">
+        <section className="flex flex-col md:flex-row items-center justify-between px-6 md:px-10 py-12">
           <div className="max-w-lg text-center md:text-left">
             <h2 className="text-3xl md:text-4xl font-semibold text-primaryTextColor">
               Mulailah Penyembuhan <br /> Anda Hari Ini
