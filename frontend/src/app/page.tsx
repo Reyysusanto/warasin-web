@@ -54,7 +54,7 @@ export default function Home() {
           </Link>
           <Link
             className="hover:text-primaryColor transition-colors duration-200"
-            href={""}
+            href={"/layanan"}
           >
             Services
           </Link>
