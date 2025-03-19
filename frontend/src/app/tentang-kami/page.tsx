@@ -14,27 +14,27 @@ const visi = [
     text: "Mendukung dan memberikan layanan terbaik bagi setiap pengguna",
   },
   {
-    icon: "community",
+    icon: "star",
     title: "Selalu Berkembang",
     text: "Kami terus berinovasi dan mencoba hal baru untuk menghadirkan solusi terbaik dalam kesehatan mental.",
   },
   {
-    icon: "community",
+    icon: "light",
     title: "Tanpa Alasan & Rintangan",
     text: "Kami mengambil tanggung jawab penuh untuk membantu pengguna mendapatkan dukungan yang mereka butuhkan.",
   },
   {
-    icon: "community",
+    icon: "idea",
     title: "Motivasi dari dalam",
     text: "Kami bekerja dengan penuh semangat dan dedikasi untuk menciptakan perubahan nyata dalam kesehatan mental.",
   },
   {
-    icon: "community",
+    icon: "book",
     title: "Siap Belajar",
     text: "Kami selalu terbuka terhadap wawasan baru, berpikir proaktif, dan terus meningkatkan kualitas layanan.",
   },
   {
-    icon: "community",
+    icon: "hearth",
     title: "Motivasi dari dalam",
     text: "Kami merayakan setiap langkah kecil dalam perjalanan kesehatan mental dan menciptakan lingkungan yang penuh dukungan.",
   },
@@ -78,13 +78,13 @@ export default function AboutPage() {
           </Link>
           <Link
             className="hover:text-primaryColor transition-colors duration-200"
-            href={""}
+            href={"/tentang-kami"}
           >
             About
           </Link>
           <Link
             className="hover:text-primaryColor transition-colors duration-200"
-            href={""}
+            href={"/layanan"}
           >
             Services
           </Link>
@@ -190,7 +190,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 px-10 gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 px-10 gap-12">
             {visi.map((item, index) => (
               <CardValue 
                 key={index} 
