@@ -2,6 +2,7 @@
 
 import Experience from "@/components/experience";
 import Footer from "@/components/footer";
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,24 +14,39 @@ import { TbCalendarCheck } from "react-icons/tb";
 
 const faqs = [
   {
-    question: "Apa itu Warasin?",
+    question: "Bagaimana cara melakukan konsultasi?",
     answer:
-      "Warasin adalah pusat pemulihan kesehatan mental yang menyediakan layanan konsultasi dan informasi berbasis AI.",
+      "Anda bisa memilih psikolog, menentukan jadwal, dan mulai konsultasi langsung di platform kami.",
   },
   {
-    question: "Bagaimana cara menggunakan Chatin Warasin?",
+    question: "Apakah data saya aman?",
     answer:
-      "Anda cukup mengetikkan pertanyaan terkait kesehatan mental, dan Chatin Warasin akan memberikan jawaban berbasis data.",
+      "Ya, data Anda dijaga dengan enkripsi tingkat tinggi dan tidak akan dibagikan kepada pihak lain tanpa izin Anda.",
   },
   {
-    question: "Apakah layanan ini gratis?",
+    question: "Berapa biaya konsultasi?",
     answer:
-      "Beberapa fitur dapat diakses secara gratis, sementara layanan konsultasi profesional mungkin dikenakan biaya.",
+      "Biaya konsultasi bervariasi tergantung psikolog yang dipilih. Detail harga dapat dilihat di halaman pemesanan.",
   },
+  {
+    question: "Apakah saya bisa mengganti psikolog jika tidak cocok?",
+    answer:
+      "Ya, Anda bisa mengganti psikolog kapan saja jika merasa tidak cocok dengan yang sebelumnya.",
+  },
+  // {
+  //   question: "Apakah saya bisa berkonsultasi secara anonim?",
+  //   answer:
+  //     "Tentu! Kami menyediakan opsi untuk berkonsultasi secara anonim demi kenyamanan dan privasi Anda.",
+  // },
 ];
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggleFAQ = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
   const pathname = usePathname();
 
   return (
@@ -298,6 +314,43 @@ export default function Home() {
             >
               Jadwal
             </Link>
+          </div>
+        </section>
+
+        <section
+          id="FAQ"
+          className="flex px-4 md:px-10 py-8 md:py-16 flex-col md:flex-row items-center md:items-start gap-10"
+        >
+          <Image
+            src={"/Images/FAQ.png"}
+            width={500}
+            height={600}
+            alt="services_image"
+            className="rounded-lg shadow-lg w-full md:w-auto"
+          />
+          <div className="space-y-4 w-full md:w-1/2">
+            <h2 className="px-4 text-3xl font-bold">Pertanyaan yang Sering Diajukan</h2>
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="p-4 shadow-sm bg-transparent cursor-pointer"
+                onClick={() => toggleFAQ(index)}
+              >
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-primaryTextColor">
+                    {faq.question}
+                  </h3>
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform ${
+                      openIndex === index ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+                {openIndex === index && (
+                  <p className="mt-2 text-primaryTextColor text-sm">{faq.answer}</p>
+                )}
+              </div>
+            ))}
           </div>
         </section>
 
