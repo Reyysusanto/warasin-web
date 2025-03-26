@@ -9,6 +9,7 @@ import {
   } from "react-icons/fa";
   import { FiArrowRight } from "react-icons/fi";
   import Image from "next/image";
+import Link from "next/link";
   
   export default function Footer() {
     return (
@@ -29,18 +30,18 @@ import {
             <h3 className="font-semibold text-lg">Halaman</h3>
             <ul className="mt-3 space-y-2 text-gray-600">
               <li>
-                <a href="#" className="text-primaryColor font-medium">
-                  Home
-                </a>
+                <Link href="/" className="text-primaryColor font-medium">
+                  Beranda
+                </Link>
               </li>
               <li>
-                <a href="#">Tentang Kami</a>
+                <Link href="#">Tentang Kami</Link>
               </li>
               <li>
-                <a href="#">Layanan</a>
+                <Link href="#">Layanan</Link>
               </li>
               <li>
-                <a href="#">Kontak</a>
+                <Link href="/contact">Kontak</Link>
               </li>
             </ul>
           </div>
