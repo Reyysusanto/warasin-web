@@ -4,25 +4,45 @@ import Experience from "@/components/experience";
 import Footer from "@/components/footer";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { GoArrowDownRight } from "react-icons/go";
 import { HiMenu, HiX } from "react-icons/hi";
 import { TbCalendarCheck } from "react-icons/tb";
 
+const faqs = [
+  {
+    question: "Apa itu Warasin?",
+    answer:
+      "Warasin adalah pusat pemulihan kesehatan mental yang menyediakan layanan konsultasi dan informasi berbasis AI.",
+  },
+  {
+    question: "Bagaimana cara menggunakan Chatin Warasin?",
+    answer:
+      "Anda cukup mengetikkan pertanyaan terkait kesehatan mental, dan Chatin Warasin akan memberikan jawaban berbasis data.",
+  },
+  {
+    question: "Apakah layanan ini gratis?",
+    answer:
+      "Beberapa fitur dapat diakses secara gratis, sementara layanan konsultasi profesional mungkin dikenakan biaya.",
+  },
+];
+
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
-    <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white">
-      <nav className="flex flex-col md:flex-row px-6 md:px-10 pt-4 pb-2 justify-between items-center relative">
+    <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white scroll-smooth">
+      <nav className="flex flex-col bg-backgroundPrimaryColor md:flex-row px-6 md:px-10 pt-4 pb-2 justify-between items-center fixed w-full z-[999]">
         <div className="flex items-center w-full justify-between md:justify-start">
           <div className="flex gap-4 items-center">
             <Image src={"/Images/logo.png"} width={60} height={60} alt="Logo" />
             <div className="flex flex-col">
               <h3 className="text-primaryColor text-xl font-bold">Warasin</h3>
               <p className="text-tertiaryTextColor text-sm font-semibold">
-                Mental Health and Recovery Center
+                Pusat Pemulihan Kesehatan Mental
               </p>
             </div>
           </div>
@@ -41,28 +61,44 @@ export default function Home() {
           } md:flex flex-col md:flex-row gap-4 md:gap-10 text-primaryTextColor font-normal text-base mt-4 md:mt-0 w-full md:bg-transparent z-10`}
         >
           <Link
-            className="text-primaryColor underline font-semibold hover:text-primaryColor/80 transition-colors duration-200"
+            className={`${
+              pathname === "/"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            }`}
             href={"/"}
           >
-            Home
+            Beranda
           </Link>
           <Link
-            className="hover:text-primaryColor transition-colors duration-200"
-            href={"/tentang-kami"}
+            className={`${
+              pathname === "/tentang-kami"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            }`}
+            href={"#about"}
           >
-            About
+            Tentang Kami
           </Link>
           <Link
-            className="hover:text-primaryColor transition-colors duration-200"
-            href={"/layanan"}
+            className={`${
+              pathname === "/layanan"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            }`}
+            href={"#services"}
           >
-            Services
+            Layanan
           </Link>
           <Link
-            className="hover:text-primaryColor transition-colors duration-200"
-            href={""}
+            className={`${
+              pathname === "/our-team"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            }`}
+            href={"/our-team"}
           >
-            Our Team
+            Kontak
           </Link>
         </div>
 
@@ -86,7 +122,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <main className="px-6 md:px-10 py-4 md:py-4">
+      <main className="px-6 md:px-10 py-4 md:py-4 mt-20">
         <section className="flex flex-col md:flex-row items-center justify-between">
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-primaryTextColor leading-tight">
@@ -94,24 +130,24 @@ export default function Home() {
               <span className="text-primaryColor">Mental Health</span> Anda
             </h1>
             <p className="text-primaryTextColor mt-4 text-base md:text-lg">
-              We provide mental health services by finding a list of reputable
-              psychologists throughout Indonesia
+              Kami menyediakan layanan kesehatan mental dengan mencarikan daftar
+              psikolog terkemuka di seluruh Indonesia
             </p>
 
             <div className="mt-6 flex flex-col md:flex-row gap-4 justify-center md:justify-start">
               <button className="bg-primaryColor text-white px-6 py-2 md:py-3 rounded-lg text-base font-normal hover:bg-primaryColor/90 transition-colors duration-200">
-                Our Services
+                Layanan Kami
               </button>
               <button className="border-primaryColor flex text-primaryColor border-2 px-6 py-2 md:py-3 rounded-lg items-center gap-2 hover:bg-primaryColor/10 transition-colors duration-200">
                 <TbCalendarCheck className="text-3xl" />
-                <p className="text-base font-normal">Book an Appointment</p>
+                <p className="text-base font-normal">Buat Janji Temu</p>
               </button>
             </div>
 
             <div className="mt-10 flex flex-col md:flex-row gap-6 md:gap-10 text-primaryTextColor text-xl font-semibold justify-center md:justify-start">
-              <Experience count={800} detail="Happy customers" />
-              <Experience count={10} detail="Years of experience" />
-              <Experience count={5} detail="Award winning" />
+              <Experience count={800} detail="Pelanggan Puas" />
+              <Experience count={10} detail="Tahun Pengalaman" />
+              <Experience count={5} detail="Pemenang Penghargaan" />
             </div>
           </div>
 
@@ -126,7 +162,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="flex px-4 md:px-10 py-8 md:py-16 flex-col md:flex-row items-center md:items-start gap-10">
+        <section
+          id="about"
+          className="flex px-4 md:px-10 py-8 md:py-16 flex-col md:flex-row items-center md:items-start gap-10"
+        >
           <div className="w-full md:w-1/2 flex justify-center">
             <Image
               src={"/Images/landing_1.png"}
@@ -168,16 +207,19 @@ export default function Home() {
               </p>
             </div>
             <Link
-              href={"#"}
+              href={"/tentang-kami"}
               className="bg-primaryColor flex items-center w-fit px-4 py-2 rounded-2xl text-white font-semibold hover:shadow-lg transition-all duration-200"
             >
-              Learn More
+              Tentang Kami
               <GoArrowDownRight className="text-lg ml-2" />
             </Link>
           </div>
         </section>
 
-        <section className="md:px-10 py-8 md:py-16 flex flex-col-reverse md:flex-row items-center gap-10">
+        <section
+          id="services"
+          className="md:px-10 py-8 md:py-16 flex flex-col-reverse md:flex-row items-center gap-10"
+        >
           <div className="w-full md:w-1/2 flex flex-col gap-6">
             <h3 className="text-primaryColor font-medium text-lg md:text-xl">
               Layanan Kami
@@ -222,7 +264,7 @@ export default function Home() {
             </ul>
           </div>
 
-          <div className="relative w-full md:w-1/2 flex justify-center">
+          <div className="relative w-full md:w-1/2 flex flex-col justify-center gap-4">
             <Image
               src={"/Images/landing_2.png"}
               width={500}
@@ -230,6 +272,12 @@ export default function Home() {
               alt="services_image"
               className="rounded-lg shadow-lg w-full md:w-auto"
             />
+            <Link
+              href={"/layanan"}
+              className="bg-primaryColor w-full flex justify-center items-center px-4 py-2 rounded-2xl text-white font-semibold hover:shadow-lg transition-all duration-200"
+            >
+              Selengkapnya
+            </Link>
           </div>
         </section>
 

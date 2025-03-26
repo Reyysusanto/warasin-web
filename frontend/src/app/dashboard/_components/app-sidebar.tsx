@@ -2,19 +2,15 @@
 
 import * as React from "react"
 import {
-  ArrowUpCircleIcon,
   BarChartIcon,
   CameraIcon,
   ClipboardListIcon,
   DatabaseIcon,
   FileCodeIcon,
-  FileIcon,
   FileTextIcon,
   FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
-  ListIcon,
-  SearchIcon,
   SettingsIcon,
   UsersIcon,
 } from "lucide-react"
@@ -32,11 +28,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import Image from "next/image"
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Admin Warasin",
+    email: "warasin@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
@@ -44,11 +41,6 @@ const data = {
       title: "Dashboard",
       url: "#",
       icon: LayoutDashboardIcon,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
     },
     {
       title: "Analytics",
@@ -125,11 +117,6 @@ const data = {
       url: "#",
       icon: HelpCircleIcon,
     },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
-    },
   ],
   documents: [
     {
@@ -141,11 +128,6 @@ const data = {
       name: "Reports",
       url: "#",
       icon: ClipboardListIcon,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: FileIcon,
     },
   ],
 }
@@ -161,8 +143,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <Image 
+                  width={30}
+                  height={30}
+                  src={'/Images/logo.png'}
+                  alt=""
+                />
+                <span className="text-base font-semibold text-primaryColor">Warasin</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
