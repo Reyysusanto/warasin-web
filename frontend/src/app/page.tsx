@@ -11,6 +11,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { GoArrowDownRight } from "react-icons/go";
 import { HiMenu, HiX } from "react-icons/hi";
 import { TbCalendarCheck } from "react-icons/tb";
+import { useAuth } from "@/hooks/useAuth";
 
 const faqs = [
   {
@@ -43,11 +44,14 @@ const faqs = [
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
+  const { user } = useAuth();
 
-  const toggleFAQ = (index) => {
+  const toggleFAQ = (index: any) => {
     setOpenIndex(openIndex === index ? null : index);
   };
   const pathname = usePathname();
+
+  console.log(localStorage.getItem("token"))
 
   return (
     <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white scroll-smooth">
@@ -127,13 +131,13 @@ export default function Home() {
             href={"/login"}
             className="pointer rounded-lg bg-primaryColor text-backgroundPrimaryColor px-6 md:px-10 py-2 w-full md:w-auto text-center hover:bg-primaryColor/90 transition-colors duration-200"
           >
-            Login
+            Masuk
           </Link>
           <Link
             href={"/register"}
             className="pointer rounded-lg bg-transparent text-primaryColor border-primaryColor px-6 md:px-10 py-2 border-2 w-full md:w-auto text-center hover:bg-primaryColor/10 transition-colors duration-200"
           >
-            Register
+            Daftar
           </Link>
         </div>
       </nav>
