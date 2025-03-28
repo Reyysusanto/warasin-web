@@ -50,6 +50,7 @@ const RegisterPage = () => {
       }
       router.push("/login");
     } catch (err) {
+      console.log(err)
       setErrorMessage("Terjadi kesalahan saat registrasi");
     }
   };
@@ -129,7 +130,7 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          <div className="mb-3">
+          <div className="mb-4">
             <label
               htmlFor="password"
               className="block text-primaryTextColor font-medium mb-1"
@@ -143,41 +144,42 @@ const RegisterPage = () => {
                 id="password"
                 placeholder="***********"
                 value={password}
-                required
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
               />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-3 text-tertiaryTextColor focus:outline-none"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
             <div className="flex justify-center">
               {password.length <= 7 && password != "" && (
-                <p className="text-sm text-dangerColor">Password minimal harus 8 karakter!</p>
+                <p className="text-sm text-dangerColor">
+                  Password minimal harus 8 karakter!
+                </p>
               )}
             </div>
           </div>
 
           <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            className="absolute right-3 text-tertiaryTextColor focus:outline-none"
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
-          <button
             type="submit"
             className="w-full p-2 bg-primaryColor text-secondaryTextColor rounded-md hover:bg-secondaryColor transition duration-300"
           >
-            Sign Up
+            Daftar
           </button>
 
           <button className="flex w-full p-2 bg-backgroundPrimaryColor text-primaryTextColor rounded-md mt-4 items-center justify-center border border-tertiaryTextColor shadow-sm hover:shadow-md transition duration-300">
             <FcGoogle className="mr-2 text-2xl" />
-            Sign up with Google
+            Daftar dengan Google
           </button>
 
           <p className="mt-4 text-tertiaryTextColor text-sm text-center">
             Sudah punya akun?{" "}
             <Link href="/login" className="text-primaryColor hover:underline">
-              Sign In!
+              Masuk
             </Link>
           </p>
         </form>

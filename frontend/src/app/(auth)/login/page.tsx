@@ -6,11 +6,13 @@ import { FcGoogle } from "react-icons/fc";
 import Header from "../_components/header";
 import Image from "next/image";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useAuth } from "@/hooks/useAuth";
 
 const Login = () => {
-  // const router = useRouter();
+  const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -26,8 +28,6 @@ const Login = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    console.log("Mengirim data:", { name, email, password });
-
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/user/login`,
@@ -37,12 +37,15 @@ const Login = () => {
         }
       );
 
+      
       if (response.status === 200) {
+        // console.log(response.data.data.access_token)
+        await login(response.data.data.access_token)
         setSuccessMessage("Login berhasil");
+        router.push("/");
       }
-      console.log(response)
-      // router.push("/");
     } catch (err) {
+      console.log(err)
       setErrorMessage("Terjadi kesalahan saat login");
     }
   };
@@ -53,8 +56,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
-      <div className="w-1/2 flex items-center justify-center">
+    <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-4">
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md p-6 rounded-lg"
@@ -140,12 +143,12 @@ const Login = () => {
             type="submit"
             className="w-full p-2 bg-primaryColor text-secondaryTextColor rounded-md hover:bg-secondaryColor"
           >
-            Sign In
+            Masuk
           </button>
 
           <button className="flex w-full p-2 bg-backgroundPrimaryColor text-primaryTextColor rounded-md mt-4 items-center justify-center border border-tertiaryTextColor shadow-sm hover:shadow-md transition">
             <FcGoogle className="mr-2 text-2xl" />
-            Sign in with Google
+            Masuk dengan Google
           </button>
 
           <p className="mt-4 text-tertiaryTextColor text-sm text-center">
@@ -154,7 +157,7 @@ const Login = () => {
               href="/register"
               className="text-primaryColor hover:underline"
             >
-              Sign Up!
+              Daftar
             </Link>
           </p>
         </form>
