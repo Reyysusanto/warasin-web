@@ -3,96 +3,95 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
-// import { FaMapMarkerAlt, FaSearch, FaThumbsUp } from "react-icons/fa";
 import Footer from "@/components/footer";
-import { FaThumbsUp } from "react-icons/fa";
+import DoctorCard from "./_components/DoctorCard";
+import NavigationBar from "@/components/navbar";
 
 const doctors = [
   {
     id: 1,
     name: "Dr. Andini Prameswari, M.Psi.",
     specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lamongan, Jawa Timur",
+    experience: 10,
+    location: "Jakarta, DKI Jakarta",
     schedule: "Senin - Jumat",
-    rating: 80,
-    totalPatients: 93,
+    rating: 90,
+    totalPatients: 150,
   },
   {
     id: 2,
-    name: "Dr. Andini Prameswari, M.Psi.",
-    specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lumajang, Jawa Timur",
-    schedule: "Senin - Jumat",
-    rating: 80,
-    totalPatients: 93,
+    name: "Dr. Budi Santoso, Sp.KJ.",
+    specialty: "Gangguan Tidur",
+    experience: 8,
+    location: "Surabaya, Jawa Timur",
+    schedule: "Selasa - Sabtu",
+    rating: 85,
+    totalPatients: 120,
   },
   {
     id: 3,
-    name: "Dr. Andini Prameswari, M.Psi.",
-    specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lamongan, Jawa Timur",
-    schedule: "Senin - Jumat",
-    rating: 80,
-    totalPatients: 93,
+    name: "Dr. Cindy Halim, M.Psi.",
+    specialty: "Depresi & Trauma",
+    experience: 12,
+    location: "Bandung, Jawa Barat",
+    schedule: "Senin - Kamis",
+    rating: 95,
+    totalPatients: 180,
   },
   {
     id: 4,
-    name: "Dr. Andini Prameswari, M.Psi.",
-    specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lamongan, Jawa Timur",
-    schedule: "Senin - Jumat",
+    name: "Dr. Daniel Prasetyo, Sp.KJ.",
+    specialty: "Gangguan Bipolar",
+    experience: 7,
+    location: "Yogyakarta, DIY",
+    schedule: "Rabu - Minggu",
     rating: 80,
-    totalPatients: 93,
+    totalPatients: 98,
   },
   {
     id: 5,
-    name: "Dr. Andini Prameswari, M.Psi.",
-    specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lamongan, Jawa Timur",
+    name: "Dr. Erika Wijaya, M.Psi.",
+    specialty: "Psikologi Anak & Remaja",
+    experience: 15,
+    location: "Denpasar, Bali",
     schedule: "Senin - Jumat",
-    rating: 80,
-    totalPatients: 93,
+    rating: 92,
+    totalPatients: 200,
   },
   {
     id: 6,
-    name: "Dr. Andini Prameswari, M.Psi.",
-    specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lamongan, Jawa Timur",
-    schedule: "Senin - Jumat",
-    rating: 80,
-    totalPatients: 93,
+    name: "Dr. Fajar Setiawan, Sp.KJ.",
+    specialty: "Gangguan Kecanduan",
+    experience: 9,
+    location: "Semarang, Jawa Tengah",
+    schedule: "Selasa - Sabtu",
+    rating: 88,
+    totalPatients: 130,
   },
   {
     id: 7,
-    name: "Dr. Andini Prameswari, M.Psi.",
-    specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lamongan, Jawa Timur",
-    schedule: "Senin - Jumat",
-    rating: 80,
-    totalPatients: 93,
+    name: "Dr. Grace Natalia, M.Psi.",
+    specialty: "Psikologi Pernikahan & Keluarga",
+    experience: 11,
+    location: "Medan, Sumatera Utara",
+    schedule: "Senin - Kamis",
+    rating: 89,
+    totalPatients: 170,
   },
   {
     id: 8,
-    name: "Dr. Andini Prameswari, M.Psi.",
-    specialty: "Stres & Kecemasan",
-    experience: "10 Tahun pengalaman di bidang ini",
-    location: "Lamongan, Jawa Timur",
-    schedule: "Senin - Jumat",
-    rating: 80,
-    totalPatients: 93,
+    name: "Dr. Hendra Kusuma, Sp.KJ.",
+    specialty: "Gangguan Makan",
+    experience: 6,
+    location: "Makassar, Sulawesi Selatan",
+    schedule: "Rabu - Minggu",
+    rating: 82,
+    totalPatients: 110,
   },
 ];
 
+
 const ConsultationPage = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("relevance");
 
@@ -104,45 +103,9 @@ const ConsultationPage = () => {
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-tr from-[#ECEEFF] to-white">
-      <nav className="flex flex-wrap items-center justify-between p-4 md:px-10">
-        <div className="flex items-center gap-4">
-          <Image src="/Images/logo.png" width={50} height={50} alt="Logo" />
-          <div>
-            <h3 className="text-primaryColor text-xl font-bold">Warasin</h3>
-            <p className="text-gray-600 text-sm">
-              Mental Health and Recovery Center
-            </p>
-          </div>
-        </div>
+      <NavigationBar />
 
-        <button
-          className="md:hidden text-primaryTextColor focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <HiX size={24} /> : <HiMenu size={24} />}
-        </button>
-
-        <div
-          className={`$ {isOpen ? "block" : "hidden"} md:flex w-full md:w-auto mt-4 md:mt-0`}
-        >
-          <div className="flex flex-col md:flex-row gap-4 text-primaryTextColor font-normal text-base">
-            <Link href="/" className="hover:text-primaryColor">
-              Home
-            </Link>
-            <Link href="#" className="hover:text-primaryColor">
-              About
-            </Link>
-            <Link href="#" className="hover:text-primaryColor">
-              Services
-            </Link>
-            <Link href="#" className="hover:text-primaryColor">
-              Our Team
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      <section className="flex flex-col md:flex-row items-center px-4 md:px-10 py-8 md:py-16 gap-10">
+      <section className="flex flex-col md:flex-row items-center px-4 md:px-10 py-20 md:py-32 gap-10">
         <div className="w-full md:w-1/2 text-center md:text-left">
           <h2 className="text-2xl md:text-5xl font-bold text-primaryTextColor">
             Konsultasi dengan Ahli yang Tepat untuk{" "}
@@ -204,40 +167,16 @@ const ConsultationPage = () => {
               doctor.name.toLowerCase().includes(search.toLowerCase())
             )
             .map((doctor) => (
-              <div
+              <DoctorCard 
                 key={doctor.id}
-                className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row items-center gap-4"
-              >
-                <Image
-                  src="/Images/Landing_1.png"
-                  width={80}
-                  height={80}
-                  alt="Doctor"
-                  className="rounded-full border"
-                />
-                <div className="flex-1 text-center md:text-left">
-                  <h2 className="text-xl font-semibold text-blue-900">
-                    {doctor.name}
-                  </h2>
-                  <p className="text-gray-600">Spesialis: {doctor.specialty}</p>
-                  <p className="text-gray-600">{doctor.experience}</p>
-                  <p className="text-gray-800 font-semibold">
-                    {doctor.location}
-                  </p>
-                  <p className="text-gray-600">Praktek: {doctor.schedule}</p>
-                  <div className="flex items-center justify-center gap-3 mt-3">
-                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-lg text-sm flex items-center">
-                      <FaThumbsUp className="mr-1" /> {doctor.rating}%
-                    </span>
-                    <span className="text-gray-600 text-sm">
-                      {doctor.totalPatients} Total Pasien
-                    </span>
-                  </div>
-                </div>
-                <button className="bg-blue-500 text-white px-5 py-3 rounded-lg hover:bg-blue-600">
-                  Jadwalkan Bertemu
-                </button>
-              </div>
+                name={doctor.name}
+                specialty={doctor.specialty}
+                experience={doctor.experience}
+                location={doctor.location}
+                schedule={doctor.schedule}
+                rating={doctor.rating}
+                totalPatients={doctor.totalPatients}
+              />
             ))}
         </div>
       </section>
