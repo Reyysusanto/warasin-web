@@ -46,8 +46,6 @@ export default function Home() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  console.log(localStorage.getItem("token"))
-
   return (
     <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white scroll-smooth">
       <NavigationBar />
