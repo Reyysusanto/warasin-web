@@ -44,7 +44,7 @@ const NavigationBar = () => {
   };
 
   return (
-    <nav className="flex flex-col md:flex-row px-6 md:px-10 pt-4 pb-2 justify-between items-center z-[999] fixed w-full bg-backgroundPrimaryColor">
+    <nav className="flex flex-col md:flex-row px-6 md:px-10 pt-4 pb-2 justify-between items-center z-[999] fixed w-full bg-transparent backdrop-blur-sm">
       <div className="flex items-center w-full justify-between md:justify-start">
         <div className="flex gap-4 items-center">
           <Image src={"/Images/logo.png"} width={60} height={60} alt="Logo" />
@@ -120,7 +120,7 @@ const NavigationBar = () => {
                     href={option.path}
                     key={index}
                     className={`${
-                      pathname === option.path
+                      pathname === option.path || pathname === "/concultation/:id"
                         ? "text-primaryColor font-semibold underline"
                         : "hover:text-primaryColor transition-colors duration-200"
                     } px-4 py-2 cursor-pointer hover:bg-gray-100`}
@@ -160,7 +160,7 @@ const NavigationBar = () => {
                 george31@gmail.com
               </p>
             </div>
-            <CgProfile className="text-4xl" />
+            <CgProfile className="text-4xl bg-backgroundSecondaryColor rounded-full" />
           </div>
         ) : (
           <>
