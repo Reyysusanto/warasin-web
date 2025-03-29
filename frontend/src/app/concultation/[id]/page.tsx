@@ -6,6 +6,7 @@ import { AiOutlineMedicineBox } from "react-icons/ai";
 import Image from "next/image";
 import { useState } from "react";
 import Roadmap from "./_components/education";
+import KonsulSection from "./_components/konsul";
 
 const profile = {
   name: "Dr. Nadira Pratama, M.Psi., Psikolog",
@@ -150,9 +151,7 @@ const detailPage = () => {
           )}
 
           {selectedTab !== "info" && (
-            <div>
-                <h1>hei</h1>
-            </div>
+            <KonsulSection />
           )}
         </section>
       </main>
