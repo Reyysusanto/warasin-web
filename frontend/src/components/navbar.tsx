@@ -44,7 +44,7 @@ const NavigationBar = () => {
   };
 
   return (
-    <nav className="flex flex-col md:flex-row px-6 md:px-10 pt-4 pb-2 justify-between items-center z-[999] fixed w-full bg-transparent backdrop-blur-sm">
+    <nav className="flex flex-col md:flex-row px-6 md:px-10 md:pt-4 py-2 justify-between items-center relative md:z-[999] md:fixed w-full bg-backgroundPrimaryColor md:bg-transparent md:backdrop-blur-sm">
       <div className="flex items-center w-full justify-between md:justify-start">
         <div className="flex gap-4 items-center">
           <Image src={"/Images/logo.png"} width={60} height={60} alt="Logo" />
@@ -151,7 +151,7 @@ const NavigationBar = () => {
         } md:flex gap-x-3 mt-4 md:mt-0 w-full md:w-auto`}
       >
         {decoded ? (
-          <div className="flex w-full items-center justify-between gap-4">
+          <Link href={'/profile'} className="flex w-full items-center justify-between gap-4">
             <div className="flex flex-col md:">
               <h4 className="font-semibold text-base text-primaryTextColor">
                 Andre Kessler
@@ -161,7 +161,7 @@ const NavigationBar = () => {
               </p>
             </div>
             <CgProfile className="text-4xl bg-backgroundSecondaryColor rounded-full" />
-          </div>
+          </Link>
         ) : (
           <>
             <Link

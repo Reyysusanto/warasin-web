@@ -26,8 +26,8 @@ const specials = [
     "Peningkatan Kesejahteraan Psikologis",
 ];
 
-const detailPage = () => {
-  const [selectedTab, setSelectedTab] = useState("info");
+const DetailPage = () => {
+  const [selectedTab, setSelectedTab] = useState<string>("info");
 
   return (
     <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white scroll-smooth">
@@ -161,4 +161,4 @@ const detailPage = () => {
   );
 };
 
-export default detailPage;
+export default DetailPage;
