@@ -37,7 +37,7 @@ const KonsulSection = () => {
   const [selectedMethod, setSelectedMethod] = useState("kunjungan");
   const [selectedHospital, setSelectedHospital] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedTime, setSelectedTime] = useState<string>();
 
   return (
     <div className="flex flex-col py-10 px-6 md:px-16 gap-y-14">
