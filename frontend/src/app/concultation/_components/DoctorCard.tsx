@@ -14,7 +14,7 @@ const DoctorCard = (
         width={80}
         height={80}
         alt="Doctor"
-        className="rounded-full border"
+        className="rounded-full w-20 h-20 object-cover border"
       />
       <div className="flex-1 text-center md:text-left">
         <h2 className="text-xl font-semibold text-blue-900">{name}</h2>
@@ -22,7 +22,7 @@ const DoctorCard = (
         <p className="text-gray-600">{experience} Tahun pengalaman di bidang ini</p>
         <p className="text-gray-800 font-semibold">{location}</p>
         <p className="text-gray-600">Praktek: {schedule}</p>
-        <div className="flex items-center justify-center gap-3 mt-3">
+        <div className="flex items-center justify-center md:justify-start gap-3 mt-3">
           <span className="bg-green-100 text-green-800 px-3 py-1 rounded-lg text-sm flex items-center">
             <FaThumbsUp className="mr-1" /> {rating}%
           </span>

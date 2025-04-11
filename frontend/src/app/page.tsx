@@ -3,10 +3,11 @@
 import Experience from "@/components/experience";
 import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
+import { jwtDecode } from "jwt-decode";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { GoArrowDownRight } from "react-icons/go";
 import { TbCalendarCheck } from "react-icons/tb";
@@ -41,6 +42,20 @@ const faqs = [
 
 export default function Home() {
   const [openIndex, setOpenIndex] = useState(null);
+  const [decoded, setDecoded] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          setDecoded(jwtDecode(token));
+        } catch (error) {
+          console.error("Token tidak valid", error);
+        }
+      }
+    }
+  }, []);
 
   const toggleFAQ = (index: any) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -51,7 +66,10 @@ export default function Home() {
       <NavigationBar />
 
       <main className="px-6 md:px-10 py-4 md:py-4 mt-20">
-        <section className="flex flex-col md:flex-row items-center justify-between">
+        <section
+          id="home"
+          className="flex flex-col md:flex-row items-center justify-between"
+        >
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-primaryTextColor leading-tight">
               Konsultasi dengan Ahli yang Tepat untuk{" "}
@@ -63,13 +81,16 @@ export default function Home() {
             </p>
 
             <div className="mt-6 flex flex-col md:flex-row gap-4 justify-center md:justify-start">
-              <button className="bg-primaryColor text-white px-6 py-2 md:py-3 rounded-lg text-base font-normal hover:bg-primaryColor/90 transition-colors duration-200">
+              <Link
+                href={"/layanan"}
+                className="bg-primaryColor text-white px-6 py-2 md:py-3 rounded-lg text-base font-normal hover:bg-primaryColor/90 transition-colors duration-200 flex items-center justify-center text-center"
+              >
                 Layanan Kami
-              </button>
-              <button className="border-primaryColor flex text-primaryColor border-2 px-6 py-2 md:py-3 rounded-lg items-center gap-2 hover:bg-primaryColor/10 transition-colors duration-200">
+              </Link>
+              <Link href={(decoded ? '/concultation' : '/login')} className="border-primaryColor flex text-primaryColor border-2 px-6 py-2 md:py-3 rounded-lg items-center gap-2 hover:bg-primaryColor/10 transition-colors duration-200">
                 <TbCalendarCheck className="text-3xl" />
                 <p className="text-base font-normal">Buat Janji Temu</p>
-              </button>
+              </Link>
             </div>
 
             <div className="mt-10 flex flex-col md:flex-row gap-6 md:gap-10 text-primaryTextColor text-xl font-semibold justify-center md:justify-start">
@@ -241,7 +262,9 @@ export default function Home() {
             className="rounded-lg shadow-lg w-full md:w-auto"
           />
           <div className="space-y-4 w-full md:w-1/2">
-            <h2 className="px-4 text-3xl font-bold">Pertanyaan yang Sering Diajukan</h2>
+            <h2 className="px-4 text-3xl font-bold">
+              Pertanyaan yang Sering Diajukan
+            </h2>
             {faqs.map((faq, index) => (
               <div
                 key={index}
@@ -259,7 +282,9 @@ export default function Home() {
                   />
                 </div>
                 {openIndex === index && (
-                  <p className="mt-2 text-primaryTextColor text-sm">{faq.answer}</p>
+                  <p className="mt-2 text-primaryTextColor text-sm">
+                    {faq.answer}
+                  </p>
                 )}
               </div>
             ))}
