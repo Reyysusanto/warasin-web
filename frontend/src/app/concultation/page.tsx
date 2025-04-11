@@ -105,7 +105,7 @@ const ConsultationPage = () => {
     <div className="w-full min-h-screen bg-gradient-to-tr from-[#ECEEFF] to-white">
       <NavigationBar />
 
-      <section className="flex flex-col md:flex-row items-center px-4 md:px-10 py-20 md:py-32 gap-10">
+      <section className="flex flex-col md:flex-row justify-center items-center px-8 md:px-20 py-20 md:pt-32 gap-10">
         <div className="w-full md:w-1/2 text-center md:text-left">
           <h2 className="text-2xl md:text-5xl font-bold text-primaryTextColor">
             Konsultasi dengan Ahli yang Tepat untuk{" "}
@@ -125,7 +125,7 @@ const ConsultationPage = () => {
           </Link>
         </div>
 
-        <div className="w-full md:w-1/2 flex justify-center">
+        <div className="w-full md:w-1/2 flex justify-center md:justify-end">
           <Image
             src="/Images/landing_1.png"
             width={450}
@@ -136,7 +136,7 @@ const ConsultationPage = () => {
         </div>
       </section>
 
-      <section className="px-4 md:px-10 py-8 md:py-16">
+      <section className="px-8 md:px-24 py-8 md:py-16">
         <div className="bg-white p-6 rounded-lg shadow-md flex flex-wrap gap-4 items-center">
           <input
             type="text"

@@ -14,6 +14,27 @@ const NavigationBar = () => {
   const [dropDown, setDropDown] = useState(false);
   const [decoded, setDecoded] = useState(null);
   const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sections = document.querySelectorAll("section[id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: [0.5] } // 50% visibility
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -30,11 +51,11 @@ const NavigationBar = () => {
 
   const options = [
     { name: "Konsulin", path: "/concultation" },
-    { name: "Tanyain", path: "/layanan" },
-    { name: "Ajarin", path: "/layanan" },
-    { name: "Dopamin", path: "/layanan" },
-    { name: "Terapiin", path: "/layanan" },
-    { name: "Emosiin", path: "/layanan" },
+    { name: "Tanyain", path: "/chatbot" },
+    { name: "Ajarin", path: "/chatbot" },
+    { name: "Dopamin", path: "/chatbot" },
+    { name: "Terapiin", path: "/chatbot" },
+    { name: "Emosiin", path: "/chatbot" },
     { name: "Lihat Semuanya", path: "/layanan" },
   ];
 
@@ -69,19 +90,37 @@ const NavigationBar = () => {
           isOpen ? "flex" : "hidden"
         } md:flex flex-col md:flex-row gap-4 md:gap-10 text-primaryTextColor font-normal text-base mt-4 md:mt-0 w-full md:bg-transparent z-10`}
       >
-        <Link
-          className={`${
-            pathname === "/"
-              ? "text-primaryColor font-semibold underline"
-              : "hover:text-primaryColor transition-colors duration-200"
-          }`}
-          href={"/"}
-        >
-          Beranda
-        </Link>
         {pathname === "/" ? (
           <Link
-            className="hover:text-primaryColor transition-colors duration-200"
+            className={`${
+              activeSection === "home"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            } duration-200`}
+            // className="hover:text-primaryColor transition-colors duration-200"
+            href={"#home"}
+          >
+            Beranda
+          </Link>
+        ) : (
+          <Link
+            className={`${
+              pathname === "/"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            }`}
+            href={"/"}
+          >
+            Beranda
+          </Link>
+        )}
+        {pathname === "/" ? (
+          <Link
+            className={`${
+              activeSection === "about"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            } transition duration-200 ease-in-out`}
             href={"#about"}
           >
             Tentang Kami
@@ -99,12 +138,47 @@ const NavigationBar = () => {
           </Link>
         )}
         {pathname === "/" ? (
-          <Link
-            className="hover:text-primaryColor transition-colors duration-200"
-            href={"#services"}
-          >
-            Layanan
-          </Link>
+          decoded ? (
+            <div className="relative">
+              <button
+                className="flex items-center gap-1 hover:text-primaryColor transition-colors duration-200"
+                onClick={() => setDropDown(!dropDown)}
+              >
+                Layanan <FaChevronDown className="text-sm" />
+              </button>
+              {dropDown && (
+                <ul className="flex flex-col absolute bg-white shadow-md border rounded-md mt-2 w-40 translate-y-7 md:translate-y-0">
+                  {options.map((option, index) => (
+                    <Link
+                      href={option.path}
+                      key={index}
+                      className={`${
+                        pathname === option.path ||
+                        pathname.startsWith("/concultation")
+                          ? "text-primaryColor font-semibold underline"
+                          : "hover:text-primaryColor transition-colors duration-200"
+                      } px-4 py-2 cursor-pointer hover:bg-gray-100`}
+                      onClick={() => handleSelect(option)}
+                    >
+                      {option.name}
+                    </Link>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ) : (
+            <Link
+              className={`${
+                activeSection === "services"
+                  ? "text-primaryColor font-semibold underline"
+                  : "hover:text-primaryColor transition-colors duration-200"
+              }`}
+              // className="hover:text-primaryColor transition-colors duration-200"
+              href={"#services"}
+            >
+              Layanan
+            </Link>
+          )
         ) : (
           <div className="relative">
             <button
@@ -120,7 +194,8 @@ const NavigationBar = () => {
                     href={option.path}
                     key={index}
                     className={`${
-                      pathname === option.path || pathname === "/concultation/:id"
+                      pathname === option.path ||
+                      pathname === "/concultation/:id"
                         ? "text-primaryColor font-semibold underline"
                         : "hover:text-primaryColor transition-colors duration-200"
                     } px-4 py-2 cursor-pointer hover:bg-gray-100`}
@@ -135,11 +210,16 @@ const NavigationBar = () => {
         )}
         <Link
           className={`${
-            pathname === "/our-team"
+            activeSection === "footer"
               ? "text-primaryColor font-semibold underline"
               : "hover:text-primaryColor transition-colors duration-200"
           }`}
-          href={"/our-team"}
+          // className={`${
+          //   pathname === "/our-team"
+          //     ? "text-primaryColor font-semibold underline"
+          //     : "hover:text-primaryColor transition-colors duration-200"
+          // }`}
+          href={"#footer"}
         >
           Kontak
         </Link>
@@ -151,7 +231,10 @@ const NavigationBar = () => {
         } md:flex gap-x-3 mt-4 md:mt-0 w-full md:w-auto`}
       >
         {decoded ? (
-          <Link href={'/profile'} className="flex w-full items-center justify-between gap-4">
+          <Link
+            href={"/profile"}
+            className="flex w-full items-center justify-between gap-4"
+          >
             <div className="flex flex-col md:">
               <h4 className="font-semibold text-base text-primaryTextColor">
                 Andre Kessler
