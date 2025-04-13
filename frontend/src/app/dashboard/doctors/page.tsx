@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
+import AddDoctorForm from "./_components/AddDoctor";
 
 interface User {
   id: number;
   name: string;
   email: string;
   phone: string;
+  specialist: string[];
   location: string;
   avatar: string;
 }
@@ -19,6 +21,7 @@ const users: User[] = [
     name: "John Carter",
     email: "john@google.com",
     phone: "08485734834",
+    specialist: ["Anxiety", "Depression"],
     location: "United States",
     avatar: "/Images/landing_1.png",
   },
@@ -27,12 +30,13 @@ const users: User[] = [
     name: "Sophie Moore",
     email: "sophie@webflow.com",
     phone: "08398458328",
+    specialist: ["Nervous", "Family Therapy"],
     location: "United Kingdom",
     avatar: "/Images/landing_2.png",
   },
 ];
 
-const UserDashboard = () => {
+const DoctorDashboard = () => {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
   const toggleSelect = (id: number) => {
@@ -43,7 +47,8 @@ const UserDashboard = () => {
 
   return (
     <div className="bg-white text-gray-800 rounded-xl p-6 w-full shadow-md">
-      <h2 className="text-xl font-semibold mb-6">All Users</h2>
+      <AddDoctorForm />
+      <h2 className="text-xl font-semibold mb-6">All Doctors</h2>
       <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full table-auto text-sm text-left">
           <thead>
@@ -53,6 +58,7 @@ const UserDashboard = () => {
               </th>
               <th className="py-3 px-4">Name</th>
               <th className="py-3 px-4">Phone</th>
+              <th className="py-3 px-4">Specialist</th>
               <th className="py-3 px-4">Location</th>
               <th className="py-3 px-4 text-center">Actions</th>
             </tr>
@@ -84,6 +90,18 @@ const UserDashboard = () => {
                   </div>
                 </td>
                 <td className="px-4 py-4">{user.phone}</td>
+                <td className="px-4 py-4">
+                  <div className="flex flex-wrap gap-1">
+                    {user.specialist.map((spec, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-gray-700 text-white text-xs font-medium px-2 py-0.5 rounded-full"
+                      >
+                        {spec}
+                      </span>
+                    ))}
+                  </div>
+                </td>
                 <td className="px-4 py-4">{user.location}</td>
                 <td className="px-4 py-4 text-center">
                   <div className="flex justify-center gap-3">
@@ -103,4 +121,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default DoctorDashboard;
