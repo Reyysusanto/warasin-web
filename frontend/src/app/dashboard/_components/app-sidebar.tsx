@@ -46,7 +46,7 @@ const data = {
     },
     {
       title: "Doctors",
-      url: "#",
+      url: "/dashboard/doctors",
       icon: FolderIcon,
     },
     {
