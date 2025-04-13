@@ -122,17 +122,17 @@ const NavigationBar = () => {
                 : "hover:text-primaryColor transition-colors duration-200"
             } transition duration-200 ease-in-out`}
             href={"#about"}
-          >
+            >
             Tentang Kami
           </Link>
         ) : (
           <Link
-            className={`${
-              pathname === "/tentang-kami"
-                ? "text-primaryColor font-semibold underline"
-                : "hover:text-primaryColor transition-colors duration-200"
-            }`}
-            href={"/tentang-kami"}
+          className={`${
+            pathname === "/tentang-kami"
+            ? "text-primaryColor font-semibold underline"
+            : "hover:text-primaryColor transition-colors duration-200"
+          }`}
+          href={"/tentang-kami"}
           >
             Tentang Kami
           </Link>
@@ -141,7 +141,12 @@ const NavigationBar = () => {
           decoded ? (
             <div className="relative">
               <button
-                className="flex items-center gap-1 hover:text-primaryColor transition-colors duration-200"
+                className={`${
+                  activeSection === "services"
+                    ? "text-primaryColor font-semibold underline"
+                    : "hover:text-primaryColor transition-colors duration-200"
+                } flex items-center gap-1 transition duration-200 ease-in-out`}
+                // className="flex items-center gap-1 hover:text-primaryColor transition-colors duration-200"
                 onClick={() => setDropDown(!dropDown)}
               >
                 Layanan <FaChevronDown className="text-sm" />
