@@ -2,10 +2,8 @@
 
 import * as React from "react"
 import {
-  BarChartIcon,
   CameraIcon,
   ClipboardListIcon,
-  DatabaseIcon,
   FileCodeIcon,
   FileTextIcon,
   FolderIcon,
@@ -15,7 +13,6 @@ import {
   UsersIcon,
 } from "lucide-react"
 
-import { NavDocuments } from "./nav-documents"
 import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
@@ -38,22 +35,32 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
+      title: "Home",
+      url: "/dashboard",
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: BarChartIcon,
+      title: "Users",
+      url: "/dashboard/users",
+      icon: UsersIcon,
     },
     {
-      title: "Projects",
+      title: "Doctors",
       url: "#",
       icon: FolderIcon,
     },
     {
-      title: "Team",
+      title: "Consultation",
+      url: "#",
+      icon: ClipboardListIcon,
+    },
+    {
+      title: "News",
+      url: "#",
+      icon: UsersIcon,
+    },
+    {
+      title: "Dopamin",
       url: "#",
       icon: UsersIcon,
     },
@@ -118,18 +125,6 @@ const data = {
       icon: HelpCircleIcon,
     },
   ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: ClipboardListIcon,
-    },
-  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -157,7 +152,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
