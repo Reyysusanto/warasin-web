@@ -51,7 +51,7 @@ const data = {
     },
     {
       title: "Consultation",
-      url: "#",
+      url: "/dashboard/consultation",
       icon: ClipboardListIcon,
     },
     {
