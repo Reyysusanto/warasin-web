@@ -38,11 +38,26 @@ const users: User[] = [
 
 const DoctorDashboard = () => {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [userList, setUserList] = useState<User[]>(users);
 
   const toggleSelect = (id: number) => {
     setSelectedUsers((prev) =>
       prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id]
     );
+  };
+
+  const editData = ({ id }: { id: number }) => {
+    console.log("edit", id)
+  }
+
+  const removeData = ({ id }: { id: number }) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (confirmed) {
+      setUserList((prev) => prev.filter((user) => user.id !== id));
+      setSelectedUsers((prev) => prev.filter((uid) => uid !== id));
+    }
   };
 
   return (
@@ -64,7 +79,7 @@ const DoctorDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {userList.map((user) => (
               <tr
                 key={user.id}
                 className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
@@ -105,8 +120,18 @@ const DoctorDashboard = () => {
                 <td className="px-4 py-4">{user.location}</td>
                 <td className="px-4 py-4 text-center">
                   <div className="flex justify-center gap-3">
-                    <PencilIcon className="size-5 text-gray-500 hover:text-blue-600 cursor-pointer transition" />
-                    <Trash2Icon className="size-5 text-gray-500 hover:text-red-500 cursor-pointer transition" />
+                    <button
+                      onClick={() => editData({ id: user.id })}
+                      className="bg-transparent"
+                    >
+                      <PencilIcon className="size-5 text-gray-500 hover:text-blue-600 cursor-pointer transition" />
+                    </button>
+                    <button
+                      onClick={() => removeData({ id: user.id })}
+                      className="bg-transparent"
+                    >
+                      <Trash2Icon className="size-5 text-gray-500 hover:text-red-500 cursor-pointer transition" />
+                    </button>
                   </div>
                 </td>
               </tr>
