@@ -6,6 +6,9 @@ import { useState } from "react";
 import Footer from "@/components/footer";
 import DoctorCard from "./_components/DoctorCard";
 import NavigationBar from "@/components/navbar";
+import ZoomIn from "@/components/animation/ZoomIn";
+import FadeInFromBottom from "@/components/animation/FadeInFromBottom";
+import FadeInFromLeft from "@/components/animation/FadeInFromLeft";
 
 const doctors = [
   {
@@ -90,7 +93,6 @@ const doctors = [
   },
 ];
 
-
 const ConsultationPage = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("relevance");
@@ -107,59 +109,65 @@ const ConsultationPage = () => {
 
       <section className="flex flex-col md:flex-row justify-center items-center px-8 md:px-20 py-20 md:pt-32 gap-10">
         <div className="w-full md:w-1/2 text-center md:text-left">
-          <h2 className="text-2xl md:text-5xl font-bold text-primaryTextColor">
-            Konsultasi dengan Ahli yang Tepat untuk{" "}
-            <span className="text-primaryColor">Mental Health</span> Anda
-          </h2>
-          <p className="mt-4 text-gray-700 md:text-lg">
-            Mencari dukungan profesional untuk kesehatan mental Anda? Temukan
-            psikolog terbaik sesuai kebutuhan Anda dan mulai perjalanan menuju
-            kesejahteraan mental yang lebih baik. Konsultasi mudah, aman, dan
-            nyaman dari mana saja.
-          </p>
-          <Link
-            href="#"
-            className="mt-6 inline-block bg-primaryColor text-white px-6 py-3 rounded-lg hover:bg-primaryColor/90"
-          >
-            Mulai Konsultasi
-          </Link>
+          <ZoomIn>
+            <h2 className="text-2xl md:text-5xl font-bold text-primaryTextColor">
+              Konsultasi dengan Ahli yang Tepat untuk{" "}
+              <span className="text-primaryColor">Mental Health</span> Anda
+            </h2>
+            <p className="mt-4 text-gray-700 md:text-lg">
+              Mencari dukungan profesional untuk kesehatan mental Anda? Temukan
+              psikolog terbaik sesuai kebutuhan Anda dan mulai perjalanan menuju
+              kesejahteraan mental yang lebih baik. Konsultasi mudah, aman, dan
+              nyaman dari mana saja.
+            </p>
+            <Link
+              href="#"
+              className="mt-6 inline-block bg-primaryColor text-white px-6 py-3 rounded-lg hover:bg-primaryColor/90"
+            >
+              Mulai Konsultasi
+            </Link>
+          </ZoomIn>
         </div>
 
-        <div className="w-full md:w-1/2 flex justify-center md:justify-end">
-          <Image
-            src="/Images/landing_1.png"
-            width={450}
-            height={600}
-            alt="landing_1"
-            className="rounded-lg shadow-lg"
-          />
-        </div>
+        <FadeInFromBottom>
+          <div className="w-full flex justify-center md:justify-end">
+            <Image
+              src="/Images/landing_1.png"
+              width={450}
+              height={600}
+              alt="landing_1"
+              className="rounded-lg shadow-lg"
+            />
+          </div>
+        </FadeInFromBottom>
       </section>
 
       <section className="px-8 md:px-24 py-8 md:py-16">
-        <div className="bg-white p-6 rounded-lg shadow-md flex flex-wrap gap-4 items-center">
-          <input
-            type="text"
-            placeholder="Set your location"
-            className="border p-3 rounded-lg flex-1 bg-gray-100"
-          />
-          <input
-            type="text"
-            placeholder="Search Doctor"
-            className="border p-3 rounded-lg flex-1 bg-gray-100"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <select
-            className="border p-3 rounded-lg bg-gray-100"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="relevance">Relevance</option>
-            <option value="rating">Highest Rating</option>
-            <option value="patients">Most Patients</option>
-          </select>
-        </div>
+        <FadeInFromLeft>
+          <div className="bg-white p-6 rounded-lg shadow-md flex flex-wrap gap-4 items-center">
+            <input
+              type="text"
+              placeholder="Set your location"
+              className="border p-3 rounded-lg flex-1 bg-gray-100"
+            />
+            <input
+              type="text"
+              placeholder="Search Doctor"
+              className="border p-3 rounded-lg flex-1 bg-gray-100"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <select
+              className="border p-3 rounded-lg bg-gray-100"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="relevance">Relevance</option>
+              <option value="rating">Highest Rating</option>
+              <option value="patients">Most Patients</option>
+            </select>
+          </div>
+        </FadeInFromLeft>
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
           {sortedDoctors
@@ -167,16 +175,17 @@ const ConsultationPage = () => {
               doctor.name.toLowerCase().includes(search.toLowerCase())
             )
             .map((doctor) => (
-              <DoctorCard 
-                key={doctor.id}
-                name={doctor.name}
-                specialty={doctor.specialty}
-                experience={doctor.experience}
-                location={doctor.location}
-                schedule={doctor.schedule}
-                rating={doctor.rating}
-                totalPatients={doctor.totalPatients}
-              />
+              <ZoomIn key={doctor.id}>
+                <DoctorCard
+                  name={doctor.name}
+                  specialty={doctor.specialty}
+                  experience={doctor.experience}
+                  location={doctor.location}
+                  schedule={doctor.schedule}
+                  rating={doctor.rating}
+                  totalPatients={doctor.totalPatients}
+                />
+              </ZoomIn>
             ))}
         </div>
       </section>

@@ -56,7 +56,7 @@ const data = {
     },
     {
       title: "News",
-      url: "#",
+      url: "/dashboard/news",
       icon: UsersIcon,
     },
     {
