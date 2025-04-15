@@ -39,6 +39,10 @@ const KonsulSection = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string>();
 
+  const handleSubmit = () => {
+    window.alert("Pesan janji temu berhasil ditambahkan");
+  };
+
   return (
     <div className="flex flex-col py-10 px-6 md:px-16 gap-y-14">
       <div className="flex flex-col gap-y-6">
@@ -138,7 +142,10 @@ const KonsulSection = () => {
             ))}
           </div>
 
-          <button className="flex items-center gap-2 w-fit bg-primaryColor text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-primaryColorDark">
+          <button
+            onClick={handleSubmit}
+            className="flex items-center gap-2 w-fit bg-primaryColor text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-primaryColorDark"
+          >
             <FaCalendarAlt /> Pesan Janji Temu
           </button>
         </div>

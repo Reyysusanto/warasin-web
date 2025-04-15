@@ -8,8 +8,10 @@ import { usePathname } from "next/navigation";
 import { HiMenu, HiX } from "react-icons/hi";
 import { jwtDecode } from "jwt-decode";
 import { FaChevronDown } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const NavigationBar = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [dropDown, setDropDown] = useState(false);
   const [decoded, setDecoded] = useState(null);
@@ -26,7 +28,7 @@ const NavigationBar = () => {
           }
         });
       },
-      { threshold: [0.5] } // 50% visibility
+      { threshold: [0.5] }
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -49,6 +51,11 @@ const NavigationBar = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   const options = [
     { name: "Konsulin", path: "/concultation" },
     { name: "Tanyain", path: "/chatbot" },
@@ -66,9 +73,16 @@ const NavigationBar = () => {
 
   return (
     <nav className="flex flex-col md:flex-row px-6 md:px-10 md:pt-4 py-2 justify-between items-center relative md:z-[999] md:fixed w-full bg-backgroundPrimaryColor md:bg-transparent md:backdrop-blur-sm">
-      <div className="flex items-center w-full justify-between md:justify-start">
+      <div className="flex items-center w-full justify-between md:justify-start gap-3">
         <div className="flex gap-4 items-center">
-          <Image src={"/Images/logo.png"} width={60} height={60} alt="Logo" />
+          <Image
+            src={"/Images/logo.png"}
+            width={60}
+            height={60}
+            className="cursor-pointer"
+            alt="Logo"
+            onClick={() => router.push("/")}
+          />
           <div className="flex flex-col">
             <h3 className="text-primaryColor text-xl font-bold">Warasin</h3>
             <p className="text-tertiaryTextColor text-sm font-semibold">
@@ -95,9 +109,8 @@ const NavigationBar = () => {
             className={`${
               activeSection === "home"
                 ? "text-primaryColor font-semibold underline"
-                : "hover:text-primaryColor transition-colors duration-200"
-            } duration-200`}
-            // className="hover:text-primaryColor transition-colors duration-200"
+                : "hover:text-primaryColor"
+            } transition-all duration-200 ease-in-out`}
             href={"#home"}
           >
             Beranda
@@ -119,20 +132,20 @@ const NavigationBar = () => {
             className={`${
               activeSection === "about"
                 ? "text-primaryColor font-semibold underline"
-                : "hover:text-primaryColor transition-colors duration-200"
-            } transition duration-200 ease-in-out`}
+                : "hover:text-primaryColor"
+            } transition-all duration-200 ease-in-out`}
             href={"#about"}
-            >
+          >
             Tentang Kami
           </Link>
         ) : (
           <Link
-          className={`${
-            pathname === "/tentang-kami"
-            ? "text-primaryColor font-semibold underline"
-            : "hover:text-primaryColor transition-colors duration-200"
-          }`}
-          href={"/tentang-kami"}
+            className={`${
+              pathname === "/tentang-kami"
+                ? "text-primaryColor font-semibold underline"
+                : "hover:text-primaryColor transition-colors duration-200"
+            }`}
+            href={"/tentang-kami"}
           >
             Tentang Kami
           </Link>
@@ -144,9 +157,8 @@ const NavigationBar = () => {
                 className={`${
                   activeSection === "services"
                     ? "text-primaryColor font-semibold underline"
-                    : "hover:text-primaryColor transition-colors duration-200"
-                } flex items-center gap-1 transition duration-200 ease-in-out`}
-                // className="flex items-center gap-1 hover:text-primaryColor transition-colors duration-200"
+                    : "hover:text-primaryColor"
+                } flex items-center gap-1 transition-all duration-200 ease-in-out`}
                 onClick={() => setDropDown(!dropDown)}
               >
                 Layanan <FaChevronDown className="text-sm" />
@@ -178,7 +190,6 @@ const NavigationBar = () => {
                   ? "text-primaryColor font-semibold underline"
                   : "hover:text-primaryColor transition-colors duration-200"
               }`}
-              // className="hover:text-primaryColor transition-colors duration-200"
               href={"#services"}
             >
               Layanan
@@ -219,11 +230,6 @@ const NavigationBar = () => {
               ? "text-primaryColor font-semibold underline"
               : "hover:text-primaryColor transition-colors duration-200"
           }`}
-          // className={`${
-          //   pathname === "/our-team"
-          //     ? "text-primaryColor font-semibold underline"
-          //     : "hover:text-primaryColor transition-colors duration-200"
-          // }`}
           href={"#footer"}
         >
           Kontak
@@ -236,20 +242,28 @@ const NavigationBar = () => {
         } md:flex gap-x-3 mt-4 md:mt-0 w-full md:w-auto`}
       >
         {decoded ? (
-          <Link
-            href={"/profile"}
-            className="flex w-full items-center justify-between gap-4"
-          >
-            <div className="flex flex-col md:">
-              <h4 className="font-semibold text-base text-primaryTextColor">
-                Andre Kessler
-              </h4>
-              <p className="font-thin text-sm text-primaryTextColor">
-                george31@gmail.com
-              </p>
-            </div>
-            <CgProfile className="text-4xl bg-backgroundSecondaryColor rounded-full" />
-          </Link>
+          <div className="flex flex-col md:flex-row gap-3 w-full">
+            <Link
+              href={"/profile"}
+              className="flex w-full items-center justify-between gap-4"
+            >
+              <div className="flex flex-col">
+                <h4 className="font-semibold text-base text-primaryTextColor">
+                  Andre Kessler
+                </h4>
+                <p className="font-thin text-sm text-primaryTextColor">
+                  george31@gmail.com
+                </p>
+              </div>
+              <CgProfile className="text-4xl bg-backgroundSecondaryColor rounded-full" />
+            </Link>
+            <button
+              onClick={handleLogout}
+              className={`flex items-center transition ease-in-out md:border md:px-2 md:rounded-md md:border-dangerColor text-dangerColor font-semibold hover:underline md:hover:bg-dangerColor md:hover:text-white md:hover:no-underline`}
+            >
+              Logout
+            </button>
+          </div>
         ) : (
           <>
             <Link
