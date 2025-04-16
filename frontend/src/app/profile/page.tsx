@@ -48,7 +48,7 @@ const ProfilePage = () => {
     <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white scroll-smooth">
       <NavigationBar />
 
-      <main className="flex flex-col items-center px-16 py-20 md:py-0 gap-20">
+      <main className="flex flex-col items-center px-16 pt-32 pb-20 gap-20">
         <div className="flex flex-col md:w-1/2 items-center gap-6">
           <Image
             src={"/Images/FAQ.png"}
@@ -128,7 +128,7 @@ const ProfilePage = () => {
                 />
               </div>
 
-              <button className="flex items-center gap-2 w-fit bg-primaryColor text-white py-2 px-4 rounded-md text-sm font-semibold hover:bg-primaryColorDark">
+              <button className="flex items-center gap-2 w-fit bg-primaryColor text-white py-3 px-4 rounded-md text-base font-semibold hover:bg-primaryColorDark">
                 Simpan Perubahan
               </button>
             </form>

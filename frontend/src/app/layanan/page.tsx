@@ -51,8 +51,8 @@ const ServicePage = () => {
       <NavigationBar />
 
       <section className="flex flex-col items-center text-center py-20 md:py-32 gap-20">
-        <FadeInFromRight>
-          <div className="flex flex-col px-20 md:px-40 text-center mx-auto w-full md:w-3/5 gap-4">
+        <div className="flex flex-col px-20 md:px-40 text-center mx-auto w-full md:w-3/5 gap-4">
+          <FadeInFromRight>
             <h1 className="text-5xl font-medium text-primaryTextColor leading-tight">
               Layanan yang Tersedia
             </h1>
@@ -61,22 +61,21 @@ const ServicePage = () => {
               saja dan di mana saja, dirancang untuk memberikan dukungan yang
               aman, nyaman, dan terpercaya bagi setiap pengguna.
             </p>
-          </div>
-        </FadeInFromRight>
+          </FadeInFromRight>
+        </div>
 
-        <FadeInFromLeft>
-          <div className="grid grid-cols-2 md:grid-cols-3 px-10 md:w-3/4 gap-6 md:gap-12">
-            {Services.map((service, index) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 px-10 md:w-3/4 gap-6 md:gap-12">
+          {Services.map((service, index) => (
+            <FadeInFromLeft key={index}>
               <CardService
-                key={index}
                 link={service.link}
                 icon={service.icon}
                 service={service.service}
                 desc={service.desc}
               />
-            ))}
-          </div>
-        </FadeInFromLeft>
+            </FadeInFromLeft>
+          ))}
+        </div>
       </section>
 
       <Footer />

@@ -91,10 +91,10 @@ const DetailPage = () => {
                 </h2>
                 <div className="flex flex-col gap-2">
                   <Image
-                    src={"/Images/FAQ.png"}
+                    src={"/Images/hospital.png"}
                     width={200}
                     height={200}
-                    alt="Doctor"
+                    alt="Hospital"
                     className="w-full md:w-1/2 rounded-md"
                   />
                   <h3 className="text-primaryTextColor font-medium text-2xl">

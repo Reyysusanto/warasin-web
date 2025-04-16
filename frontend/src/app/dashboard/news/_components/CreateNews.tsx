@@ -78,7 +78,7 @@ const CreateNews = () => {
             rows={6}
             placeholder="Isi berita..."
             value={formData.content}
-            onChange={handleChange}
+            // onChange={handleChange}
             className="px-4 py-3 input text-base w-full resize-none border border-primaryTextColor rounded-md"
             required
           />
@@ -96,7 +96,7 @@ const CreateNews = () => {
             id="author"
             placeholder="Penulis Berita"
             value={formData.author}
-            onChange={handleChange}
+            // onChange={handleChange}
             className="px-4 py-3 input text-base w-full resize-none border border-primaryTextColor rounded-md"
             required
           />

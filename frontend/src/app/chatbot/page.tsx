@@ -31,10 +31,10 @@ const ChatBotPage = () => {
           Selamat Datang di{" "}
           <span className="text-primaryColor">Chatin Warasin</span>
         </h1>
-        <p className="mt-2 text-gray-600 font-semibold">
+        <p className="mt-2 text-primaryTextColor font-semibold">
           Kekuatan AI yang siap melayani anda - Menjinkan pengetahuan
         </p>
-        <div className="mt-6 flex items-center border border-primaryColor bg-backgroundSecondaryColor text-primaryTextColor rounded-xl p-1 text-lg w-full">
+        <div className="mt-6 flex items-center border border-primaryColor bg-secondaryTextColor text-primaryTextColor rounded-xl p-1 text-lg w-full">
           <input
             type="text"
             className="flex-grow outline-none bg-transparent px-2"
