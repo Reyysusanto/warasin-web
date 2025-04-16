@@ -40,7 +40,7 @@ const LoginDashboard = () => {
         // console.log(response.data.data.access_token)
         await login(response.data.data.access_token);
         setSuccessMessage("Login berhasil");
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (err) {
       console.log(err);
