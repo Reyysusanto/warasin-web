@@ -66,8 +66,8 @@ export default function AboutPage() {
         </ZoomIn>
 
         <section className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <FadeInFromLeft>
-            <div className="flex flex-col max-w-lg gap-4 w-full md:w-1/2 mx-auto">
+          <div className="flex flex-col max-w-lg gap-4 w-full md:w-1/2 mx-auto">
+            <FadeInFromLeft>
               <p className="text-base text-primaryTextColor">
                 Warasin adalah platform digital yang menghadirkan solusi
                 inovatif untuk mendukung kesehatan mental. Kami menyediakan
@@ -82,10 +82,10 @@ export default function AboutPage() {
                 individu berhak mendapatkan dukungan mental yang tepat, dan
                 tidak ada yang harus menghadapi tantangan emosional sendirian.
               </p>
-            </div>
-          </FadeInFromLeft>
-          <FadeInFromBottom>
-            <div className="flex gap-6 relative w-full md:w-1/2 top-12 px-10 md:px-0">
+            </FadeInFromLeft>
+          </div>
+          <div className="flex gap-6 relative w-full md:w-1/2 top-12 px-10 md:px-0">
+            <FadeInFromBottom>
               <div className="text-start relative z-10">
                 <Image
                   src="/Images/landing_1.png"
@@ -110,8 +110,8 @@ export default function AboutPage() {
                 <p className="font-semibold mt-2">Rheinaldy Susanto</p>
                 <p className="text-sm text-gray-500">Co-Founder</p>
               </div>
-            </div>
-          </FadeInFromBottom>
+            </FadeInFromBottom>
+          </div>
         </section>
 
         <FadeInFromRight>

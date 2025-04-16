@@ -59,10 +59,10 @@ const NavigationBar = () => {
   const options = [
     { name: "Konsulin", path: "/concultation" },
     { name: "Tanyain", path: "/chatbot" },
-    { name: "Ajarin", path: "/chatbot" },
-    { name: "Dopamin", path: "/chatbot" },
-    { name: "Terapiin", path: "/chatbot" },
-    { name: "Emosiin", path: "/chatbot" },
+    { name: "Ajarin", path: "/ajarin" },
+    { name: "Dopamin", path: "/dopamin" },
+    { name: "Terapiin", path: "/terapiin" },
+    { name: "Emosiin", path: "/emosiin" },
     { name: "Lihat Semuanya", path: "/layanan" },
   ];
 

@@ -37,15 +37,14 @@ const Login = () => {
         }
       );
 
-      
       if (response.status === 200) {
         // console.log(response.data.data.access_token)
-        await login(response.data.data.access_token)
+        await login(response.data.data.access_token);
         setSuccessMessage("Login berhasil");
         router.push("/");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setErrorMessage("Terjadi kesalahan saat login");
     }
   };
@@ -151,15 +150,27 @@ const Login = () => {
             Masuk dengan Google
           </button>
 
-          <p className="mt-4 text-tertiaryTextColor text-sm text-center">
-            Tidak punya akun?{" "}
-            <Link
-              href="/register"
-              className="text-primaryColor hover:underline"
-            >
-              Daftar
-            </Link>
-          </p>
+          <div className="flex justify-between">
+            <p className="mt-4 text-tertiaryTextColor text-sm text-center">
+              Tidak punya akun?{" "}
+              <Link
+                href="/register"
+                className="text-primaryColor hover:underline"
+              >
+                Daftar
+              </Link>
+            </p>
+
+            <p className="mt-4 text-tertiaryTextColor text-sm text-center">
+              Login sebagai{" "}
+              <Link
+                href="/login-admin"
+                className="text-primaryColor hover:underline"
+              >
+                Admin
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
 
