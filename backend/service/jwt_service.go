@@ -10,13 +10,14 @@ import (
 
 type (
 	IJWTService interface {
-		GenerateToken(userID string) (string, string, error)
+		GenerateToken(userID string, role int) (string, string, error)
 		ValidateToken(token string) (*jwt.Token, error)
 		GetUserIDByToken(tokenString string) (string, error)
 	}
 
 	jwtCustomClaim struct {
 		UserID string `json:"user_id"`
+		Role   int    `json:"role"`
 		jwt.RegisteredClaims
 	}
 
@@ -42,9 +43,10 @@ func getSecretKey() string {
 	return secretKey
 }
 
-func (j *JWTService) GenerateToken(userID string) (string, string, error) {
+func (j *JWTService) GenerateToken(userID string, role int) (string, string, error) {
 	accessClaims := jwtCustomClaim{
 		userID,
+		role,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 120)),
 			Issuer:    j.issuer,
@@ -60,6 +62,7 @@ func (j *JWTService) GenerateToken(userID string) (string, string, error) {
 
 	refreshClaims := jwtCustomClaim{
 		userID,
+		role,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 3600 * 24 * 7)),
 			Issuer:    j.issuer,

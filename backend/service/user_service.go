@@ -21,9 +21,12 @@ type (
 	IUserService interface {
 		Register(ctx context.Context, req dto.UserRegisterRequest) (dto.UserResponse, error)
 		Login(ctx context.Context, req dto.UserLoginRequest) (dto.UserLoginResponse, error)
+		SendVerificationEmail(ctx context.Context, req dto.SendVerificationEmailRequest) error
+		VerifyEmail(ctx context.Context, req dto.VerifyEmailRequest) (dto.VerifyEmailResponse, error)
 		SendForgotPasswordEmail(ctx context.Context, req dto.SendForgotPasswordEmailRequest) error
 		ForgotPassword(ctx context.Context, req dto.ForgotPasswordRequest) (dto.ForgotPasswordResponse, error)
 		UpdatePassword(ctx context.Context, req dto.UpdatePasswordRequest) (dto.UpdatePasswordResponse, error)
+		GetDetailUser(ctx context.Context) (dto.AllUserResponse, error)
 	}
 
 	UserService struct {
@@ -86,7 +89,7 @@ func (us *UserService) Login(ctx context.Context, req dto.UserLoginRequest) (dto
 		return dto.UserLoginResponse{}, dto.ErrPasswordNotMatch
 	}
 
-	accessToken, refreshToken, err := us.jwtService.GenerateToken(user.ID.String())
+	accessToken, refreshToken, err := us.jwtService.GenerateToken(user.ID.String(), user.Role)
 	if err != nil {
 		return dto.UserLoginResponse{}, err
 	}
@@ -94,6 +97,125 @@ func (us *UserService) Login(ctx context.Context, req dto.UserLoginRequest) (dto
 	return dto.UserLoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
+	}, nil
+}
+
+func makeVerificationEmail(receiverEmail string) (map[string]string, error) {
+	expired := time.Now().Add(time.Hour * 24).Format("2006-01-02 15:04:05")
+	plainText := fmt.Sprintf("%s_%s", receiverEmail, expired)
+	token, err := utils.AESEncrypt(plainText)
+	if err != nil {
+		return nil, err
+	}
+
+	baseURL := os.Getenv("BASE_URL")
+	verifyEmailRoute := "verify-email"
+	if baseURL == "" {
+		baseURL = "http://127.0.0.1:8000/api/v1/user"
+	}
+
+	verifyLink := baseURL + "/" + verifyEmailRoute + "?token=" + token
+
+	readHTML, err := os.ReadFile("utils/email_template/verification_mail.html")
+	if err != nil {
+		return nil, err
+	}
+
+	data := struct {
+		Email  string
+		Verify string
+	}{
+		Email:  receiverEmail,
+		Verify: verifyLink,
+	}
+
+	tmpl, err := template.New("custom").Parse(string(readHTML))
+	if err != nil {
+		return nil, err
+	}
+
+	var strMail bytes.Buffer
+	if err := tmpl.Execute(&strMail, data); err != nil {
+		return nil, err
+	}
+
+	draftEmail := map[string]string{
+		"subject": "warasin",
+		"body":    strMail.String(),
+	}
+
+	return draftEmail, nil
+}
+
+func (us *UserService) SendVerificationEmail(ctx context.Context, req dto.SendVerificationEmailRequest) error {
+	user, flag, err := us.userRepo.CheckEmail(ctx, nil, req.Email)
+	if err != nil || !flag {
+		return dto.ErrEmailNotFound
+	}
+
+	draftEmail, err := makeVerificationEmail(user.Email)
+	if err != nil {
+		return dto.ErrMakeVerificationEmail
+	}
+
+	if err := utils.SendEmail(user.Email, draftEmail["subject"], draftEmail["body"]); err != nil {
+		return dto.ErrSendEmail
+	}
+
+	return nil
+}
+
+func (us *UserService) VerifyEmail(ctx context.Context, req dto.VerifyEmailRequest) (dto.VerifyEmailResponse, error) {
+	decryptedToken, err := utils.AESDecrypt(req.Token)
+	if err != nil {
+		return dto.VerifyEmailResponse{}, dto.ErrDecryptToken
+	}
+
+	if !strings.Contains(decryptedToken, "_") {
+		return dto.VerifyEmailResponse{}, dto.ErrTokenInvalid
+	}
+
+	decryptedTokenSplit := strings.Split(decryptedToken, "_")
+	if len(decryptedTokenSplit) != 2 {
+		return dto.VerifyEmailResponse{}, dto.ErrTokenInvalid
+	}
+
+	email := decryptedTokenSplit[0]
+	expired := decryptedTokenSplit[1]
+
+	now := time.Now()
+	expiredTime, err := time.Parse("2006-01-02 15:04:05", expired)
+	if err != nil {
+		return dto.VerifyEmailResponse{}, dto.ErrParsingExpiredTime
+	}
+
+	if expiredTime.Sub(now) < 0 {
+		return dto.VerifyEmailResponse{
+			Email:      email,
+			IsVerified: false,
+		}, dto.ErrTokenExpired
+	}
+
+	user, flag, err := us.userRepo.CheckEmail(ctx, nil, email)
+	if !flag || err != nil {
+		return dto.VerifyEmailResponse{}, dto.ErrUserNotFound
+	}
+
+	if user.IsVerified {
+		return dto.VerifyEmailResponse{}, dto.ErrEmailALreadyVerified
+	}
+
+	updatedUser, err := us.userRepo.UpdateUser(ctx, nil, entity.User{
+		ID:         user.ID,
+		IsVerified: true,
+	})
+	if err != nil {
+		return dto.VerifyEmailResponse{}, dto.ErrUpdateUser
+	}
+
+	return dto.VerifyEmailResponse{
+		Email:      email,
+		IsVerified: updatedUser.IsVerified,
 	}, nil
 }
 
@@ -203,10 +325,12 @@ func (us *UserService) UpdatePassword(ctx context.Context, req dto.UpdatePasswor
 
 	oldPassword := user.Password
 
-	newPassword, err := helpers.HashPassword(user.Password)
+	newPassword, err := helpers.HashPassword(req.NewPassword)
 	if err != nil {
 		return dto.UpdatePasswordResponse{}, dto.ErrHashPassword
 	}
+
+	user.Password = newPassword
 
 	_, err = us.userRepo.UpdateUser(ctx, nil, user)
 	if err != nil {
@@ -216,5 +340,34 @@ func (us *UserService) UpdatePassword(ctx context.Context, req dto.UpdatePasswor
 	return dto.UpdatePasswordResponse{
 		OldPassword: oldPassword,
 		NewPassword: newPassword,
+	}, nil
+}
+
+func (us *UserService) GetDetailUser(ctx context.Context) (dto.AllUserResponse, error) {
+	token := ctx.Value("Authorization").(string)
+
+	userId, err := us.jwtService.GetUserIDByToken(token)
+	if err != nil {
+		return dto.AllUserResponse{}, dto.ErrGetUserIDFromToken
+	}
+
+	user, err := us.userRepo.GetUserByID(ctx, nil, userId)
+	if err != nil {
+		return dto.AllUserResponse{}, dto.ErrUserNotFound
+	}
+
+	return dto.AllUserResponse{
+		ID:          user.ID,
+		CityID:      user.CityID,
+		Name:        user.Name,
+		Email:       user.Email,
+		Password:    user.Password,
+		Birthdate:   user.Birthdate,
+		PhoneNumber: user.PhoneNumber,
+		Role:        user.Role,
+		Data01:      user.Data01,
+		Data02:      user.Data02,
+		Data03:      user.Data03,
+		IsVerified:  user.IsVerified,
 	}, nil
 }
