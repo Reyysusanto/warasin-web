@@ -9,6 +9,7 @@ import (
 type Psycholog struct {
 	ID          uuid.UUID `gorm:"type:uuid;primaryKey" json:"psy_id"`
 	Name        string    `json:"psy_name"`
+	STRNumber   string    `json:"psy_str_number"`
 	Email       string    `gorm:"unique; not null" json:"psy_email"`
 	Password    string    `json:"psy_password"`
 	WorkYear    string    `gorm:"type:varchar(4)" json:"psy_work_year"`
