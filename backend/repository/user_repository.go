@@ -2,7 +2,10 @@ package repository
 
 import (
 	"context"
+	"math"
+	"strings"
 
+	"github.com/Reyysusanto/warasin-web/backend/dto"
 	"github.com/Reyysusanto/warasin-web/backend/entity"
 	"gorm.io/gorm"
 )
@@ -14,6 +17,7 @@ type (
 		UpdateUser(ctx context.Context, tx *gorm.DB, user entity.User) (entity.User, error)
 		GetUserByPassword(ctx context.Context, tx *gorm.DB, password string) (entity.User, error)
 		GetUserByID(ctx context.Context, tx *gorm.DB, userID string) (entity.User, error)
+		GetAllUserWithPagination(ctx context.Context, tx *gorm.DB, req dto.PaginationRequest) (dto.AllUserRepositoryResponse, error)
 	}
 
 	UserRepository struct {
@@ -88,4 +92,50 @@ func (ur *UserRepository) GetUserByID(ctx context.Context, tx *gorm.DB, userID s
 	}
 
 	return user, nil
+}
+
+func (ur *UserRepository) GetAllUserWithPagination(ctx context.Context, tx *gorm.DB, req dto.PaginationRequest) (dto.AllUserRepositoryResponse, error) {
+	if tx == nil {
+		tx = ur.db
+	}
+
+	var users []entity.User
+	var err error
+	var count int64
+
+	if req.PerPage == 0 {
+		req.PerPage = 10
+	}
+
+	if req.Page == 0 {
+		req.Page = 1
+	}
+
+	query := tx.WithContext(ctx).Model(&entity.User{})
+
+	if req.Search != "" {
+		searchValue := "%" + strings.ToLower(req.Search) + "%"
+		query = query.Where("LOWER(name) LIKE ? OR LOWER(email) LIKE ? OR LOWER(phone_number) LIKE ?",
+			searchValue, searchValue, searchValue)
+	}
+
+	if err := query.Count(&count).Error; err != nil {
+		return dto.AllUserRepositoryResponse{}, err
+	}
+
+	if err := query.Order("created_at DESC").Scopes(Paginate(req.Page, req.PerPage)).Find(&users).Error; err != nil {
+		return dto.AllUserRepositoryResponse{}, err
+	}
+
+	totalPage := int64(math.Ceil(float64(count) / float64(req.PerPage)))
+
+	return dto.AllUserRepositoryResponse{
+		Users: users,
+		PaginationResponse: dto.PaginationResponse{
+			Page:    req.Page,
+			PerPage: req.PerPage,
+			MaxPage: totalPage,
+			Count:   count,
+		},
+	}, err
 }
