@@ -27,6 +27,7 @@ type (
 		ForgotPassword(ctx context.Context, req dto.ForgotPasswordRequest) (dto.ForgotPasswordResponse, error)
 		UpdatePassword(ctx context.Context, req dto.UpdatePasswordRequest) (dto.UpdatePasswordResponse, error)
 		GetDetailUser(ctx context.Context) (dto.AllUserResponse, error)
+		GetAllUserWithPagination(ctx context.Context, req dto.PaginationRequest) (dto.UserPaginationResponse, error)
 	}
 
 	UserService struct {
@@ -369,5 +370,42 @@ func (us *UserService) GetDetailUser(ctx context.Context) (dto.AllUserResponse, 
 		Data02:      user.Data02,
 		Data03:      user.Data03,
 		IsVerified:  user.IsVerified,
+	}, nil
+}
+
+func (us *UserService) GetAllUserWithPagination(ctx context.Context, req dto.PaginationRequest) (dto.UserPaginationResponse, error) {
+	dataWithPaginate, err := us.userRepo.GetAllUserWithPagination(ctx, nil, req)
+	if err != nil {
+		return dto.UserPaginationResponse{}, err
+	}
+
+	var datas []dto.AllUserResponse
+	for _, user := range dataWithPaginate.Users {
+		data := dto.AllUserResponse{
+			ID:          user.ID,
+			CityID:      user.CityID,
+			Name:        user.Name,
+			Email:       user.Email,
+			Password:    user.Password,
+			Birthdate:   user.Birthdate,
+			PhoneNumber: user.PhoneNumber,
+			Role:        user.Role,
+			Data01:      user.Data01,
+			Data02:      user.Data02,
+			Data03:      user.Data03,
+			IsVerified:  user.IsVerified,
+		}
+
+		datas = append(datas, data)
+	}
+
+	return dto.UserPaginationResponse{
+		Data: datas,
+		PaginationResponse: dto.PaginationResponse{
+			Page:    dataWithPaginate.Page,
+			PerPage: dataWithPaginate.PerPage,
+			MaxPage: dataWithPaginate.MaxPage,
+			Count:   dataWithPaginate.Count,
+		},
 	}, nil
 }

@@ -21,5 +21,7 @@ func User(route *gin.Engine, userHandler handler.IUserHandler, jwtService servic
 		routes.POST("/update-password", userHandler.UpdatePassword)
 
 		routes.GET("/get-detail-user", middleware.Authentication(jwtService), userHandler.GetDetailUser)
+
+		routes.GET("/get-all-user", middleware.Authentication(jwtService), middleware.AdminOnly(jwtService), userHandler.GetAllUser)
 	}
 }

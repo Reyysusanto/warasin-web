@@ -19,6 +19,7 @@ type (
 		ForgotPassword(ctx *gin.Context)
 		UpdatePassword(ctx *gin.Context)
 		GetDetailUser(ctx *gin.Context)
+		GetAllUser(ctx *gin.Context)
 	}
 
 	UserHandler struct {
@@ -174,5 +175,30 @@ func (uh *UserHandler) GetDetailUser(ctx *gin.Context) {
 	}
 
 	res := utils.BuildResponseSuccess(dto.MESSAGE_SUCCESS_GET_DETAIL_USER, result)
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (uh *UserHandler) GetAllUser(ctx *gin.Context) {
+	var payload dto.PaginationRequest
+	if err := ctx.ShouldBind(&payload); err != nil {
+		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+
+	result, err := uh.userService.GetAllUserWithPagination(ctx.Request.Context(), payload)
+	if err != nil {
+		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_GET_LIST_USER, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+
+	res := utils.Response{
+		Status:   true,
+		Messsage: dto.MESSAGE_SUCCESS_GET_LIST_USER,
+		Data:     result.Data,
+		Meta:     result.PaginationResponse,
+	}
+
 	ctx.JSON(http.StatusOK, res)
 }
