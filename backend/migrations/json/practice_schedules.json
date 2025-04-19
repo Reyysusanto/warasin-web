@@ -1,0 +1,92 @@
+[
+  {
+    "prac_sched_day": "Senin",
+    "prac_sched_open": "2025-04-20T09:00:00Z",
+    "prac_sched_close": "2025-04-20T12:00:00Z",
+    "prac_id": "7b2a22d1-cd07-4169-9473-5db080cb1d29"
+  },
+  {
+    "prac_sched_day": "Rabu",
+    "prac_sched_open": "2025-04-22T13:00:00Z",
+    "prac_sched_close": "2025-04-22T17:00:00Z",
+    "prac_id": "7b2a22d1-cd07-4169-9473-5db080cb1d29"
+  },
+  {
+    "prac_sched_day": "Jumat",
+    "prac_sched_open": "2025-04-24T10:00:00Z",
+    "prac_sched_close": "2025-04-24T14:00:00Z",
+    "prac_id": "7b2a22d1-cd07-4169-9473-5db080cb1d29"
+  },
+  {
+    "prac_sched_day": "Senin",
+    "prac_sched_open": "2025-04-20T08:00:00Z",
+    "prac_sched_close": "2025-04-20T12:00:00Z",
+    "prac_id": "14c69022-5466-4d96-a94c-90a174c5df09"
+  },
+  {
+    "prac_sched_day": "Rabu",
+    "prac_sched_open": "2025-04-22T11:00:00Z",
+    "prac_sched_close": "2025-04-22T15:00:00Z",
+    "prac_id": "14c69022-5466-4d96-a94c-90a174c5df09"
+  },
+  {
+    "prac_sched_day": "Jumat",
+    "prac_sched_open": "2025-04-24T14:00:00Z",
+    "prac_sched_close": "2025-04-24T18:00:00Z",
+    "prac_id": "14c69022-5466-4d96-a94c-90a174c5df09"
+  },
+  {
+    "prac_sched_day": "Senin",
+    "prac_sched_open": "2025-04-20T10:00:00Z",
+    "prac_sched_close": "2025-04-20T13:00:00Z",
+    "prac_id": "857ede20-ac92-4723-afa0-2e32b2267ab5"
+  },
+  {
+    "prac_sched_day": "Rabu",
+    "prac_sched_open": "2025-04-22T08:00:00Z",
+    "prac_sched_close": "2025-04-22T12:00:00Z",
+    "prac_id": "857ede20-ac92-4723-afa0-2e32b2267ab5"
+  },
+  {
+    "prac_sched_day": "Jumat",
+    "prac_sched_open": "2025-04-24T09:00:00Z",
+    "prac_sched_close": "2025-04-24T12:00:00Z",
+    "prac_id": "857ede20-ac92-4723-afa0-2e32b2267ab5"
+  },
+  {
+    "prac_sched_day": "Senin",
+    "prac_sched_open": "2025-04-20T08:00:00Z",
+    "prac_sched_close": "2025-04-20T11:00:00Z",
+    "prac_id": "25833598-f217-429a-a293-133a27c855a1"
+  },
+  {
+    "prac_sched_day": "Rabu",
+    "prac_sched_open": "2025-04-22T10:00:00Z",
+    "prac_sched_close": "2025-04-22T13:00:00Z",
+    "prac_id": "25833598-f217-429a-a293-133a27c855a1"
+  },
+  {
+    "prac_sched_day": "Jumat",
+    "prac_sched_open": "2025-04-24T13:00:00Z",
+    "prac_sched_close": "2025-04-24T17:00:00Z",
+    "prac_id": "25833598-f217-429a-a293-133a27c855a1"
+  },
+  {
+    "prac_sched_day": "Senin",
+    "prac_sched_open": "2025-04-20T09:30:00Z",
+    "prac_sched_close": "2025-04-20T13:30:00Z",
+    "prac_id": "e42bf59c-95f4-466d-839f-0c42f9ddf314"
+  },
+  {
+    "prac_sched_day": "Rabu",
+    "prac_sched_open": "2025-04-22T12:00:00Z",
+    "prac_sched_close": "2025-04-22T16:00:00Z",
+    "prac_id": "e42bf59c-95f4-466d-839f-0c42f9ddf314"
+  },
+  {
+    "prac_sched_day": "Jumat",
+    "prac_sched_open": "2025-04-24T08:30:00Z",
+    "prac_sched_close": "2025-04-24T12:30:00Z",
+    "prac_id": "e42bf59c-95f4-466d-839f-0c42f9ddf314"
+  }
+]

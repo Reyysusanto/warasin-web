@@ -1,0 +1,56 @@
+[
+  {
+    "user_name": "Andi Prasetyo",
+    "user_email": "andi.prasetyo@gmail.com",
+    "user_password": "hashedpassword1",
+    "user_phone_number": "081234567890",
+    "user_role": 0,
+    "is_verified": true,
+    "city_id": "a5537e93-3d6f-46cc-86cd-3172a7ba623e"
+  },
+  {
+    "user_name": "Budi Prasetyo",
+    "user_email": "budi.prasetyo@gmail.com",
+    "user_password": "hashedpassword10",
+    "user_phone_number": "081234567449",
+    "user_role": 0,
+    "is_verified": false,
+    "city_id": "a5537e93-3d6f-46cc-86cd-3172a7ba623e"
+  },
+  {
+    "user_name": "Dewi Lestari",
+    "user_email": "dewi.lestari@gmail.com",
+    "user_password": "hashedpassword2",
+    "user_phone_number": "081298765432",
+    "user_role": 0,
+    "is_verified": false,
+    "city_id": "f35bf08f-6e54-4ec5-b1c7-e29fd300a1ad"
+  },
+  {
+    "user_name": "Rina Handayani",
+    "user_email": "rina.handayani@gmail.com",
+    "user_password": "hashedpassword3",
+    "user_phone_number": "082134567890",
+    "user_role": 0,
+    "is_verified": true,
+    "city_id": "9a184f50-032e-45df-af4f-fcd6601ea5aa"
+  },
+  {
+    "user_name": "Admin Utama",
+    "user_email": "admin1@psikologapp.com",
+    "user_password": "adminpass1",
+    "user_phone_number": "089912345678",
+    "user_role": 2,
+    "is_verified": true,
+    "city_id": "2a9645fa-40cf-4690-81c9-145d15b4aaef"
+  },
+  {
+    "user_name": "Admin Cadangan",
+    "user_email": "admin2@psikologapp.com",
+    "user_password": "adminpass2",
+    "user_phone_number": "089923456789",
+    "user_role": 2,
+    "is_verified": true,
+    "city_id": "f35bf08f-6e54-4ec5-b1c7-e29fd300a1ad"
+  }
+]
