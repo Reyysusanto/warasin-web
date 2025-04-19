@@ -1,0 +1,79 @@
+[
+  {
+    "psy_id": "7b7fd7f9-fe22-435a-bca1-eb2a826f7b5b",
+    "edu_degree": "S1",
+    "edu_major": "Psikologi Klinis",
+    "edu_institution": "Universitas Indonesia",
+    "edu_graduation_year": "2014"
+  },
+  {
+    "psy_id": "7b7fd7f9-fe22-435a-bca1-eb2a826f7b5b",
+    "edu_degree": "S2",
+    "edu_major": "Psikologi Pendidikan",
+    "edu_institution": "Universitas Gadjah Mada",
+    "edu_graduation_year": "2017"
+  },
+  {
+    "psy_id": "3442fffc-3e94-4335-b931-4ceb37aa727b",
+    "edu_degree": "S1",
+    "edu_major": "Psikologi Sosial",
+    "edu_institution": "Universitas Airlangga",
+    "edu_graduation_year": "2012"
+  },
+  {
+    "psy_id": "3442fffc-3e94-4335-b931-4ceb37aa727b",
+    "edu_degree": "S2",
+    "edu_major": "Psikologi Klinis",
+    "edu_institution": "Universitas Padjadjaran",
+    "edu_graduation_year": "2015"
+  },
+  {
+    "psy_id": "3d458a50-160d-41a7-a0f2-e788f960dfd2",
+    "edu_degree": "S1",
+    "edu_major": "Psikologi Klinis",
+    "edu_institution": "Universitas Muhammadiyah Surakarta",
+    "edu_graduation_year": "2011"
+  },
+  {
+    "psy_id": "3d458a50-160d-41a7-a0f2-e788f960dfd2",
+    "edu_degree": "S2",
+    "edu_major": "Psikologi Sosial",
+    "edu_institution": "Universitas Diponegoro",
+    "edu_graduation_year": "2014"
+  },
+  {
+    "psy_id": "dee62559-f2f5-48e9-8e13-90e763cc1d2c",
+    "edu_degree": "S1",
+    "edu_major": "Psikologi Pendidikan",
+    "edu_institution": "Universitas Negeri Malang",
+    "edu_graduation_year": "2013"
+  },
+  {
+    "psy_id": "dee62559-f2f5-48e9-8e13-90e763cc1d2c",
+    "edu_degree": "S2",
+    "edu_major": "Psikologi Industri dan Organisasi",
+    "edu_institution": "Universitas Brawijaya",
+    "edu_graduation_year": "2016"
+  },
+  {
+    "psy_id": "2dc5bdcc-8690-4ed9-b347-ca9510bfc65e",
+    "edu_degree": "S1",
+    "edu_major": "Psikologi Umum",
+    "edu_institution": "Universitas Sanata Dharma",
+    "edu_graduation_year": "2012"
+  },
+  {
+    "psy_id": "2dc5bdcc-8690-4ed9-b347-ca9510bfc65e",
+    "edu_degree": "S2",
+    "edu_major": "Psikologi Klinis",
+    "edu_institution": "Universitas Sebelas Maret",
+    "edu_graduation_year": "2015"
+  },
+  {
+    "psy_id": "2dc5bdcc-8690-4ed9-b347-ca9510bfc65e",
+    "edu_degree": "S3",
+    "edu_major": "Psikologi Sosial",
+    "edu_institution": "Universitas Kristen Satya Wacana",
+    "edu_graduation_year": "2020"
+  }
+]

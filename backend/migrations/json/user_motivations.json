@@ -1,0 +1,74 @@
+[
+  {
+    "user_mot_display_date": "2025-04-19T10:00:00Z",
+    "user_mot_reaction": 4,
+    "user_id": "0dab5c34-0e06-4c0d-bf29-50afdcfe0e66",
+    "mot_id": "8b7b3621-7a6d-41a8-b16d-5b60a9738486"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:05:00Z",
+    "user_mot_reaction": 5,
+    "user_id": "0dab5c34-0e06-4c0d-bf29-50afdcfe0e66",
+    "mot_id": "11bafb4b-5ba9-40ba-a011-e5bfa21784cc"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:10:00Z",
+    "user_mot_reaction": 3,
+    "user_id": "0dab5c34-0e06-4c0d-bf29-50afdcfe0e66",
+    "mot_id": "48622364-2516-4177-9a4a-69a694e70328"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:15:00Z",
+    "user_mot_reaction": 2,
+    "user_id": "d058cd22-8c4f-44cb-bffb-433a3c150d1f",
+    "mot_id": "a0699b15-1406-4e2e-9b78-2e097a01780e"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:20:00Z",
+    "user_mot_reaction": 4,
+    "user_id": "d058cd22-8c4f-44cb-bffb-433a3c150d1f",
+    "mot_id": "999c853c-4899-4957-b559-6e78ff209817"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:25:00Z",
+    "user_mot_reaction": 1,
+    "user_id": "d058cd22-8c4f-44cb-bffb-433a3c150d1f",
+    "mot_id": "7445541c-fe45-4bcd-970f-3b1b2d3a40ab"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:30:00Z",
+    "user_mot_reaction": 5,
+    "user_id": "60338056-fff7-4349-887b-c8dce93756e1",
+    "mot_id": "22dfb85d-e911-41f0-8b0e-0248c9d509bb"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:35:00Z",
+    "user_mot_reaction": 3,
+    "user_id": "60338056-fff7-4349-887b-c8dce93756e1",
+    "mot_id": "3c01a0b3-e7e6-41cc-9d86-86a09006f087"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:40:00Z",
+    "user_mot_reaction": 2,
+    "user_id": "60338056-fff7-4349-887b-c8dce93756e1",
+    "mot_id": "95816910-7469-4cfb-9f95-2ea3dbabd71c"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:45:00Z",
+    "user_mot_reaction": 4,
+    "user_id": "a40f4fb6-9ab1-4ee1-887a-d9879127c5d8",
+    "mot_id": "545dcfdb-0d64-4d3b-9c53-68709a713476"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:50:00Z",
+    "user_mot_reaction": 1,
+    "user_id": "a40f4fb6-9ab1-4ee1-887a-d9879127c5d8",
+    "mot_id": "8b7b3621-7a6d-41a8-b16d-5b60a9738486"
+  },
+  {
+    "user_mot_display_date": "2025-04-19T10:55:00Z",
+    "user_mot_reaction": 3,
+    "user_id": "a40f4fb6-9ab1-4ee1-887a-d9879127c5d8",
+    "mot_id": "11bafb4b-5ba9-40ba-a011-e5bfa21784cc"
+  }
+]
