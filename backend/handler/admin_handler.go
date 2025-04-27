@@ -14,6 +14,7 @@ type (
 		Login(ctx *gin.Context)
 		RefreshToken(ctx *gin.Context)
 		GetAllUser(ctx *gin.Context)
+		DeleteUser(ctx *gin.Context)
 	}
 
 	AdminHandler struct {
@@ -87,5 +88,24 @@ func (ah *AdminHandler) GetAllUser(ctx *gin.Context) {
 		Meta:     result.PaginationResponse,
 	}
 
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (ah *AdminHandler) DeleteUser(ctx *gin.Context) {
+	var payload dto.DeleteUserRequest
+	if err := ctx.ShouldBind(&payload); err != nil {
+		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_GET_DATA_FROM_BODY, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+
+	result, err := ah.adminService.DeleteUser(ctx.Request.Context(), payload)
+	if err != nil {
+		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_DELETE_USER, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+
+	res := utils.BuildResponseSuccess(dto.MESSAGE_SUCCESS_DELETE_USER, result)
 	ctx.JSON(http.StatusOK, res)
 }

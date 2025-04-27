@@ -13,6 +13,7 @@ type (
 		Login(ctx context.Context, req dto.AdminLoginRequest) (dto.AdminLoginResponse, error)
 		RefreshToken(ctx context.Context, req dto.RefreshTokenRequest) (dto.RefreshTokenResponse, error)
 		GetAllUserWithPagination(ctx context.Context, req dto.PaginationRequest) (dto.UserPaginationResponse, error)
+		DeleteUser(ctx context.Context, req dto.DeleteUserRequest) (dto.DeleteUserResponse, error)
 	}
 
 	AdminService struct {
@@ -132,4 +133,22 @@ func (as *AdminService) GetAllUserWithPagination(ctx context.Context, req dto.Pa
 			Count:   dataWithPaginate.Count,
 		},
 	}, nil
+}
+
+func (as *AdminService) DeleteUser(ctx context.Context, req dto.DeleteUserRequest) (dto.DeleteUserResponse, error) {
+	deletedUser, err := as.adminRepo.GetUserByID(ctx, nil, req.UserID.String())
+	if err != nil {
+		return dto.DeleteUserResponse{}, dto.ErrGetDataUserFromID
+	}
+
+	err = as.adminRepo.DeleteUserByID(ctx, nil, req.UserID.String())
+	if err != nil {
+		return dto.DeleteUserResponse{}, dto.ErrDeleteUserByID
+	}
+
+	res := dto.DeleteUserResponse{
+		User: deletedUser,
+	}
+
+	return res, nil
 }
