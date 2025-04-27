@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Reyysusanto/warasin-web/backend/entity"
 	"github.com/google/uuid"
 )
 
@@ -25,6 +24,9 @@ const (
 	MESSAGE_FAILED_CHECK_FORGOT_PASSWORD_TOKEN = "failed to check forgot password token"
 	MESSAGE_FAILED_GET_DETAIL_USER             = "failed get detail user"
 	MESSAGE_FAILED_GET_LIST_USER               = "failed get list user"
+	MESSAGE_FAILED_REFRESH_TOKEN               = "failed refresh token"
+	MESSAGE_FAILED_INAVLID_ENPOINTS_TOKEN      = "failed invalid endpoints in token"
+	MESSAGE_FAILED_INAVLID_ROUTE_FORMAT_TOKEN  = "failed invalid route format in token"
 
 	// success
 	MESSAGE_SUCCESS_REGISTER_USER               = "success register user"
@@ -36,10 +38,14 @@ const (
 	MESSAGE_SUCCESS_CHECK_FORGOT_PASSWORD_TOKEN = "success to check forgot password token"
 	MESSAGE_SUCCESS_GET_DETAIL_USER             = "success get detail user"
 	MESSAGE_SUCCESS_GET_LIST_USER               = "success get list user"
+	MESSAGE_SUCCESS_REFRESH_TOKEN               = "success refresh token"
 )
 
 var (
 	ErrEmailAlreadyExists      = errors.New("email already exists")
+	ErrInvalidName             = errors.New("failed invalid name")
+	ErrInvalidEmail            = errors.New("failed invalid email")
+	ErrInvalidPassword         = errors.New("failed invalid password")
 	ErrRegisterUser            = errors.New("failed to register user")
 	ErrEmailNotFound           = errors.New("email not found")
 	ErrUserNotFound            = errors.New("user not found")
@@ -47,8 +53,13 @@ var (
 	ErrMakeVerificationEmail   = errors.New("failed to make verification email")
 	ErrMakeForgotPasswordEmail = errors.New("failed to make forgot password email")
 	ErrSendEmail               = errors.New("failed to send email")
+	ErrGenerateToken           = errors.New("failed to generate token")
+	ErrGenerateAccessToken     = errors.New("failed to generate access token")
+	ErrGenerateRefreshToken    = errors.New("failed to generate refresh token")
+	ErrUnexpectedSigningMethod = errors.New("unexpected signing method")
 	ErrDecryptToken            = errors.New("failed to decrypt token")
 	ErrTokenInvalid            = errors.New("token invalid")
+	ErrValidateToken           = errors.New("failed to validate token")
 	ErrParsingExpiredTime      = errors.New("failed to parsing expired time")
 	ErrTokenExpired            = errors.New("token expired")
 	ErrEmailALreadyVerified    = errors.New("email is already verfied")
@@ -56,13 +67,17 @@ var (
 	ErrGetUserByPassword       = errors.New("failed to get user by password")
 	ErrHashPassword            = errors.New("failed to hash password")
 	ErrGetUserIDFromToken      = errors.New("failed get user id from token")
+	ErrGetRoleFromToken        = errors.New("failed get role from token")
+	ErrDeniedAccess            = errors.New("denied access")
+	ErrGetRoleIDFromName       = errors.New("failed get role id by role name")
+	ErrGetRoleFromID           = errors.New("failed get role by role id")
 )
 
 type (
 	UserRegisterRequest struct {
-		Name     string `json:"name" form:"name" validate:"required,min=5"`
-		Email    string `json:"email" form:"email" validate:"required,email"`
-		Password string `json:"password" form:"password" validate:"required,min=8"`
+		Name     string `json:"name" form:"name"`
+		Email    string `json:"email" form:"email"`
+		Password string `json:"password" form:"password"`
 	}
 
 	UserResponse struct {
@@ -120,27 +135,23 @@ type (
 	AllUserResponse struct {
 		ID          uuid.UUID  `json:"user_id"`
 		CityID      *uuid.UUID `gorm:"type:uuid" json:"city_id"`
+		RoleID      *uuid.UUID `gorm:"type:uuid" json:"role_id"`
 		Name        string     `json:"name"`
 		Email       string     `json:"email"`
 		Password    string     `json:"password"`
 		Birthdate   *time.Time `gorm:"type:date" json:"user_birth_date,omitempty"`
 		PhoneNumber string     `json:"user_phone_number,omitempty"`
-		Role        int        `json:"user_role"`
 		Data01      int        `json:"user_data01,omitempty"`
 		Data02      int        `json:"user_data02,omitempty"`
 		Data03      int        `json:"user_data03,omitempty"`
 		IsVerified  bool       `json:"is_verified"`
-
-		entity.TimeStamp
 	}
 
-	UserPaginationResponse struct {
-		Data []AllUserResponse `json:"data"`
-		PaginationResponse
+	RefreshTokenRequest struct {
+		RefreshToken string `json:"refresh_token"`
 	}
 
-	AllUserRepositoryResponse struct {
-		Users []entity.User
-		PaginationResponse
+	RefreshTokenResponse struct {
+		AccessToken string `json:"access_token"`
 	}
 )

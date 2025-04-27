@@ -17,8 +17,8 @@ type Psycholog struct {
 	PhoneNumber string    `json:"psy_phone_number,omitempty"`
 	Image       string    `json:"psy_image,omitempty"`
 
-	CityID uuid.UUID `gorm:"type:uuid" json:"city_id"`
-	City   City      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	CityID *uuid.UUID `gorm:"type:uuid" json:"city_id"`
+	City   City       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	Consuls                  []Consulation             `gorm:"foreignKey:PsychologID"`
 	PsychologLanguages       []PsychologLanguage       `gorm:"foreignKey:PsychologID"`
@@ -35,8 +35,6 @@ func (p *Psycholog) BeforeCreate(tx *gorm.DB) error {
 			tx.Rollback()
 		}
 	}()
-
-	p.ID = uuid.New()
 
 	var err error
 	p.Password, err = helpers.HashPassword(p.Password)

@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"html/template"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -14,7 +15,6 @@ import (
 	"github.com/Reyysusanto/warasin-web/backend/helpers"
 	"github.com/Reyysusanto/warasin-web/backend/repository"
 	"github.com/Reyysusanto/warasin-web/backend/utils"
-	"github.com/go-playground/validator/v10"
 )
 
 type (
@@ -27,7 +27,7 @@ type (
 		ForgotPassword(ctx context.Context, req dto.ForgotPasswordRequest) (dto.ForgotPasswordResponse, error)
 		UpdatePassword(ctx context.Context, req dto.UpdatePasswordRequest) (dto.UpdatePasswordResponse, error)
 		GetDetailUser(ctx context.Context) (dto.AllUserResponse, error)
-		GetAllUserWithPagination(ctx context.Context, req dto.PaginationRequest) (dto.UserPaginationResponse, error)
+		RefreshToken(ctx context.Context, req dto.RefreshTokenRequest) (dto.RefreshTokenResponse, error)
 	}
 
 	UserService struct {
@@ -44,15 +44,21 @@ func NewUserService(userRepo repository.IUserRepository, jwtService IJWTService)
 }
 
 func (us *UserService) Register(ctx context.Context, req dto.UserRegisterRequest) (dto.UserResponse, error) {
-	validate := validator.New()
-	err := validate.Struct(req)
-	if err != nil {
-		var errorMessages []string
-		for _, err := range err.(validator.ValidationErrors) {
-			errorMessages = append(errorMessages, err.Error())
-		}
+	if len(req.Name) < 5 {
+		return dto.UserResponse{}, dto.ErrInvalidName
+	}
 
-		return dto.UserResponse{}, fmt.Errorf("validation errors: %v", errorMessages)
+	if !helpers.IsValidEmail(req.Email) {
+		return dto.UserResponse{}, dto.ErrInvalidEmail
+	}
+
+	if len(req.Password) < 8 {
+		return dto.UserResponse{}, dto.ErrInvalidPassword
+	}
+
+	role, err := us.userRepo.GetRoleByName(ctx, nil, "user")
+	if err != nil {
+		return dto.UserResponse{}, dto.ErrGetRoleIDFromName
 	}
 
 	_, flag, err := us.userRepo.CheckEmail(ctx, nil, req.Email)
@@ -64,6 +70,7 @@ func (us *UserService) Register(ctx context.Context, req dto.UserRegisterRequest
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
+		Role:     role,
 	}
 
 	userReg, err := us.userRepo.RegisterUser(ctx, nil, user)
@@ -80,6 +87,14 @@ func (us *UserService) Register(ctx context.Context, req dto.UserRegisterRequest
 }
 
 func (us *UserService) Login(ctx context.Context, req dto.UserLoginRequest) (dto.UserLoginResponse, error) {
+	if !helpers.IsValidEmail(req.Email) {
+		return dto.UserLoginResponse{}, dto.ErrInvalidEmail
+	}
+
+	if len(req.Password) < 8 {
+		return dto.UserLoginResponse{}, dto.ErrInvalidPassword
+	}
+
 	user, flag, err := us.userRepo.CheckEmail(ctx, nil, req.Email)
 	if !flag || err != nil {
 		return dto.UserLoginResponse{}, dto.ErrEmailNotFound
@@ -90,7 +105,16 @@ func (us *UserService) Login(ctx context.Context, req dto.UserLoginRequest) (dto
 		return dto.UserLoginResponse{}, dto.ErrPasswordNotMatch
 	}
 
-	accessToken, refreshToken, err := us.jwtService.GenerateToken(user.ID.String(), user.Role)
+	if user.Role.Name != "user" {
+		return dto.UserLoginResponse{}, dto.ErrDeniedAccess
+	}
+
+	permissions, err := us.userRepo.GetPermissionsByRoleID(ctx, nil, user.RoleID.String())
+	if err != nil {
+		return dto.UserLoginResponse{}, dto.ErrGetPermissionsByRoleID
+	}
+
+	accessToken, refreshToken, err := us.jwtService.GenerateToken(user.ID.String(), user.RoleID.String(), permissions)
 	if err != nil {
 		return dto.UserLoginResponse{}, err
 	}
@@ -99,6 +123,47 @@ func (us *UserService) Login(ctx context.Context, req dto.UserLoginRequest) (dto
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
+}
+
+func (us *UserService) RefreshToken(ctx context.Context, req dto.RefreshTokenRequest) (dto.RefreshTokenResponse, error) {
+	_, err := us.jwtService.ValidateToken(req.RefreshToken)
+	log.Println("halo")
+	if err != nil {
+		return dto.RefreshTokenResponse{}, dto.ErrValidateToken
+	}
+
+	userID, err := us.jwtService.GetUserIDByToken(req.RefreshToken)
+	if err != nil {
+		return dto.RefreshTokenResponse{}, dto.ErrGetUserIDFromToken
+	}
+
+	roleID, err := us.jwtService.GetRoleIDByToken(req.RefreshToken)
+	if err != nil {
+		return dto.RefreshTokenResponse{}, dto.ErrGetRoleFromToken
+	}
+
+	role, err := us.userRepo.GetRoleByID(ctx, nil, roleID)
+	if err != nil {
+		return dto.RefreshTokenResponse{}, dto.ErrGetRoleFromID
+	}
+
+	if role.Name != "user" {
+		return dto.RefreshTokenResponse{}, dto.ErrDeniedAccess
+	}
+
+	endpoints, err := us.userRepo.GetPermissionsByRoleID(ctx, nil, roleID)
+	if err != nil {
+		return dto.RefreshTokenResponse{}, dto.ErrGetPermissionsByRoleID
+	}
+
+	log.Println(len(endpoints), endpoints)
+
+	accessToken, _, err := us.jwtService.GenerateToken(userID, roleID, endpoints)
+	if err != nil {
+		return dto.RefreshTokenResponse{}, dto.ErrGenerateAccessToken
+	}
+
+	return dto.RefreshTokenResponse{AccessToken: accessToken}, nil
 }
 
 func makeVerificationEmail(receiverEmail string) (map[string]string, error) {
@@ -365,47 +430,9 @@ func (us *UserService) GetDetailUser(ctx context.Context) (dto.AllUserResponse, 
 		Password:    user.Password,
 		Birthdate:   user.Birthdate,
 		PhoneNumber: user.PhoneNumber,
-		Role:        user.Role,
 		Data01:      user.Data01,
 		Data02:      user.Data02,
 		Data03:      user.Data03,
 		IsVerified:  user.IsVerified,
-	}, nil
-}
-
-func (us *UserService) GetAllUserWithPagination(ctx context.Context, req dto.PaginationRequest) (dto.UserPaginationResponse, error) {
-	dataWithPaginate, err := us.userRepo.GetAllUserWithPagination(ctx, nil, req)
-	if err != nil {
-		return dto.UserPaginationResponse{}, err
-	}
-
-	var datas []dto.AllUserResponse
-	for _, user := range dataWithPaginate.Users {
-		data := dto.AllUserResponse{
-			ID:          user.ID,
-			CityID:      user.CityID,
-			Name:        user.Name,
-			Email:       user.Email,
-			Password:    user.Password,
-			Birthdate:   user.Birthdate,
-			PhoneNumber: user.PhoneNumber,
-			Role:        user.Role,
-			Data01:      user.Data01,
-			Data02:      user.Data02,
-			Data03:      user.Data03,
-			IsVerified:  user.IsVerified,
-		}
-
-		datas = append(datas, data)
-	}
-
-	return dto.UserPaginationResponse{
-		Data: datas,
-		PaginationResponse: dto.PaginationResponse{
-			Page:    dataWithPaginate.Page,
-			PerPage: dataWithPaginate.PerPage,
-			MaxPage: dataWithPaginate.MaxPage,
-			Count:   dataWithPaginate.Count,
-		},
 	}, nil
 }

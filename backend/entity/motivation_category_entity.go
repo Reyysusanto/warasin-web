@@ -2,7 +2,6 @@ package entity
 
 import (
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type MotivationCategory struct {
@@ -12,16 +11,4 @@ type MotivationCategory struct {
 	Motivations []Motivation `gorm:"foreignKey:MotivationCategoryID"`
 
 	TimeStamp
-}
-
-func (mc *MotivationCategory) BeforeCreate(tx *gorm.DB) error {
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-		}
-	}()
-
-	mc.ID = uuid.New()
-
-	return nil
 }
