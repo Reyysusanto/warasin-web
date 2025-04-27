@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type PracticeSchedule struct {
@@ -13,20 +12,8 @@ type PracticeSchedule struct {
 	Open  time.Time `json:"prac_sched_open"`
 	Close time.Time `json:"prac_sched_close"`
 
-	PracticeID uuid.UUID `gorm:"type:uuid" json:"prac_id"`
-	Practice   Practice  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PracticeID *uuid.UUID `gorm:"type:uuid" json:"prac_id"`
+	Practice   Practice   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	TimeStamp
-}
-
-func (ps *PracticeSchedule) BeforeCreate(tx *gorm.DB) error {
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-		}
-	}()
-
-	ps.ID = uuid.New()
-
-	return nil
 }

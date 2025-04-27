@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type UserMotivation struct {
@@ -12,22 +11,10 @@ type UserMotivation struct {
 	DisplayDate time.Time `json:"user_mot_display_date"`
 	Reaction    int       `json:"user_mot_reaction"`
 
-	UserID       uuid.UUID  `gorm:"type:uuid" json:"user_id"`
+	UserID       *uuid.UUID `gorm:"type:uuid" json:"user_id"`
 	User         User       `gorm:"constraint:onUpdate:CASCADE,OnDelete:SET NULL;"`
-	MotivationID uuid.UUID  `gorm:"type:uuid" json:"mot_id"`
+	MotivationID *uuid.UUID `gorm:"type:uuid" json:"mot_id"`
 	Motivation   Motivation `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	TimeStamp
-}
-
-func (um *UserMotivation) BeforeCreate(tx *gorm.DB) error {
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-		}
-	}()
-
-	um.ID = uuid.New()
-
-	return nil
 }

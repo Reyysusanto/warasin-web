@@ -30,6 +30,9 @@ func Rollback(db *gorm.DB) error {
 		&entity.Psycholog{},
 		&entity.User{},
 		&entity.City{},
+		&entity.Province{},
+		&entity.Permission{},
+		&entity.Role{},
 	}
 
 	for _, table := range tables {

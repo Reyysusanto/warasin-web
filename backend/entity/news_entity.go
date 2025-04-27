@@ -2,7 +2,6 @@ package entity
 
 import (
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type News struct {
@@ -15,16 +14,4 @@ type News struct {
 	NewsDetails []NewsDetail `gorm:"foreignKey:NewsID"`
 
 	TimeStamp
-}
-
-func (n *News) BeforeCreate(tx *gorm.DB) error {
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-		}
-	}()
-
-	n.ID = uuid.New()
-
-	return nil
 }

@@ -2,7 +2,6 @@ package entity
 
 import (
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type Practice struct {
@@ -12,23 +11,11 @@ type Practice struct {
 	Address     string    `json:"prac_address"`
 	PhoneNumber string    `json:"prac_phone_number"`
 
-	PsychologID uuid.UUID `gorm:"type:uuid" json:"psy_id"`
-	Psycholog   Psycholog `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PsychologID *uuid.UUID `gorm:"type:uuid" json:"psy_id"`
+	Psycholog   Psycholog  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	PracticeSchedules []PracticeSchedule `gorm:"foreignKey:PracticeID"`
 	AvailableSlots    []AvailableSlot    `gorm:"foreignKey:PracticeID"`
 
 	TimeStamp
-}
-
-func (p *Practice) BeforeCreate(tx *gorm.DB) error {
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-		}
-	}()
-
-	p.ID = uuid.New()
-
-	return nil
 }
