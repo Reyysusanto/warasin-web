@@ -18,6 +18,7 @@ type (
 		GetUserByID(ctx context.Context, tx *gorm.DB, userID string) (entity.User, error)
 		GetRoleByID(ctx context.Context, tx *gorm.DB, roleID string) (entity.Role, error)
 		GetPermissionsByRoleID(ctx context.Context, tx *gorm.DB, roleID string) ([]string, error)
+		DeleteUserByID(ctx context.Context, tx *gorm.DB, userID string) error
 	}
 
 	AdminRepository struct {
@@ -132,4 +133,12 @@ func (ar *AdminRepository) GetPermissionsByRoleID(ctx context.Context, tx *gorm.
 	}
 
 	return endpoints, nil
+}
+
+func (ar AdminRepository) DeleteUserByID(ctx context.Context, tx *gorm.DB, userID string) error {
+	if tx == nil {
+		tx = ar.db
+	}
+
+	return tx.WithContext(ctx).Where("id = ?", userID).Delete(&entity.User{}).Error
 }

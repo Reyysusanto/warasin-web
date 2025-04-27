@@ -16,6 +16,7 @@ func Admin(route *gin.Engine, adminHandler handler.IAdminHandler, jwtService ser
 		routes.Use(middleware.Authentication(jwtService), middleware.RouteAccessControl(jwtService))
 		{
 			routes.GET("/get-all-user", adminHandler.GetAllUser)
+			routes.DELETE("/delete-user", adminHandler.DeleteUser)
 		}
 	}
 }
