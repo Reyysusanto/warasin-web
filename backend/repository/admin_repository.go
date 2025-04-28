@@ -19,6 +19,8 @@ type (
 		GetRoleByID(ctx context.Context, tx *gorm.DB, roleID string) (entity.Role, error)
 		GetPermissionsByRoleID(ctx context.Context, tx *gorm.DB, roleID string) ([]string, error)
 		DeleteUserByID(ctx context.Context, tx *gorm.DB, userID string) error
+		GetCityByID(ctx context.Context, tx *gorm.DB, cityID string) (entity.City, error)
+		UpdateUser(ctx context.Context, tx *gorm.DB, user entity.User) (entity.User, error)
 	}
 
 	AdminRepository struct {
@@ -75,6 +77,8 @@ func (ar *AdminRepository) GetAllUserWithPagination(ctx context.Context, tx *gor
 			searchValue, searchValue, searchValue)
 	}
 
+	query = query.Preload("City.Province").Preload("Role")
+
 	if err := query.Count(&count).Error; err != nil {
 		return dto.AllUserRepositoryResponse{}, err
 	}
@@ -102,7 +106,7 @@ func (ar *AdminRepository) GetUserByID(ctx context.Context, tx *gorm.DB, userID 
 	}
 
 	var user entity.User
-	if err := tx.WithContext(ctx).Where("id = ?", userID).Take(&user).Error; err != nil {
+	if err := tx.WithContext(ctx).Preload("City.Province").Preload("Role").Where("id = ?", userID).Take(&user).Error; err != nil {
 		return entity.User{}, err
 	}
 
@@ -141,4 +145,41 @@ func (ar AdminRepository) DeleteUserByID(ctx context.Context, tx *gorm.DB, userI
 	}
 
 	return tx.WithContext(ctx).Where("id = ?", userID).Delete(&entity.User{}).Error
+}
+
+func (ar *AdminRepository) GetCityByID(ctx context.Context, tx *gorm.DB, cityID string) (entity.City, error) {
+	if tx == nil {
+		tx = ar.db
+	}
+
+	var city entity.City
+	if err := tx.WithContext(ctx).Preload("Province").Where("id = ?", cityID).Take(&city).Error; err != nil {
+		return entity.City{}, err
+	}
+
+	return city, nil
+}
+
+func (ar *AdminRepository) UpdateUser(ctx context.Context, tx *gorm.DB, user entity.User) (entity.User, error) {
+	if tx == nil {
+		tx = ar.db
+	}
+
+	if err := tx.WithContext(ctx).
+		Model(&entity.User{}).
+		Where("id = ?", user.ID).
+		Updates(user).Error; err != nil {
+		return entity.User{}, err
+	}
+
+	var updatedUser entity.User
+	if err := tx.WithContext(ctx).
+		Preload("City.Province").
+		Preload("Role").
+		Where("id = ?", user.ID).
+		Take(&updatedUser).Error; err != nil {
+		return entity.User{}, err
+	}
+
+	return updatedUser, nil
 }

@@ -2,9 +2,6 @@ package dto
 
 import (
 	"errors"
-	"time"
-
-	"github.com/google/uuid"
 )
 
 const (
@@ -80,13 +77,6 @@ type (
 		Password string `json:"password" form:"password"`
 	}
 
-	UserResponse struct {
-		ID       uuid.UUID `json:"user_id"`
-		Name     string    `json:"name"`
-		Email    string    `json:"email"`
-		Password string    `json:"password"`
-	}
-
 	UserLoginRequest struct {
 		Email    string `json:"email" form:"email"`
 		Password string `json:"password" form:"password"`
@@ -130,21 +120,6 @@ type (
 	UpdatePasswordResponse struct {
 		OldPassword string `json:"old_password" form:"old_password" binding:"required"`
 		NewPassword string `json:"new_password" form:"new_password" binding:"required"`
-	}
-
-	AllUserResponse struct {
-		ID          uuid.UUID  `json:"user_id"`
-		CityID      *uuid.UUID `gorm:"type:uuid" json:"city_id"`
-		RoleID      *uuid.UUID `gorm:"type:uuid" json:"role_id"`
-		Name        string     `json:"name"`
-		Email       string     `json:"email"`
-		Password    string     `json:"password"`
-		Birthdate   *time.Time `gorm:"type:date" json:"user_birth_date,omitempty"`
-		PhoneNumber string     `json:"user_phone_number,omitempty"`
-		Data01      int        `json:"user_data01,omitempty"`
-		Data02      int        `json:"user_data02,omitempty"`
-		Data03      int        `json:"user_data03,omitempty"`
-		IsVerified  bool       `json:"is_verified"`
 	}
 
 	RefreshTokenRequest struct {
