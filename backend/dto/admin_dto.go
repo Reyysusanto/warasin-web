@@ -10,10 +10,12 @@ import (
 
 const (
 	// failed
+	MESSAGE_FAILED_CREATE_USER = "failed create user"
 	MESSAGE_FAILED_DELETE_USER = "failed delete user"
 	MESSAGE_FAILED_UPDATE_USER = "failed update user"
 
 	// success
+	MESSAGE_SUCCESS_CREATE_USER = "success create user"
 	MESSAGE_SUCCESS_DELETE_USER = "success delete user"
 	MESSAGE_SUCCESS_UPDATE_USER = "success update user"
 )
@@ -24,6 +26,7 @@ var (
 	ErrDeleteUserByID         = errors.New("failed delete user by id")
 	ErrGetCityByID            = errors.New("failed get city by id")
 	ErrFormatPhoneNumber      = errors.New("failed standarize phone number input")
+	ErrFormatBirthdate        = errors.New("failed parse birthdate input")
 )
 
 type (
@@ -91,5 +94,16 @@ type (
 	RoleResponse struct {
 		ID   *uuid.UUID `json:"role_id"`
 		Name string     `json:"role_name"`
+	}
+
+	CreateUserRequest struct {
+		ID          uuid.UUID  `json:"id"`
+		Name        string     `json:"name"`
+		Email       string     `json:"email"`
+		Password    string     `json:"password"`
+		Birthdate   string     `json:"birth_date"`
+		PhoneNumber string     `json:"phone_number"`
+		CityID      *uuid.UUID `gorm:"type:uuid" json:"city_id"`
+		RoleID      *uuid.UUID `gorm:"type:uuid" json:"role_id"`
 	}
 )

@@ -14,13 +14,14 @@ import (
 type (
 	IAdminRepository interface {
 		CheckEmail(ctx context.Context, tx *gorm.DB, email string) (entity.User, bool, error)
+		CreateUser(ctx context.Context, tx *gorm.DB, user entity.User) error
 		GetAllUserWithPagination(ctx context.Context, tx *gorm.DB, req dto.PaginationRequest) (dto.AllUserRepositoryResponse, error)
 		GetUserByID(ctx context.Context, tx *gorm.DB, userID string) (entity.User, error)
 		GetRoleByID(ctx context.Context, tx *gorm.DB, roleID string) (entity.Role, error)
-		GetPermissionsByRoleID(ctx context.Context, tx *gorm.DB, roleID string) ([]string, error)
-		DeleteUserByID(ctx context.Context, tx *gorm.DB, userID string) error
 		GetCityByID(ctx context.Context, tx *gorm.DB, cityID string) (entity.City, error)
+		GetPermissionsByRoleID(ctx context.Context, tx *gorm.DB, roleID string) ([]string, error)
 		UpdateUser(ctx context.Context, tx *gorm.DB, user entity.User) (entity.User, error)
+		DeleteUserByID(ctx context.Context, tx *gorm.DB, userID string) error
 	}
 
 	AdminRepository struct {
@@ -45,6 +46,14 @@ func (ar *AdminRepository) CheckEmail(ctx context.Context, tx *gorm.DB, email st
 	}
 
 	return user, true, nil
+}
+
+func (ar *AdminRepository) CreateUser(ctx context.Context, tx *gorm.DB, user entity.User) error {
+	if tx == nil {
+		tx = ar.db
+	}
+
+	return tx.WithContext(ctx).Create(&user).Error
 }
 
 func (ar *AdminRepository) GetAllUserWithPagination(ctx context.Context, tx *gorm.DB, req dto.PaginationRequest) (dto.AllUserRepositoryResponse, error) {
