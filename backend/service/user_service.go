@@ -19,7 +19,7 @@ import (
 
 type (
 	IUserService interface {
-		Register(ctx context.Context, req dto.UserRegisterRequest) (dto.UserResponse, error)
+		Register(ctx context.Context, req dto.UserRegisterRequest) (dto.AllUserResponse, error)
 		Login(ctx context.Context, req dto.UserLoginRequest) (dto.UserLoginResponse, error)
 		SendVerificationEmail(ctx context.Context, req dto.SendVerificationEmailRequest) error
 		VerifyEmail(ctx context.Context, req dto.VerifyEmailRequest) (dto.VerifyEmailResponse, error)
@@ -43,27 +43,27 @@ func NewUserService(userRepo repository.IUserRepository, jwtService IJWTService)
 	}
 }
 
-func (us *UserService) Register(ctx context.Context, req dto.UserRegisterRequest) (dto.UserResponse, error) {
+func (us *UserService) Register(ctx context.Context, req dto.UserRegisterRequest) (dto.AllUserResponse, error) {
 	if len(req.Name) < 5 {
-		return dto.UserResponse{}, dto.ErrInvalidName
+		return dto.AllUserResponse{}, dto.ErrInvalidName
 	}
 
 	if !helpers.IsValidEmail(req.Email) {
-		return dto.UserResponse{}, dto.ErrInvalidEmail
+		return dto.AllUserResponse{}, dto.ErrInvalidEmail
 	}
 
 	if len(req.Password) < 8 {
-		return dto.UserResponse{}, dto.ErrInvalidPassword
+		return dto.AllUserResponse{}, dto.ErrInvalidPassword
 	}
 
 	role, err := us.userRepo.GetRoleByName(ctx, nil, "user")
 	if err != nil {
-		return dto.UserResponse{}, dto.ErrGetRoleIDFromName
+		return dto.AllUserResponse{}, dto.ErrGetRoleIDFromName
 	}
 
 	_, flag, err := us.userRepo.CheckEmail(ctx, nil, req.Email)
 	if flag || err == nil {
-		return dto.UserResponse{}, dto.ErrEmailAlreadyExists
+		return dto.AllUserResponse{}, dto.ErrEmailAlreadyExists
 	}
 
 	user := entity.User{
@@ -75,14 +75,18 @@ func (us *UserService) Register(ctx context.Context, req dto.UserRegisterRequest
 
 	userReg, err := us.userRepo.RegisterUser(ctx, nil, user)
 	if err != nil {
-		return dto.UserResponse{}, dto.ErrRegisterUser
+		return dto.AllUserResponse{}, dto.ErrRegisterUser
 	}
 
-	return dto.UserResponse{
+	return dto.AllUserResponse{
 		ID:       userReg.ID,
 		Name:     userReg.Name,
 		Email:    userReg.Email,
 		Password: userReg.Password,
+		Role: dto.RoleResponse{
+			ID:   userReg.RoleID,
+			Name: user.Name,
+		},
 	}, nil
 }
 
@@ -424,7 +428,6 @@ func (us *UserService) GetDetailUser(ctx context.Context) (dto.AllUserResponse, 
 
 	return dto.AllUserResponse{
 		ID:          user.ID,
-		CityID:      user.CityID,
 		Name:        user.Name,
 		Email:       user.Email,
 		Password:    user.Password,
@@ -434,5 +437,18 @@ func (us *UserService) GetDetailUser(ctx context.Context) (dto.AllUserResponse, 
 		Data02:      user.Data02,
 		Data03:      user.Data03,
 		IsVerified:  user.IsVerified,
+		City: dto.CityResponse{
+			ID:   user.CityID,
+			Name: user.City.Name,
+			Type: user.City.Type,
+			Province: dto.ProvinceResponse{
+				ID:   user.City.ProvinceID,
+				Name: user.City.Province.Name,
+			},
+		},
+		Role: dto.RoleResponse{
+			ID:   user.RoleID,
+			Name: user.Role.Name,
+		},
 	}, nil
 }

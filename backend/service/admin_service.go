@@ -13,7 +13,8 @@ type (
 		Login(ctx context.Context, req dto.AdminLoginRequest) (dto.AdminLoginResponse, error)
 		RefreshToken(ctx context.Context, req dto.RefreshTokenRequest) (dto.RefreshTokenResponse, error)
 		GetAllUserWithPagination(ctx context.Context, req dto.PaginationRequest) (dto.UserPaginationResponse, error)
-		DeleteUser(ctx context.Context, req dto.DeleteUserRequest) (dto.DeleteUserResponse, error)
+		DeleteUser(ctx context.Context, req dto.DeleteUserRequest) (dto.AllUserResponse, error)
+		UpdateUser(ctx context.Context, req dto.UpdateUserRequest) (dto.AllUserResponse, error)
 	}
 
 	AdminService struct {
@@ -108,8 +109,6 @@ func (as *AdminService) GetAllUserWithPagination(ctx context.Context, req dto.Pa
 	for _, user := range dataWithPaginate.Users {
 		data := dto.AllUserResponse{
 			ID:          user.ID,
-			CityID:      user.CityID,
-			RoleID:      user.RoleID,
 			Name:        user.Name,
 			Email:       user.Email,
 			Password:    user.Password,
@@ -119,6 +118,19 @@ func (as *AdminService) GetAllUserWithPagination(ctx context.Context, req dto.Pa
 			Data02:      user.Data02,
 			Data03:      user.Data03,
 			IsVerified:  user.IsVerified,
+			City: dto.CityResponse{
+				ID:   user.CityID,
+				Name: user.City.Name,
+				Type: user.City.Type,
+				Province: dto.ProvinceResponse{
+					ID:   user.City.ProvinceID,
+					Name: user.City.Province.Name,
+				},
+			},
+			Role: dto.RoleResponse{
+				ID:   user.RoleID,
+				Name: user.Role.Name,
+			},
 		}
 
 		datas = append(datas, data)
@@ -135,19 +147,133 @@ func (as *AdminService) GetAllUserWithPagination(ctx context.Context, req dto.Pa
 	}, nil
 }
 
-func (as *AdminService) DeleteUser(ctx context.Context, req dto.DeleteUserRequest) (dto.DeleteUserResponse, error) {
+func (as *AdminService) DeleteUser(ctx context.Context, req dto.DeleteUserRequest) (dto.AllUserResponse, error) {
 	deletedUser, err := as.adminRepo.GetUserByID(ctx, nil, req.UserID.String())
 	if err != nil {
-		return dto.DeleteUserResponse{}, dto.ErrGetDataUserFromID
+		return dto.AllUserResponse{}, dto.ErrGetDataUserFromID
 	}
 
 	err = as.adminRepo.DeleteUserByID(ctx, nil, req.UserID.String())
 	if err != nil {
-		return dto.DeleteUserResponse{}, dto.ErrDeleteUserByID
+		return dto.AllUserResponse{}, dto.ErrDeleteUserByID
 	}
 
-	res := dto.DeleteUserResponse{
-		User: deletedUser,
+	res := dto.AllUserResponse{
+		ID:          deletedUser.ID,
+		Name:        deletedUser.Name,
+		Email:       deletedUser.Email,
+		Password:    deletedUser.Password,
+		Birthdate:   deletedUser.Birthdate,
+		PhoneNumber: deletedUser.PhoneNumber,
+		Data01:      deletedUser.Data01,
+		Data02:      deletedUser.Data02,
+		Data03:      deletedUser.Data03,
+		IsVerified:  deletedUser.IsVerified,
+		City: dto.CityResponse{
+			ID:   deletedUser.CityID,
+			Name: deletedUser.City.Name,
+			Type: deletedUser.City.Type,
+			Province: dto.ProvinceResponse{
+				ID:   deletedUser.City.ProvinceID,
+				Name: deletedUser.City.Province.Name,
+			},
+		},
+		Role: dto.RoleResponse{
+			ID:   deletedUser.RoleID,
+			Name: deletedUser.Role.Name,
+		},
+	}
+
+	return res, nil
+}
+
+func (as *AdminService) UpdateUser(ctx context.Context, req dto.UpdateUserRequest) (dto.AllUserResponse, error) {
+	user, err := as.adminRepo.GetUserByID(ctx, nil, req.ID.String())
+	if err != nil {
+		return dto.AllUserResponse{}, dto.ErrGetDataUserFromID
+	}
+
+	if req.CityID != nil {
+		city, err := as.adminRepo.GetCityByID(ctx, nil, req.CityID.String())
+		if err != nil {
+			return dto.AllUserResponse{}, dto.ErrGetCityByID
+		}
+
+		user.City = city
+	}
+
+	if req.RoleID != nil {
+		role, err := as.adminRepo.GetRoleByID(ctx, nil, req.RoleID.String())
+		if err != nil {
+			return dto.AllUserResponse{}, dto.ErrGetRoleFromID
+		}
+
+		user.Role = role
+	}
+
+	if req.Name != "" {
+		if len(req.Name) < 5 {
+			return dto.AllUserResponse{}, dto.ErrInvalidName
+		}
+
+		user.Name = req.Name
+	}
+
+	if req.Email != "" {
+		if !helpers.IsValidEmail(req.Email) {
+			return dto.AllUserResponse{}, dto.ErrInvalidEmail
+		}
+
+		_, flag, err := as.adminRepo.CheckEmail(ctx, nil, req.Email)
+		if flag || err == nil {
+			return dto.AllUserResponse{}, dto.ErrEmailAlreadyExists
+		}
+
+		user.Email = req.Email
+	}
+
+	if req.Birthdate != nil {
+		user.Birthdate = req.Birthdate
+	}
+
+	if req.PhoneNumber != "" {
+		phoneNumberFormatted, err := helpers.StandardizePhoneNumber(req.PhoneNumber)
+		if err != nil {
+			return dto.AllUserResponse{}, dto.ErrFormatPhoneNumber
+		}
+
+		user.PhoneNumber = phoneNumberFormatted
+	}
+
+	updatedUser, err := as.adminRepo.UpdateUser(ctx, nil, user)
+	if err != nil {
+		return dto.AllUserResponse{}, dto.ErrUpdateUser
+	}
+
+	res := dto.AllUserResponse{
+		ID:          updatedUser.ID,
+		Name:        updatedUser.Name,
+		Email:       updatedUser.Email,
+		Password:    updatedUser.Password,
+		Birthdate:   updatedUser.Birthdate,
+		PhoneNumber: updatedUser.PhoneNumber,
+		Data01:      updatedUser.Data01,
+		Data02:      updatedUser.Data02,
+		Data03:      updatedUser.Data03,
+		IsVerified:  updatedUser.IsVerified,
+		City: dto.CityResponse{
+			ID:   updatedUser.CityID,
+			Name: updatedUser.City.Name,
+			Type: updatedUser.City.Type,
+			Province: dto.ProvinceResponse{
+				ID:   updatedUser.City.ProvinceID,
+				Name: updatedUser.City.Province.Name,
+			},
+		},
+		Role: dto.RoleResponse{
+			ID:   updatedUser.RoleID,
+			Name: updatedUser.Role.Name,
+		},
 	}
 
 	return res, nil
