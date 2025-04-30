@@ -8,38 +8,45 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { useAuth } from "@/hooks/useAuth";
+import { loginSchema } from "@/validations/user";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Input from "./_components/input";
+
+type LoginSchemaType = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const router = useRouter();
-  const { login } = useAuth();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginSchemaType>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: LoginSchemaType) => {
     setErrorMessage("");
     setSuccessMessage("");
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/login`,
-        {
-          email,
-          password,
-        }
+        `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/user/login`,
+        data
       );
 
       if (response.status === 200) {
-        // console.log(response.data.data.access_token)
-        await login(response.data.data.access_token);
+        const token = response.data.data.access_token;
+        localStorage.setItem("token", token);
         setSuccessMessage("Login berhasil");
         router.push("/");
       }
@@ -49,16 +56,11 @@ const Login = () => {
     }
   };
 
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
       <div className="w-full md:w-1/2 flex items-center justify-center p-4">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="w-full max-w-md p-6 rounded-lg"
         >
           <Header />
@@ -68,66 +70,27 @@ const Login = () => {
           {successMessage && (
             <p className="text-green-500 text-center mb-4">{successMessage}</p>
           )}
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-primaryTextColor font-medium mb-2"
-            >
-              Email
-            </label>
-            <div className="relative flex items-center">
-              <FaEnvelope className="absolute left-3 text-tertiaryTextColor" />
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Masukkan email anda"
-                className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
-              />
-            </div>
-            <div className="flex justify-center">
-              {!isValidEmail(email) && email != "" && (
-                <p className="text-sm text-dangerColor">
-                  Masukkan email dengan benar!
-                </p>
-              )}
-            </div>
-          </div>
 
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-primaryTextColor font-medium mb-1"
-            >
-              Password
-            </label>
-            <div className="relative flex items-center">
-              <FaLock className="absolute left-3 text-tertiaryTextColor" />
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                placeholder="***********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 text-tertiaryTextColor focus:outline-none"
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-            <div className="flex justify-center">
-              {password.length <= 7 && password != "" && (
-                <p className="text-sm text-dangerColor">
-                  Password minimal harus 8 karakter!
-                </p>
-              )}
-            </div>
-          </div>
+          <Input
+            id="email"
+            label="Email"
+            placeholder="Masukkan email anda"
+            icon={FaEnvelope}
+            login={register("email")}
+            error={errors.email?.message}
+          />
+
+          <Input
+            id="password"
+            label="Password"
+            placeholder="********"
+            icon={FaLock}
+            type={showPassword ? "text" : "password"}
+            login={register("password")}
+            error={errors.password?.message}
+            rightIcon={showPassword ? FaEyeSlash : FaEye}
+            onRightIconClick={togglePasswordVisibility}
+          />
 
           <div className="flex justify-between items-center mb-4">
             <label className="flex items-center text-tertiaryTextColor">

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuth } from "@/hooks/useAuth";
-import Header from "@/app/(auth)/_components/header";
+import Header from "@/app/(user)/_components/header";
 
 const LoginDashboard = () => {
   const router = useRouter();
