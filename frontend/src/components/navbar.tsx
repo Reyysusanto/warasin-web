@@ -6,15 +6,16 @@ import Image from "next/image";
 import { CgProfile } from "react-icons/cg";
 import { usePathname } from "next/navigation";
 import { HiMenu, HiX } from "react-icons/hi";
-import { jwtDecode } from "jwt-decode";
 import { FaChevronDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { fetchUserDetail } from "@/api/user";
+import { UserDetailType } from "@/types/user";
 
 const NavigationBar = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [dropDown, setDropDown] = useState(false);
-  const [decoded, setDecoded] = useState(null);
+  const [user, setUser] = useState<UserDetailType>();
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -37,18 +38,16 @@ const NavigationBar = () => {
       sections.forEach((section) => observer.unobserve(section));
     };
   }, []);
-
+  
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          setDecoded(jwtDecode(token));
-        } catch (error) {
-          console.error("Token tidak valid", error);
-        }
+    const getUser = async () => {
+      const data = await fetchUserDetail();
+      if (data) {
+        setUser(data);
       }
-    }
+    };
+  
+    getUser();
   }, []);
 
   const handleLogout = () => {
@@ -151,7 +150,7 @@ const NavigationBar = () => {
           </Link>
         )}
         {pathname === "/" ? (
-          decoded ? (
+          user ? (
             <div className="relative">
               <button
                 className={`${
@@ -241,7 +240,7 @@ const NavigationBar = () => {
           isOpen ? "flex" : "hidden"
         } md:flex gap-x-3 mt-4 md:mt-0 w-full md:w-auto`}
       >
-        {decoded ? (
+        {user ? (
           <div className="flex flex-col md:flex-row gap-3 w-full">
             <Link
               href={"/profile"}
@@ -249,17 +248,17 @@ const NavigationBar = () => {
             >
               <div className="flex flex-col">
                 <h4 className="font-semibold text-base text-primaryTextColor">
-                  Andre Kessler
+                  {user.user_name}
                 </h4>
                 <p className="font-thin text-sm text-primaryTextColor">
-                  george31@gmail.com
+                  {user.user_email}
                 </p>
               </div>
               <CgProfile className="text-4xl bg-backgroundSecondaryColor rounded-full" />
             </Link>
             <button
               onClick={handleLogout}
-              className={`flex items-center transition ease-in-out md:border md:px-2 md:rounded-md md:border-dangerColor text-dangerColor font-semibold hover:underline md:hover:bg-dangerColor md:hover:text-white md:hover:no-underline`}
+              className={`flex items-center transition ease-in-out md:border md:px-2 md:rounded-md text-dangerColor font-semibold hover:underline md:hover:bg-dangerColor md:hover:text-white md:hover:no-underline`}
             >
               Logout
             </button>

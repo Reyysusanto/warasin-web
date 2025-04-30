@@ -12,7 +12,7 @@ const times: string[] = [
 
 const CreateConsultation = () => {
   const [selectedMethod, setSelectedMethod] = useState("kunjungan");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>();
   const [formData, setFormData] = useState({
     patientEmail: "",

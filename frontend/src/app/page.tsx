@@ -35,11 +35,6 @@ const faqs = [
     answer:
       "Ya, Anda bisa mengganti psikolog kapan saja jika merasa tidak cocok dengan yang sebelumnya.",
   },
-  // {
-  //   question: "Apakah saya bisa berkonsultasi secara anonim?",
-  //   answer:
-  //     "Tentu! Kami menyediakan opsi untuk berkonsultasi secara anonim demi kenyamanan dan privasi Anda.",
-  // },
 ];
 
 export default function Home() {

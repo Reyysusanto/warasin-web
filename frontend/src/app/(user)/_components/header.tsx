@@ -2,12 +2,12 @@ import Logo from "@/components/logo"
 
 const Header = () => {
     return (
-        <div className="flex flex-col justify-center items-center gap-3">
+        <div className="flex flex-col justify-center items-center gap-2">
             <Logo 
-                size="100px"
+                size="80"
                 ukuranTeks="2xl"
             />
-            <h1 className="text-4xl text-primaryTextColor font-semibold">
+            <h1 className="text-3xl text-primaryTextColor font-semibold">
                 Selamat Datang
             </h1>
             <p className="text-sm text-tertiaryTextColor font-medium">
