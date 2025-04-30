@@ -258,7 +258,7 @@ const NavigationBar = () => {
             </Link>
             <button
               onClick={handleLogout}
-              className={`flex items-center transition ease-in-out md:border md:px-2 md:rounded-md md:border-dangerColor text-dangerColor font-semibold hover:underline md:hover:bg-dangerColor md:hover:text-white md:hover:no-underline`}
+              className={`flex items-center transition ease-in-out md:border md:px-2 md:rounded-md text-dangerColor font-semibold hover:underline md:hover:bg-dangerColor md:hover:text-white md:hover:no-underline`}
             >
               Logout
             </button>
