@@ -8,8 +8,8 @@ import { usePathname } from "next/navigation";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaChevronDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { fetchUserDetail } from "@/api/user";
 import { UserDetailType } from "@/types/user";
+import { fetchUserDetail } from "@/services/detailUser";
 
 const NavigationBar = () => {
   const router = useRouter();

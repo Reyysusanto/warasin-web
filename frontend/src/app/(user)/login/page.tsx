@@ -7,12 +7,12 @@ import Header from "../_components/header";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { loginSchema } from "@/validations/user";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "./_components/input";
+import { loginService } from "@/services/login";
 
 type LoginSchemaType = z.infer<typeof loginSchema>;
 
@@ -39,20 +39,19 @@ const Login = () => {
     setSuccessMessage("");
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/user/login`,
-        data
-      );
-
-      if (response.status === 200) {
-        const token = response.data.data.access_token;
-        localStorage.setItem("token", token);
-        setSuccessMessage("Login berhasil");
-        router.push("/");
+      const success = await loginService(data);
+      if(success) {
+        setSuccessMessage("Login berhasil!")
+        router.push("/")
+      } else {
+        setErrorMessage("login gagal")
       }
-    } catch (err) {
-      console.log(err);
-      setErrorMessage("Terjadi kesalahan saat login");
+    } catch(error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Terjadi kesalahan yang tidak diketahui");
+      }
     }
   };
 
