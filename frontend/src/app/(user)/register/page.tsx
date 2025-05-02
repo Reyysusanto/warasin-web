@@ -12,32 +12,43 @@ import { FcGoogle } from "react-icons/fc";
 import Header from "../_components/header";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { registerSchema } from "@/validations/user";
 import Input from "./_components/input";
+import { registerService } from "@/services/register";
 
 type RegisterSchemaType = z.infer<typeof registerSchema>;
 
 const RegisterPage = () => {
-  const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const [showPassword, setShowPassword] = useState(false);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<RegisterSchemaType>({
     resolver: zodResolver(registerSchema),
   });
 
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const password = watch("password");
+  const confirmPassword = watch("confirmPassword");
+  const passwordsMatch =
+    password && confirmPassword && password === confirmPassword;
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const onSubmit = async (data: RegisterSchemaType) => {
@@ -45,24 +56,28 @@ const RegisterPage = () => {
     setSuccessMessage("");
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/user/register`,
-        data
-      );
-
-      if (response.status === 200) {
-        alert("Registrasi berhasil");
+      const registerSuccess = await registerService({
+        name: data.name,
+        email: data.email,
+        password: data.password
+      });
+      if (registerSuccess) {
         router.push("/login");
+      } else {
+        setErrorMessage("Gagal registrasi");
       }
-    } catch (err) {
-      console.log(err);
-      setErrorMessage("Terjadi kesalahan saat registrasi");
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Terjadi kesalahan yang tidak diketahui");
+      }
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
-      <div className="w-full md:w-1/2 flex items-center justify-center p-4">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-2">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full max-w-md p-6 rounded-lg"
@@ -106,11 +121,12 @@ const RegisterPage = () => {
             label="Confirm Password"
             placeholder="********"
             icon={FaLock}
-            type="password"
-            register={register("password")}
-            error={errors.password?.message}
-            rightIcon={showPassword ? FaEyeSlash : FaEye}
-            onRightIconClick={togglePasswordVisibility}
+            type={showConfirmPassword ? "text" : "password"}
+            register={register("confirmPassword")}
+            error={errors.confirmPassword?.message}
+            rightIcon={showConfirmPassword ? FaEyeSlash : FaEye}
+            onRightIconClick={toggleConfirmPasswordVisibility}
+            isValid={passwordsMatch ? true : false}
           />
 
           <button

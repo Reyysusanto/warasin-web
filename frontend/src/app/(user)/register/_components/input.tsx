@@ -8,6 +8,7 @@ type InputProps = {
   register: any;
   error?: string;
   onRightIconClick?: () => void;
+  isValid?: boolean;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -20,9 +21,10 @@ const Input: React.FC<InputProps> = ({
   register,
   error,
   onRightIconClick,
+  isValid = false,
 }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <label htmlFor={id} className="block text-sm font-medium mb-2">
         {label}
       </label>
@@ -50,6 +52,9 @@ const Input: React.FC<InputProps> = ({
       </div>
       {error && (
         <p className="text-red-500 text-sm">{error}</p>
+      )}
+      {isValid && !error && (
+        <p className="text-green-500 text-sm">✓ Password cocok</p>
       )}
     </div>
   );

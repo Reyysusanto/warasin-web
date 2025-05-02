@@ -1,3 +1,4 @@
+import { baseURL } from "@/config/api";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
@@ -10,7 +11,7 @@ export interface TokenPayload {
   iat: number;
 }
 
-export function getUserFromToken(): TokenPayload | null {
+export const getUserFromToken = (): TokenPayload | null => {
   if (typeof window === "undefined") return null;
 
   const token = localStorage.getItem("token");
@@ -25,17 +26,16 @@ export function getUserFromToken(): TokenPayload | null {
   }
 }
 
-
-export async function fetchUserDetail() {
-  if (typeof window === "undefined") return null;
-
+export const fetchUserDetail = async () => {
   const token = localStorage.getItem("token");
-  if (!token) return null;
+  if (!token) {
+    return;
+  }
 
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_LOCAL_API_URL}/user/get-detail-user`, {
+    const response = await axios.get(`${baseURL}/user/get-detail-user`, {
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -43,10 +43,11 @@ export async function fetchUserDetail() {
     if (response.status !== 200) {
       throw new Error("Failed to fetch user detail");
     }
-
     return response.data.data;
   } catch (error) {
-    console.error("Error fetching user detail:", error);
-    return null;
+    if(axios.isAxiosError(error) && error.response?.status === 401) {
+      localStorage.removeItem("token");
+    }
+    window.location.href = "/";
   }
 }
