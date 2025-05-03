@@ -1,5 +1,18 @@
-const Input = ({id, label, type, isRequired=false}: {id: string, label: string, type: string, isRequired: boolean}) => {
-
+const Input = ({
+  id,
+  label,
+  type,
+  value,
+  isRequired = false,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value?: string;
+  type: string;
+  isRequired: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) => {
   return (
     <div className="flex flex-col gap-y-2">
       <label
@@ -14,6 +27,8 @@ const Input = ({id, label, type, isRequired=false}: {id: string, label: string, 
           type={type}
           name={id}
           id={id}
+          value={value}
+          onChange={onChange}
           required={isRequired}
           className={`flex p-2 items-center bg-transparent justify-between px-3 w-full mb-6 border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor`}
         />

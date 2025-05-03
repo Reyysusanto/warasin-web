@@ -8,11 +8,15 @@ interface options {
 const Options = ({
   id,
   label,
+  value,
   options,
+  onChange,
 }: {
   id: string;
   label: string;
+  value?: string;
   options: options[];
+  onChange: (id: string, value: string) => void;
 }) => {
   return (
     <div className="flex flex-col gap-y-3">
@@ -22,12 +26,13 @@ const Options = ({
           <select 
           name={id} 
           id={id}
+          value={value}
+          onChange={(e) => onChange(id, e.target.value)}
           className="appearance-none w-full rounded-md p-2 bg-transparent focus:ring-2 focus:ring-primaryColor"
           >
             {options.map((option) => (
                 <option 
-                key={option.optionId} 
-                value={option.optionId}
+                key={option.optionId}
                 className="w-full rounded-md p-3 bg-transparent focus:ring-0 focus:outline-none"
                 >
                     {option.optionName}

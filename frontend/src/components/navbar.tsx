@@ -8,14 +8,13 @@ import { usePathname } from "next/navigation";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaChevronDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { UserDetailType } from "@/types/user";
-import { fetchUserDetail } from "@/services/detailUser";
+import { DetailUserSuccessResponse, getUserDetailService } from "@/services/detailUser";
 
 const NavigationBar = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [dropDown, setDropDown] = useState(false);
-  const [user, setUser] = useState<UserDetailType>();
+  const [user, setUser] = useState<DetailUserSuccessResponse | null>(null);
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -41,7 +40,7 @@ const NavigationBar = () => {
   
   useEffect(() => {
     const getUser = async () => {
-      const data = await fetchUserDetail();
+      const data = await getUserDetailService();
       if (data) {
         setUser(data);
       }
@@ -248,10 +247,10 @@ const NavigationBar = () => {
             >
               <div className="flex flex-col">
                 <h4 className="font-semibold text-base text-primaryTextColor">
-                  {user.user_name}
+                  {user.data.user_name}
                 </h4>
                 <p className="font-thin text-sm text-primaryTextColor">
-                  {user.user_email}
+                  {user.data.user_email}
                 </p>
               </div>
               <CgProfile className="text-4xl bg-backgroundSecondaryColor rounded-full" />
