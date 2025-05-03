@@ -3,13 +3,14 @@
 import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import Input from "./_components/Input";
 import Options from "./_components/Option";
 import HistoryConsultation from "./_components/historyConsultation";
+import { getUserDetailService } from "@/services/detailUser";
 
 const options = [
   {
@@ -43,6 +44,54 @@ const cityOptions = [
 const ProfilePage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedTab, setSelectedTab] = useState<string>("personal");
+  const [userData, setUserData] = useState({
+    user_name: "",
+    user_email: "",
+    phone: "",
+    gender: "",
+    province: "",
+    city: "",
+    birth_date: "",
+  });
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await getUserDetailService();
+        if (response?.data) {
+          setUserData({
+            user_name: response.data.user_name,
+            user_email: response.data.user_email,
+            phone: response.data.role.role_name,
+            gender: response.data.user_name,
+            province: response.data.city?.province?.province_name || "",
+            city: response.data.city?.city_name || "",
+            birth_date: response.data.user_password,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUserData();
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setUserData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleOptionChange = (id: string, value: string) => {
+    setUserData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+  
 
   return (
     <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white scroll-smooth">
@@ -57,11 +106,11 @@ const ProfilePage = () => {
             alt="Profile"
             className="rounded-full object-cover size-60"
           />
-          <div>
+          <div className="flex flex-col text-center">
             <h3 className="text-primaryTextColor font-bold text-xl">
-              Andre Kessler
+              {userData.user_name}
             </h3>
-            <p className="text-primaryTextColor text-sm">George31@gmail.com</p>
+            <p className="text-primaryTextColor text-sm">{userData.user_email}</p>
           </div>
         </div>
 
@@ -86,15 +135,19 @@ const ProfilePage = () => {
             <form action="">
               <div className="grid grid-cols-2 gap-x-5">
                 <Input
-                  id="name"
+                  id="user_name"
                   label="Nama Lengkap"
                   type="text"
+                  value={userData.user_name}
+                  onChange={handleInputChange}
                   isRequired={true}
                 />
                 <Input
                   id="phone"
                   label="Nomor Handphone"
-                  type="number"
+                  type="text"
+                  value={userData.phone}
+                  onChange={handleInputChange}
                   isRequired={true}
                 />
                 <div className="flex flex-col gap-y-3">
@@ -104,26 +157,43 @@ const ProfilePage = () => {
                   <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between px-3 w-full mb-6 border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
                       <DatePicker
+                        id="birth_date"
                         selected={selectedDate}
                         onChange={(date: Date | null) => setSelectedDate(date)}
                         dateFormat="dd/MM/yyyy"
+                        value={userData.birth_date}
                         className="w-full rounded-md p-2 bg-transparent focus:ring-0 focus:outline-none"
                       />
                       <FaCalendarAlt className="text-xl text-primaryTextColor" />
                     </div>
                   </div>
                 </div>
-                <Options id="gender" label="Gender" options={genderOptions} />
+                <Options 
+                  id="gender" 
+                  label="Gender" 
+                  onChange={handleOptionChange}
+                  options={genderOptions} 
+                />
                 <Options
                   id="province"
                   label="Provinsi"
+                  onChange={handleOptionChange}
+                  value={userData.province}
                   options={provinceOptions}
                 />
-                <Options id="city" label="Kota" options={cityOptions} />
+                <Options 
+                  id="city" 
+                  label="Kota" 
+                  value={userData.city}
+                  onChange={handleOptionChange}
+                  options={cityOptions} 
+                />
                 <Input
-                  id="email"
+                  id="user_email"
                   label="Email"
                   type="email"
+                  onChange={handleInputChange}
+                  value={userData.user_email}
                   isRequired={false}
                 />
               </div>
@@ -141,7 +211,6 @@ const ProfilePage = () => {
               <HistoryConsultation />
             </div>
           )}
-
         </section>
       </main>
 

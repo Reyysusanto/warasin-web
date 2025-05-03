@@ -11,6 +11,32 @@ export interface TokenPayload {
   iat: number;
 }
 
+export type DetailUserSuccessResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    user_id: string;
+    user_name: string;
+    user_email: string;
+    user_password: string;
+    is_verified?: boolean;
+    city?: {
+      city_id: string;
+      city_name: string;
+      city_type: string;
+      province?: {
+        province_id: string;
+        province_name: string;
+      };
+    };
+    role: {
+      role_id: string;
+      role_name: string;
+    };
+  };
+  timestamp: string;
+};
+
 export const getUserFromToken = (): TokenPayload | null => {
   if (typeof window === "undefined") return null;
 
@@ -24,30 +50,41 @@ export const getUserFromToken = (): TokenPayload | null => {
     console.error("Failed to decode token", error);
     return null;
   }
-}
+};
 
-export const fetchUserDetail = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return;
-  }
+export const getUserDetailService =
+  async (): Promise<DetailUserSuccessResponse | null> => {
+    const token = localStorage.getItem("token");
 
-  try {
-    const response = await axios.get(`${baseURL}/user/get-detail-user`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch user detail");
+    try {
+      if(token) {
+        const response = await axios.get<DetailUserSuccessResponse>(
+          `${baseURL}/user/get-detail-user`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (response.data.status === true) {
+          return response.data;
+        } else {
+          throw new Error(response.data.message || "Failed to fetch user details");
+        }
+      } else {
+        return null;
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return null;
+        }
+      }
+      console.error("Error fetching user details:", error);
+      return null;
     }
-    return response.data.data;
-  } catch (error) {
-    if(axios.isAxiosError(error) && error.response?.status === 401) {
-      localStorage.removeItem("token");
-    }
-    window.location.href = "/";
-  }
-}
+  };
