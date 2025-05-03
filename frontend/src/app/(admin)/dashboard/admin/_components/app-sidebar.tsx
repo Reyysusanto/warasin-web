@@ -36,27 +36,27 @@ const data = {
   navMain: [
     {
       title: "Home",
-      url: "/dashboard",
+      url: "/dashboard/admin",
       icon: LayoutDashboardIcon,
     },
     {
       title: "Users",
-      url: "/dashboard/users",
+      url: "/dashboard/admin/users",
       icon: UsersIcon,
     },
     {
       title: "Doctors",
-      url: "/dashboard/doctors",
+      url: "/dashboard/admin/doctors",
       icon: FolderIcon,
     },
     {
       title: "Consultation",
-      url: "/dashboard/consultation",
+      url: "/dashboard/admin/consultation",
       icon: ClipboardListIcon,
     },
     {
       title: "News",
-      url: "/dashboard/news",
+      url: "/dashboard/admin/news",
       icon: UsersIcon,
     },
     {
