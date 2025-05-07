@@ -5,6 +5,8 @@ import { PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { GetAllUsers } from "@/services/users";
 import { Users } from "@/types/user";
+import AddUserPage from "./_components/createUser";
+import { deleteUserService } from "@/services/dahsboardService/deleteUser";
 
 const UserDashboard = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -35,18 +37,31 @@ const UserDashboard = () => {
     console.log("Edit user:", id);
   };
 
-  const removeData = (id: string) => {
+  const removeData = async (id: string) => {
     const confirmed = window.confirm("Are you sure you want to delete this user?");
-    if (confirmed) {
-      setUserList((prev) => prev.filter((user) => user.user_id !== id));
-      setSelectedUsers((prev) => prev.filter((uid) => uid !== id));
+    if (!confirmed) return;
+  
+    try {
+      const res = await deleteUserService(id);
+  
+      if (res.status === true) {
+        setUserList((prev) => prev.filter((user) => user.user_id !== id));
+        setSelectedUsers((prev) => prev.filter((uid) => uid !== id));
+        alert("User deleted successfully");
+      } else {
+        alert(res.message || "Failed to delete user");
+      }
+    } catch (error: any) {
+      alert(error || "Error occurred while deleting user");
     }
   };
+  
 
   return (
-    <div className="bg-white text-gray-800 rounded-xl p-6 w-full shadow-md">
-      <h2 className="text-xl font-semibold mb-6">All Users</h2>
+    <div className="bg-white text-gray-800 flex flex-col rounded-xl p-6 gap-4 w-full shadow-md">
+      <AddUserPage />
       <div className="overflow-x-auto rounded-lg">
+        <h2 className="text-xl font-semibold mb-6">All Users</h2>
         <table className="min-w-full table-auto text-sm text-left">
           <thead>
             <tr className="bg-gray-100 text-gray-600 border-b border-gray-300">
