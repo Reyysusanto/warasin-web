@@ -1,17 +1,13 @@
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 
-const BirthDate = ({
-  id,
-  selected,
-  onChange,
-  value,
-}: {
+type BirthDateProps = {
   id: string;
   selected: Date | null;
-  onChange: (date: Date | null) => Date;
-  value: string;
-}) => {
+  onChange: (date: Date | null) => void;
+};
+
+const BirthDate = ({ id, selected, onChange }: BirthDateProps) => {
   return (
     <div className="flex flex-col gap-y-3">
       <h3 className="text-sm md:text-base text-primaryTextColor">
@@ -24,7 +20,6 @@ const BirthDate = ({
             selected={selected}
             onChange={onChange}
             dateFormat="dd/MM/yyyy"
-            value={value}
             className="w-full rounded-md p-2 bg-transparent focus:ring-0 focus:outline-none"
           />
           <FaCalendarAlt className="text-xl text-primaryTextColor" />

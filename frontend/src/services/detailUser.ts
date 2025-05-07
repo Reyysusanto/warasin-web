@@ -1,5 +1,6 @@
 import { baseURL } from "@/config/api";
-import axios from "axios";
+import { ErrorResponse } from "@/types/type";
+import axios, { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
 
 export interface TokenPayload {
@@ -10,6 +11,32 @@ export interface TokenPayload {
   exp: number;
   iat: number;
 }
+
+export type UpdateDetailUserSuccessResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    user_id: string;
+    user_name: string;
+    user_email: string;
+    user_password: string;
+    is_verified: boolean;
+    city: {
+      city_id: string | null;
+      city_name: string;
+      city_type: string;
+      province: {
+        province_id: string | null;
+        province_name: string;
+      };
+    };
+    role: {
+      role_id: string;
+      role_name: string;
+    };
+  };
+  timestamp: string;
+};
 
 export type DetailUserSuccessResponse = {
   status: boolean;
@@ -25,7 +52,7 @@ export type DetailUserSuccessResponse = {
       city_name: string;
       city_type: string;
       province?: {
-        province_id: string;
+        province_id?: string;
         province_name: string;
       };
     };
@@ -57,7 +84,7 @@ export const getUserDetailService =
     const token = localStorage.getItem("token");
 
     try {
-      if(token) {
+      if (token) {
         const response = await axios.get<DetailUserSuccessResponse>(
           `${baseURL}/user/get-detail-user`,
           {
@@ -67,11 +94,13 @@ export const getUserDetailService =
             },
           }
         );
-  
+
         if (response.data.status === true) {
           return response.data;
         } else {
-          throw new Error(response.data.message || "Failed to fetch user details");
+          throw new Error(
+            response.data.message || "Failed to fetch user details"
+          );
         }
       } else {
         return null;
@@ -88,3 +117,62 @@ export const getUserDetailService =
       return null;
     }
   };
+
+export const updateDetailUser = async (finalData: {
+  birth_date: string;
+  gender: string;
+  province: string;
+  city: string;
+  name: string;
+  no_hp: string;
+  email: string;
+}): Promise<UpdateDetailUserSuccessResponse | ErrorResponse | null> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.patch<UpdateDetailUserSuccessResponse>(
+      `${baseURL}/user/update-user`,
+      finalData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data as UpdateDetailUserSuccessResponse;
+    } else {
+      return response.data as ErrorResponse;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+
+      if (axiosError.response) {
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login-admin";
+          return null;
+        }
+
+        if (axiosError.response.data.status === false) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Gagal mengambil data"
+          );
+        }
+
+        if (axiosError.response.status === 401) {
+          localStorage.removeItem("token");
+          throw new Error("Token telah kadaluarsa");
+        }
+      }
+    }
+
+    throw new Error(
+      "Terjadi kesalahan saat mengambil data. Silakan coba lagi."
+    );
+  }
+};
