@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/type";
 import { createUserSchema } from "@/validations/user";
@@ -7,14 +9,15 @@ import { z } from "zod";
 type CreateUserSchemaType = z.infer<typeof createUserSchema>;
 
 type CreateUsersSuccessResponse = {
-  status: boolean;
+  status: true;
   message: string;
   data: Array<{
     user_id: string;
     user_name: string;
     user_email: string;
     user_password: string;
-    user_birth_date: string
+    user_birth_date: string;
+    user_phone_number: string;
     is_verified: boolean;
     city: {
       city_id: string;
@@ -33,38 +36,51 @@ type CreateUsersSuccessResponse = {
   timestamp: string;
 };
 
-export const createUserService = async (data: CreateUserSchemaType) => {
+export const createUserService = async (
+  data: CreateUserSchemaType,
+) => {
   try {
+    const token = localStorage.getItem('token')
     const response = await axios.post<
       CreateUsersSuccessResponse | ErrorResponse
-    >(`${baseURL}/admin/create-user`, data);
+    >(`${baseURL}/admin/create-user`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    if (response.data.status === true) {
-      return true;
+    if (response.status === 200) {
+      return response.data as CreateUsersSuccessResponse;
     } else {
-      throw new Error(response.data.message);
+      return response.data as ErrorResponse;
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ErrorResponse>;
 
       if (axiosError.response) {
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login-admin";
+          return null;
+        }
+
         if (axiosError.response.data.status === false) {
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Create User gagal"
+              "Gagal menambahkan data"
           );
         }
 
-        if (axiosError.response.status === 400) {
-          throw new Error("Gagal menambahkan user");
+        if (axiosError.response.status === 401) {
+          localStorage.removeItem("token");
+          throw new Error("Token telah kadaluarsa");
         }
       }
     }
 
-    throw new Error(
-      "Terjadi kesalahan saat menambahkan data. Silakan coba lagi."
-    );
+    console.log(error);
   }
 };
