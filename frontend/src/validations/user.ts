@@ -40,9 +40,9 @@ export const createUserSchema = z.object({
   password: z.string().min(6, "Password minimal 6 karakter"),
   gender: z.boolean(),
   birth_date: z.string().min(1, "Tanggal lahir wajib diisi"),
-  phone_number: z.string().min(1, "Nomor telepon wajib diisi").optional(),
-  city_id: z.optional(z.string()),
-  province_id: z.optional(z.string()),
+  phone_number: z.optional(z.string().min(1, "Nomor telepon wajib diisi")),
+  city_id: z.string(),
+  role_id: z.string()
 });
 
 export { registerSchema, loginSchema, userDetailSchema };

@@ -120,7 +120,7 @@ const data = {
       icon: SettingsIcon,
     },
     {
-      title: "Get Help",
+      title: "Logout",
       url: "#",
       icon: HelpCircleIcon,
     },
