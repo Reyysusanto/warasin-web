@@ -1,16 +1,8 @@
 import { baseURL } from "@/config/api";
-import { ErrorResponse } from "@/types/type";
+import { ErrorResponse } from "@/types/error";
+import { RoleSuccessResponse } from "@/types/role";
 import axios, { AxiosError } from "axios";
 
-type RoleSuccessResponse = {
-  status: true;
-  message: string;
-  data: Array<{
-    role_id: string;
-    role_name: string;
-  }>;
-  timestamp: string;
-};
 
 export const getRoleService = async (): Promise<
   RoleSuccessResponse | ErrorResponse

@@ -2,46 +2,56 @@
 import { useEffect, useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-interface options {
-  optionId: string;
-  optionName: string;
+interface Gender {
+  genderName: string;
+  genderType: string; // "true" | "false"
 }
 
-const Options = ({
+const genderList: Gender[] = [
+  {
+    genderName: "Laki-laki",
+    genderType: "false",
+  },
+  {
+    genderName: "Perempuan",
+    genderType: "true",
+  },
+];
+
+const GenderOption = ({
   id,
   label,
   value,
-  options,
   updateUser,
   error,
   onChange,
 }: {
   id: string;
   label: string;
-  value?: string;
+  value?: boolean;
   updateUser: any;
-  options: options[];
   error?: string;
   onChange: (id: string, value: string) => void;
 }) => {
-  const [strValue, setStrValue] = useState(value ?? "");
+  const [strValue, setStrValue] = useState<string>("");
 
   useEffect(() => {
-    if (value !== undefined) {
-      setStrValue(value);
+    if (typeof value === "boolean") {
+      setStrValue(value.toString());
     }
   }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setStrValue(e.target.value);
-    onChange(id, e.target.value);
+    const selectedValue = e.target.value;
+    setStrValue(selectedValue);
+    onChange(id, selectedValue);
   };
 
   return (
     <div className="flex flex-col gap-y-3">
       <h3 className="text-sm md:text-base text-primaryTextColor">{label}</h3>
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between w-full mb-1 border border-primaryColor rounded-md">
+        <div className="flex items-center justify-between w-full border border-primaryColor rounded-md">
           <select
             name={id}
             id={id}
@@ -53,13 +63,13 @@ const Options = ({
             <option value="" disabled>
               Pilih {label}
             </option>
-            {options.map((option) => (
+            {genderList.map((gender) => (
               <option
-                key={option.optionId}
-                value={option.optionId}
+                key={gender.genderName}
+                value={gender.genderType}
                 className="w-full rounded-md p-3"
               >
-                {option.optionName}
+                {gender.genderName}
               </option>
             ))}
           </select>
@@ -71,4 +81,4 @@ const Options = ({
   );
 };
 
-export default Options;
+export default GenderOption;

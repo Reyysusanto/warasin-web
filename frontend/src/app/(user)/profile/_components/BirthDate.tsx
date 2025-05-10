@@ -9,12 +9,12 @@ type BirthDateProps = {
 
 const BirthDate = ({ id, selected, onChange }: BirthDateProps) => {
   return (
-    <div className="flex flex-col gap-y-3">
+    <div className="flex flex-col gap-y-2">
       <h3 className="text-sm md:text-base text-primaryTextColor">
         Tanggal Lahir
       </h3>
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between px-3 w-full mb-6 border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between px-3 w-full mb-1 border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
           <DatePicker
             id={id}
             selected={selected}

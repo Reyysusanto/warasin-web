@@ -1,22 +1,7 @@
 import { baseURL } from "@/config/api";
+import { LoginSuccessResponse } from "@/types/auth";
+import { ErrorResponse } from "@/types/error";
 import axios, { AxiosError } from "axios";
-
-type LoginSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    access_token: string;
-    refresh_token: string;
-  };
-  timestamp: string;
-};
-
-type LoginErrorResponse = {
-  status: false;
-  message: string;
-  error?: string;
-  timestamp: string;
-};
 
 export const loginService = async (data: {
   email: string;
@@ -24,7 +9,7 @@ export const loginService = async (data: {
 }) => {
   try {
     const response = await axios.post<
-      LoginSuccessResponse | LoginErrorResponse
+      LoginSuccessResponse | ErrorResponse
     >(`${baseURL}/user/login`, data);
 
     if (response.data.status === true && response.data.data.access_token) {
@@ -40,7 +25,7 @@ export const loginService = async (data: {
     return false;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<LoginErrorResponse>;
+      const axiosError = error as AxiosError<ErrorResponse>;
 
       if (axiosError.response) {
         if (axiosError.response.data.status === false) {

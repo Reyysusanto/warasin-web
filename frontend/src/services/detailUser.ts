@@ -1,5 +1,9 @@
 import { baseURL } from "@/config/api";
-import { ErrorResponse } from "@/types/type";
+import { ErrorResponse } from "@/types/error";
+import {
+  DetailUserSuccessResponse,
+  UpdateDetailUserRequest,
+} from "@/types/user";
 import axios, { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
 
@@ -38,32 +42,6 @@ export type UpdateDetailUserSuccessResponse = {
   timestamp: string;
 };
 
-export type DetailUserSuccessResponse = {
-  status: boolean;
-  message: string;
-  data: {
-    user_id: string;
-    user_name: string;
-    user_email: string;
-    user_password: string;
-    is_verified?: boolean;
-    city?: {
-      city_id: string;
-      city_name: string;
-      city_type: string;
-      province?: {
-        province_id?: string;
-        province_name: string;
-      };
-    };
-    role: {
-      role_id: string;
-      role_name: string;
-    };
-  };
-  timestamp: string;
-};
-
 export const getUserFromToken = (): TokenPayload | null => {
   if (typeof window === "undefined") return null;
 
@@ -79,54 +57,41 @@ export const getUserFromToken = (): TokenPayload | null => {
   }
 };
 
-export const getUserDetailService =
-  async (): Promise<DetailUserSuccessResponse | null> => {
+export const getUserDetailService = async (): Promise<
+  DetailUserSuccessResponse | ErrorResponse
+> => {
+  try {
     const token = localStorage.getItem("token");
-
-    try {
-      if (token) {
-        const response = await axios.get<DetailUserSuccessResponse>(
-          `${baseURL}/user/get-detail-user`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.data.status === true) {
-          return response.data;
-        } else {
-          throw new Error(
-            response.data.message || "Failed to fetch user details"
-          );
-        }
-      } else {
-        return null;
+    const response = await axios.get<DetailUserSuccessResponse>(
+      `${baseURL}/user/get-detail-user`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          localStorage.removeItem("token");
-          window.location.href = "/login";
-          return null;
-        }
-      }
-      console.error("Error fetching user details:", error);
-      return null;
+    );
+
+    if (response.data.status === true) {
+      return response.data as DetailUserSuccessResponse;
+    } else {
+      return response.data as ErrorResponse;
     }
-  };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        throw new Error("Email atau password salah");
+      }
+    }
+    throw new Error("Error fetching user details:");
+  }
+};
 
-export const updateDetailUser = async (finalData: {
-  birth_date: string;
-  gender: string;
-  province: string;
-  city: string;
-  name: string;
-  no_hp: string;
-  email: string;
-}): Promise<UpdateDetailUserSuccessResponse | ErrorResponse | null> => {
+export const updateDetailUser = async (
+  finalData: UpdateDetailUserRequest
+) => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.patch<UpdateDetailUserSuccessResponse>(
@@ -152,7 +117,7 @@ export const updateDetailUser = async (finalData: {
       if (axiosError.response) {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
-          window.location.href = "/login-admin";
+          window.location.href = "/login";
           return null;
         }
 
@@ -160,7 +125,7 @@ export const updateDetailUser = async (finalData: {
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Gagal mengambil data"
+              "Gagal menambahkan data"
           );
         }
 
@@ -170,9 +135,5 @@ export const updateDetailUser = async (finalData: {
         }
       }
     }
-
-    throw new Error(
-      "Terjadi kesalahan saat mengambil data. Silakan coba lagi."
-    );
   }
 };

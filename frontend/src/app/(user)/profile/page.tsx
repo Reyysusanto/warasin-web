@@ -16,7 +16,10 @@ import { userDetailSchema } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getCityService, getProvincesService } from "@/services/province";
-import { Province } from "@/types/region";
+import { City, Province } from "@/types/region";
+import dayjs from "dayjs";
+import { UpdateDetailUserRequest } from "@/types/user";
+import GenderOption from "./_components/GenderOption";
 
 const options = [
   {
@@ -29,55 +32,75 @@ const options = [
   },
 ];
 
-const genderOptions = [
-  { optionId: "male", optionName: "Laki-laki" },
-  { optionId: "female", optionName: "Perempuan" },
-  { optionId: "other", optionName: "Lainnya" },
-];
+// const genderOptions = [
+//   { optionId: "male", optionName: "Laki-laki" },
+//   { optionId: "female", optionName: "Perempuan" },
+//   { optionId: "other", optionName: "Lainnya" },
+// ];
 
 type userDetailSchemaType = z.infer<typeof userDetailSchema>;
 
 const ProfilePage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedTab, setSelectedTab] = useState<string>("personal");
-  const [provinceOptions, setProvinceOptions] = useState<
-    { optionId: string; optionName: string }[]
-  >([]);
-  const [cityOptions, setCityOptions] = useState<
-    { optionId: string; optionName: string }[]
-  >([]);
+  const [loading, setLoading] = useState(false);
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [selectedProvince, setSelectedProvince] = useState("");
   const [userData, setUserData] = useState({
     user_name: "",
     user_email: "",
-    phone: "",
-    gender: "",
-    province: "",
-    city: "",
-    birth_date: "",
+    user_gender: false,
+    user_phone_number: "",
+    province_id: "",
+    city_id: "",
+    user_birth_date: "",
   });
 
   const {
     register: formData,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<userDetailSchemaType>({
     resolver: zodResolver(userDetailSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      no_hp: "",
+      province: "",
+      city: "",
+      birth_date: undefined,
+    },
   });
 
   useEffect(() => {
     const getUserData = async () => {
       try {
         const response = await getUserDetailService();
-        if (response?.data) {
+        if (response.status === true) {
+          const data = response.data;
+          console.log(data);
           setUserData({
-            user_name: response.data.user_name,
-            user_email: response.data.user_email,
-            phone: response.data.role.role_name,
-            gender: response.data.user_name || "",
-            province: response.data.city?.province?.province_id || "",
-            city: response.data.city?.city_id || "",
-            birth_date: "",
+            user_name: data.user_name,
+            user_email: data.user_email,
+            user_gender: false,
+            user_phone_number: data.user_phone_number,
+            province_id: data.city?.province?.province_id || "",
+            city_id: data.city?.city_id || "",
+            user_birth_date: data.user_birth_date,
           });
+
+          setValue("name", data.user_name);
+          setValue("email", data.user_email);
+          setValue("gender", false);
+          setValue("no_hp", data.user_phone_number);
+          setValue("province", data.city?.province?.province_id || "");
+          setValue("city", data.city?.city_id || "");
+          if (data.user_birth_date) {
+            setSelectedDate(new Date(data.user_birth_date));
+            setValue("birth_date", new Date(data.user_birth_date));
+          }
         }
       } catch (error) {
         console.log(error);
@@ -85,68 +108,55 @@ const ProfilePage = () => {
     };
 
     getUserData();
-  }, []);
+  }, [setValue]);
 
   useEffect(() => {
-    const fetchProvinces = async () => {
+    const fetchInitialData = async () => {
       try {
-        const res = await getProvincesService();
-        if (res.status == true) {
-          const province = res.data.map(
-            (prov: {
-              province_id: string;
-              province_name: string;
-            }): Province => ({
-              id: prov.province_id,
-              name: prov.province_name,
-            })
-          );
+        const userResponse = await getUserDetailService();
 
-          const formattedProvinces = province.map((prov) => ({
-            optionId: prov.id,
-            optionName: prov.name,
-          }));
+        if (userResponse.status && userResponse.data) {
+          const userProvince = userResponse.data.city?.province;
 
-          setProvinceOptions(formattedProvinces);
+          if (userProvince) {
+            const provinceId = userProvince.province_id ?? "";
+            setSelectedProvince(provinceId);
+            setUserData((prev) => ({
+              ...prev,
+              province: userProvince.province_id,
+            }));
+          }
+        }
+
+        const provincesResponse = await getProvincesService();
+        if (provincesResponse?.status === true) {
+          setProvinces(provincesResponse.data);
         }
       } catch (error) {
-        console.error("Gagal fetch provinsi:", error);
+        console.error("Gagal mengambil data awal provinsi dan user", error);
       }
     };
 
-    fetchProvinces();
+    fetchInitialData();
   }, []);
 
   useEffect(() => {
     const fetchCities = async () => {
-      if (!userData.province) return;
-
-      console.log("🟡 Province ID yang dikirim:", userData.province);
+      if (!userData.province_id) return;
 
       try {
-        const res = await getCityService(userData.province);
-        if (res?.status == true) {
-          const city = res.data.map(
-            (city: { city_id: string; city_name: string }) => ({
-              id: city.city_id,
-              name: city.city_name,
-            })
-          );
-
-          const formattedCity = city.map((city) => ({
-            optionId: city.id,
-            optionName: city.name,
-          }));
-
-          setCityOptions(formattedCity);
+        const response = await getCityService(selectedProvince);
+        if (response?.status === true) {
+          setCities(response.data);
+          setValue("city", "");
         }
       } catch (error) {
-        console.error("Gagal fetch kota:", error);
+        console.error("Gagal mengambil data kota", error);
       }
     };
 
     fetchCities();
-  }, [userData.province]);
+  }, [selectedProvince, setValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -164,27 +174,36 @@ const ProfilePage = () => {
   };
 
   const onSubmit = async (data: userDetailSchemaType) => {
-    console.log("Form data before submit:", data);
-    
-    try {
-      const finalData = {
-        ...userData,
-        ...data,
-        birth_date: selectedDate?.toISOString() || "",
-      };
-      const success = await updateDetailUser(finalData);
+    setLoading(true);
+    const formattedData: UpdateDetailUserRequest = {
+      user_name: data.name,
+      user_email: data.email,
+      user_gender: false,
+      user_phone_number: data.no_hp,
+      city_id: data.city,
+      user_birth_date: dayjs(data.birth_date).format("DD-MM-YYYY"),
+      province_id: data.province,
+    };
+    console.log(formattedData);
 
-      if (success?.status == true) {
-        console.log("Data berhasil diperbarui");
+    try {
+      const result = await updateDetailUser(formattedData);
+      console.log(result);
+      if (result) {
+        alert("User berhasil ditambahkan");
+        setSelectedProvince("");
+        setCities([]);
       } else {
-        console.log("Data gagal diperbarui");
+        alert("Gagal menambahkan user");
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        alert(error.message);
       } else {
-        console.log("Terjadi kesalahan yang tidak diketahui");
+        alert("Terjadi kesalahan yang tidak diketahui");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -235,7 +254,7 @@ const ProfilePage = () => {
             >
               <div className="grid grid-cols-2 gap-x-5 gap-y-1">
                 <Input
-                  id="user_name"
+                  id="name"
                   label="Nama Lengkap"
                   type="text"
                   updateUser={formData("name")}
@@ -244,11 +263,23 @@ const ProfilePage = () => {
                   error={errors.name?.message}
                   isRequired={true}
                 />
+
                 <Input
-                  id="phone"
+                  id="email"
+                  label="Email"
+                  type="email"
+                  updateUser={formData("email")}
+                  error={errors.email?.message}
+                  onChange={handleInputChange}
+                  value={userData.user_email}
+                  isRequired={false}
+                />
+
+                <Input
+                  id="no_hp"
                   label="Nomor Handphone"
                   type="text"
-                  value={userData.phone}
+                  value={userData.user_phone_number}
                   error={errors.no_hp?.message}
                   updateUser={formData("no_hp")}
                   onChange={handleInputChange}
@@ -277,43 +308,61 @@ const ProfilePage = () => {
                     </div>
                   </div>
                 </div>
-                <Options
+
+                <GenderOption
                   id="gender"
                   label="Gender"
-                  onChange={handleOptionChange}
-                  options={genderOptions}
+                  value={userData.user_gender}
+                  updateUser={formData("gender")}
+                  error={errors.gender?.message}
+                  onChange={(id, value) => {
+                    const booleanValue = value === "true";
+                    setUserData((prev) => ({
+                      ...prev,
+                      user_gender: booleanValue,
+                    }));
+                    setValue("gender", booleanValue);
+                  }}
                 />
+
                 <Options
                   id="province"
                   label="Provinsi"
-                  onChange={handleOptionChange}
-                  value={userData.province}
-                  options={provinceOptions}
+                  updateUser={formData("province")}
+                  onChange={(id, value) => {
+                    handleOptionChange(id, value);
+                    setSelectedProvince(value);
+                    setValue("province", value);
+                  }}
+                  value={userData.province_id}
+                  options={provinces.map((p) => ({
+                    optionId: p.province_id,
+                    optionName: p.province_name,
+                  }))}
                 />
+
                 <Options
                   id="city"
                   label="Kota"
-                  value={userData.city}
-                  onChange={handleOptionChange}
-                  options={cityOptions}
-                />
-                <Input
-                  id="user_email"
-                  label="Email"
-                  type="email"
-                  updateUser={formData("email")}
-                  error={errors.email?.message}
-                  onChange={handleInputChange}
-                  value={userData.user_email}
-                  isRequired={false}
+                  updateUser={formData("city")}
+                  value={userData.city_id}
+                  onChange={(id, value) => {
+                    handleOptionChange(id, value);
+                    setValue("city", value);
+                  }}
+                  options={cities.map((c) => ({
+                    optionId: c.city_id,
+                    optionName: c.city_name,
+                  }))}
                 />
               </div>
 
               <button
                 type="submit"
                 className="flex items-center hover:bg-blue-500 gap-2 w-fit bg-primaryColor text-white py-3 px-4 rounded-md text-base font-semibold hover:bg-primaryColorDark"
+                disabled={loading}
               >
-                Simpan Perubahan
+                {loading ? "Menyimpan..." : "Simpan Perubahan"}
               </button>
             </form>
           )}

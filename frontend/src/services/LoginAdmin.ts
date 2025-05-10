@@ -1,22 +1,7 @@
 import { baseURL } from "@/config/api";
+import { LoginAdminSuccessResponse } from "@/types/auth";
+import { ErrorResponse } from "@/types/error";
 import axios, { AxiosError } from "axios";
-
-type LoginAdminSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    access_token: string;
-    refresh_token: string;
-  };
-  timestamp: string;
-};
-
-type LoginAdminErrorResponse = {
-  status: false;
-  message: string;
-  error?: string;
-  timestamp: string;
-};
 
 export const LoginAdminService = async (data: {
   email: string;
@@ -24,7 +9,7 @@ export const LoginAdminService = async (data: {
 }) => {
   try {
     const response = await axios.post<
-      LoginAdminSuccessResponse | LoginAdminErrorResponse
+      LoginAdminSuccessResponse | ErrorResponse
     >(`${baseURL}/admin/login`, data);
 
     if (response.data.status === true) {
@@ -36,7 +21,7 @@ export const LoginAdminService = async (data: {
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<LoginAdminErrorResponse>;
+      const axiosError = error as AxiosError<ErrorResponse>;
 
       if (axiosError.response) {
         if (axiosError.response.data.status === false) {

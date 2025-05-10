@@ -1,5 +1,5 @@
 import { baseURL } from "@/config/api";
-import { ErrorResponse } from "@/types/type";
+import { ErrorResponse } from "@/types/error";
 import axios, { AxiosError } from "axios";
 
 type DeleteSuccessResponse = {
