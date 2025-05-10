@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { baseURL } from "@/config/api";
-import { ErrorResponse } from "@/types/type";
+import { ErrorResponse } from "@/types/error";
 import { createUserSchema } from "@/validations/user";
 import axios, { AxiosError } from "axios";
 import { z } from "zod";

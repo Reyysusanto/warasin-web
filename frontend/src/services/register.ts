@@ -1,34 +1,12 @@
 import { baseURL } from "@/config/api";
+import { RegisterRequest, RegisterSuccessResponse } from "@/types/auth";
+import { ErrorResponse } from "@/types/error";
 import axios, { AxiosError } from "axios";
 
-type RegisterSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    user_id: string;
-    name: string;
-    email: string;
-    password: string;
-    created_at: string;
-    updated_at?: string;
-    deleted_at?: string;
-  };
-};
-
-type RegisterErrorResponse = {
-  status: false;
-  message: string;
-  error?: string;
-};
-
-export const registerService = async (data: {
-  name: string;
-  email: string;
-  password: string;
-}) => {
+export const registerService = async (data: RegisterRequest) => {
   try {
     const response = await axios.post<
-      RegisterSuccessResponse | RegisterErrorResponse
+      RegisterSuccessResponse | ErrorResponse
     >(`${baseURL}/user/register`, data);
 
     if (response.data.status === true) {
@@ -38,7 +16,7 @@ export const registerService = async (data: {
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<RegisterErrorResponse>;
+        const axiosError = error as AxiosError<ErrorResponse>;
   
         if (axiosError.response) {
           if (axiosError.response.data.status === false) {

@@ -1,15 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { UsersSuccessResponse } from "@/types/user";
+import { createNewsSuccessResponse } from "@/types/news";
+import { createNewsSchema } from "@/validations/news";
 import axios, { AxiosError } from "axios";
+import { z } from "zod";
 
+type CreateNewsSchemaType = z.infer<typeof createNewsSchema>;
 
-export const GetAllUsers = async (): Promise<
-  UsersSuccessResponse | ErrorResponse | null
-> => {
+export const createNewsService = async (
+  data: CreateNewsSchemaType,
+) => {
   try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(`${baseURL}/admin/get-all-user`, {
+    const token = localStorage.getItem('token')
+    const response = await axios.post<
+      createNewsSuccessResponse | ErrorResponse
+    >(`${baseURL}/admin/create-news`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -17,7 +24,7 @@ export const GetAllUsers = async (): Promise<
     });
 
     if (response.status === 200) {
-      return response.data as UsersSuccessResponse;
+      return response.data as createNewsSuccessResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -36,7 +43,7 @@ export const GetAllUsers = async (): Promise<
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Gagal mengambil data"
+              "Gagal menambahkan data"
           );
         }
 
@@ -47,8 +54,6 @@ export const GetAllUsers = async (): Promise<
       }
     }
 
-    throw new Error(
-      "Terjadi kesalahan saat mengambil data. Silakan coba lagi."
-    );
+    console.log(error);
   }
 };

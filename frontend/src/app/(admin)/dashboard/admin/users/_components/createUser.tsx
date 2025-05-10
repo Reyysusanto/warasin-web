@@ -9,24 +9,10 @@ import dayjs from "dayjs";
 import { getCityService, getProvincesService } from "@/services/province";
 import { createUserService } from "@/services/dahsboardService/createUser";
 import { getRoleService } from "@/services/role";
+import { City, Province } from "@/types/region";
+import { Role } from "@/types/role";
 
 type CreateUserSchemaType = z.infer<typeof createUserSchema>;
-
-type Province = {
-  province_id: string;
-  province_name: string;
-};
-
-type City = {
-  city_id: string;
-  city_name: string;
-  city_type: string;
-};
-
-type Role = {
-  role_id: string;
-  role_name: string;
-};
 
 const AddUserPage = () => {
   const [loading, setLoading] = useState(false);

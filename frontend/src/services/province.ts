@@ -1,27 +1,7 @@
 import { baseURL } from "@/config/api"
-import { ErrorResponse } from "@/types/type"
+import { ErrorResponse } from "@/types/error"
+import { CitySuccessResponse, ProvincesSuccessResponse } from "@/types/region";
 import axios, { AxiosError } from "axios"
-
-type ProvincesSuccessResponse = {
-    status: boolean
-    message: string
-    data: Array<{
-        province_id: string
-        province_name: string
-    }>
-    timestamp: string
-}
-
-type CitySuccessResponse = {
-    status: boolean
-    message: string
-    data: Array<{
-        city_id: string
-        city_name: string
-        city_type: string
-    }>
-    timestamp: string
-}
 
 export const getProvincesService = async (): Promise<
   ProvincesSuccessResponse | ErrorResponse
