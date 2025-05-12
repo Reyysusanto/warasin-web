@@ -3,6 +3,7 @@ import { ErrorResponse } from "@/types/error";
 import {
   DetailUserSuccessResponse,
   UpdateDetailUserRequest,
+  UpdateDetailUserSuccessResponse,
 } from "@/types/user";
 import axios, { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -15,32 +16,6 @@ export interface TokenPayload {
   exp: number;
   iat: number;
 }
-
-export type UpdateDetailUserSuccessResponse = {
-  status: boolean;
-  message: string;
-  data: {
-    user_id: string;
-    user_name: string;
-    user_email: string;
-    user_password: string;
-    is_verified: boolean;
-    city: {
-      city_id: string | null;
-      city_name: string;
-      city_type: string;
-      province: {
-        province_id: string | null;
-        province_name: string;
-      };
-    };
-    role: {
-      role_id: string;
-      role_name: string;
-    };
-  };
-  timestamp: string;
-};
 
 export const getUserFromToken = (): TokenPayload | null => {
   if (typeof window === "undefined") return null;
@@ -89,21 +64,17 @@ export const getUserDetailService = async (): Promise<
   }
 };
 
-export const updateDetailUser = async (
-  finalData: UpdateDetailUserRequest
-) => {
+export const updateDetailUser = async (data: Partial<UpdateDetailUserRequest>) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.patch<UpdateDetailUserSuccessResponse>(
-      `${baseURL}/user/update-user`,
-      finalData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.patch<
+      UpdateDetailUserSuccessResponse | ErrorResponse
+    >(`${baseURL}/user/update-user`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (response.status === 200) {
       return response.data as UpdateDetailUserSuccessResponse;
