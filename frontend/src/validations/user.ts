@@ -36,15 +36,15 @@ const userDetailSchema = z.object({
 
 export const updateUserSchema = z.object({
   user_name: z.string().min(8, "Password minimal 8 karakter"),
-  user_phone_number: z
+  user_phone_number: z.optional(z
     .string()
     .min(10, "No Handphone tidak valid")
-    .max(16, "No Hanphone tidak valid"),
+    .max(16, "No Hanphone tidak valid")),
   user_email: z.string().email("Format email tidak valid"),
-  user_birth_date: z.date(),
-  user_gender: z.boolean(),
-  province_id: z.string(),
-  city_id: z.string()
+  user_birth_date: z.optional(z.date()),
+  user_gender: z.optional(z.boolean()),
+  province_id: z.optional(z.string()),
+  city_id: z.optional(z.string())
 })
 
 export const createUserSchema = z.object({

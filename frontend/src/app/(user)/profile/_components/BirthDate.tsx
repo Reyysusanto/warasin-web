@@ -14,7 +14,7 @@ const BirthDate = ({ id, selected, onChange }: BirthDateProps) => {
         Tanggal Lahir
       </h3>
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between px-3 w-full mb-1 border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
+        <div className="flex items-center justify-between px-3 w-full border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
           <DatePicker
             id={id}
             selected={selected}

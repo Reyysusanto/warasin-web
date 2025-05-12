@@ -3,11 +3,11 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
 import { createNewsSuccessResponse } from "@/types/news";
-import { createNewsSchema } from "@/validations/news";
+import { CreateNewsSchema } from "@/validations/news";
 import axios, { AxiosError } from "axios";
 import { z } from "zod";
 
-type CreateNewsSchemaType = z.infer<typeof createNewsSchema>;
+type CreateNewsSchemaType = z.infer<typeof CreateNewsSchema>;
 
 export const createNewsService = async (
   data: CreateNewsSchemaType,

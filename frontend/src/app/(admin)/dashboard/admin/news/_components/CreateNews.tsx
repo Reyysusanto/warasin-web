@@ -41,7 +41,7 @@ const CreateNews = () => {
       try {
         const base64 = await fileToBase64(file);
         setImageBase64(base64);
-        setValue("image_header", base64); // agar terdaftar di react-hook-form
+        setValue("image_header", base64);
       } catch (error) {
         console.error(error);
         setError("Gagal membaca gambar");
@@ -64,7 +64,7 @@ const CreateNews = () => {
       title: data.title,
       body: data.body,
       image: imageBase64,
-      date: dayjs().format("YYYY-MM-DD"), // otomatis hari ini
+      date: dayjs().format("YYYY-MM-DD"),
     };
 
     try {

@@ -148,7 +148,6 @@ const ProfilePage = () => {
         const response = await getCityService(selectedProvince);
         if (response?.status === true) {
           setCities(response.data);
-          setValue("city", "");
         }
       } catch (error) {
         console.error("Gagal mengambil data kota", error);
@@ -175,26 +174,67 @@ const ProfilePage = () => {
 
   const onSubmit = async (data: userDetailSchemaType) => {
     setLoading(true);
-    const formattedData: UpdateDetailUserRequest = {
-      user_name: data.name,
-      user_email: data.email,
-      user_gender: false,
-      user_phone_number: data.no_hp,
-      city_id: data.city,
-      user_birth_date: dayjs(data.birth_date).format("DD-MM-YYYY"),
-      province_id: data.province,
-    };
-    console.log(formattedData);
 
     try {
+      const formattedData: Partial<UpdateDetailUserRequest> = {};
+
+      if (data.name !== userData.user_name) {
+        formattedData.name = data.name;
+      }
+
+      if (data.email !== userData.user_email) {
+        formattedData.email = data.email;
+      }
+
+      if (data.no_hp !== userData.user_phone_number) {
+        formattedData.user_phone_number = data.no_hp;
+      }
+
+      if (data.city && data.city !== userData.city_id) {
+        formattedData.city_id = data.city;
+      }
+
+      if (data.province !== userData.province_id) {
+        formattedData.province_id = data.province;
+      }
+
+      const submittedBirthDate = dayjs(data.birth_date).toISOString();
+      if (submittedBirthDate !== userData.user_birth_date) {
+        formattedData.user_birth_date = submittedBirthDate;
+      }
+
+      console.log(formattedData);
       const result = await updateDetailUser(formattedData);
       console.log(result);
-      if (result) {
-        alert("User berhasil ditambahkan");
-        setSelectedProvince("");
-        setCities([]);
+
+      if (result?.status === true) {
+        alert("User berhasil diupdate");
+        const refresh = await getUserDetailService();
+        if (refresh.status === true) {
+          const newData = refresh.data;
+          setUserData({
+            user_name: newData.user_name,
+            user_email: newData.user_email,
+            user_gender: Boolean(newData.is_verified),
+            user_phone_number: newData.user_phone_number,
+            province_id: newData.city?.province?.province_id ?? "",
+            city_id: newData.city?.city_id ?? "",
+            user_birth_date: newData.user_birth_date,
+          });
+
+          setValue("name", newData.user_name);
+          setValue("email", newData.user_email);
+          setValue("no_hp", newData.user_phone_number);
+          setValue("province", newData.city?.province?.province_id ?? "");
+          setValue("city", newData.city?.city_id ?? "");
+          if (newData.user_birth_date) {
+            const dt = new Date(newData.user_birth_date);
+            setSelectedDate(dt);
+            setValue("birth_date", dt);
+          }
+        }
       } else {
-        alert("Gagal menambahkan user");
+        alert("Gagal mengupdate user");
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -290,7 +330,7 @@ const ProfilePage = () => {
                     Tanggal Lahir
                   </h3>
                   <div className="flex flex-col gap-6">
-                    <div className="flex items-center justify-between px-3 w-full mb-6 border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
+                    <div className="flex items-center justify-between px-3 w-full border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
                       <DatePicker
                         id="birth_date"
                         selected={selectedDate}
@@ -298,7 +338,9 @@ const ProfilePage = () => {
                           setSelectedDate(date);
                           setUserData((prev) => ({
                             ...prev,
-                            birth_date: date ? date.toISOString() : "",
+                            birth_date: date
+                              ? dayjs().format("YYYY-MM-DD")
+                              : "",
                           }));
                         }}
                         dateFormat="dd/MM/yyyy"

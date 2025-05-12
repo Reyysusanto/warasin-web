@@ -31,11 +31,11 @@ export type UsersSuccessResponse = {
 };
 
 export type UpdateDetailUserRequest = {
-  user_name: string;
+  name: string;
   user_phone_number: string;
-  user_email: string;
+  email: string;
   user_birth_date: string;
-  user_gender: boolean;
+  // user_gender: boolean;
   province_id: string
   city_id: string
 };
@@ -57,6 +57,32 @@ export type DetailUserSuccessResponse = {
       city_type: string;
       province?: {
         province_id?: string;
+        province_name: string;
+      };
+    };
+    role: {
+      role_id: string;
+      role_name: string;
+    };
+  };
+  timestamp: string;
+};
+
+export type UpdateDetailUserSuccessResponse = {
+  status: boolean;
+  message: string;
+  data: {
+    user_id: string;
+    user_name: string;
+    user_email: string;
+    user_password: string;
+    is_verified: boolean;
+    city: {
+      city_id: string | null;
+      city_name: string;
+      city_type: string;
+      province: {
+        province_id: string | null;
         province_name: string;
       };
     };
