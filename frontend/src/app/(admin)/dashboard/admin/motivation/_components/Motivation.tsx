@@ -1,26 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { createCategoryMotivationService } from "@/services/dahsboardService/motivation/createCategory";
-import { deleteCategoryMotivationService } from "@/services/dahsboardService/motivation/deleteCategoryMotivation";
+import { createMotivationService } from "@/services/dahsboardService/motivation/createMotivation";
 import { getAllCategoryMotivation } from "@/services/dahsboardService/motivation/getAllCategoryMotivation";
 import { CategoryList } from "@/types/categoryMotivation";
-import { createCategoryMotivationSchema } from "@/validations/categoryMotivation";
+import { createMotivationSchema } from "@/validations/motivation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type CreateCategoryMotivationSchemaType = z.infer<
-  typeof createCategoryMotivationSchema
->;
+type CreateMotivationSchemaType = z.infer<typeof createMotivationSchema>;
 
 const MotivationSection = () => {
-  const [categories, setCategories] = useState<CategoryList[]>([]);
+  //   const [motivations, setMotivations] = useState<MotivationList[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [categoryInput, setCategoryInput] = useState("");
+  const [categories, setCategories] = useState<CategoryList[]>([]);
   const [loading, setLoading] = useState(false);
+  const [motivationForm, setMotivationForm] = useState({
+    author: "",
+    content: "",
+    motivation_category_id: "",
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateMotivationSchemaType>({
+    resolver: zodResolver(createMotivationSchema),
+  });
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -37,22 +47,18 @@ const MotivationSection = () => {
     fetchCategory();
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateCategoryMotivationSchemaType>({
-    resolver: zodResolver(createCategoryMotivationSchema),
-  });
-
-  const onSubmit = async (data: CreateCategoryMotivationSchemaType) => {
+  const onSubmit = async (data: CreateMotivationSchemaType) => {
     const formattedData = {
-      name: data.name,
+      author: data.author,
+      content: data.content,
+      motivation_category_id: data.motivation_category_id,
     };
+    console.log(formattedData)
 
     try {
       setLoading(true);
-      const result = await createCategoryMotivationService(formattedData);
+      const result = await createMotivationService(formattedData);
+      console.log(result)
 
       if (result.status) {
         setSuccess("Kategori motivasi berhasil ditambahkan");
@@ -66,88 +72,114 @@ const MotivationSection = () => {
     }
   };
 
-  const handleDeleteCategory = async (category_id: string) => {
-    const confirmed = window.confirm(
-      "Apakah anda yakin akan menghapus category ini?"
-    );
-    if (!confirmed) return;
-
-    try {
-      const result = await deleteCategoryMotivationService(category_id);
-
-      if (result.status === true) {
-        setCategories((prev) =>
-          prev.filter(
-            (category) => category.motivation_category_id !== category_id
-          )
-        );
-        alert("User deleted successfully");
-      }
-    } catch (error) {
-      alert(error || "Error occurred while deleting user");
-    }
-  };
-
   return (
     <div className="space-y-10 p-6 bg-gray-50 min-h-screen">
       <section className="bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-bold mb-4">Kategori Motivasi</h2>
+        <h2 className="text-xl font-bold mb-4">Pesan Motivasi</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           {error && <p className="text-red-500">{error}</p>}
           {success && <p className="text-green-600">{success}</p>}
-          <div className="flex space-x-4 mb-4">
+          <div className="space-y-4 mb-4">
             <input
               type="text"
-              className="border px-3 py-2 rounded w-64"
-              value={categoryInput}
-              {...register("name")}
-              onChange={(e) => setCategoryInput(e.target.value)}
-              placeholder="Nama Kategori"
+              className="border px-3 py-2 rounded w-full"
+              placeholder="Penulis"
+              {...register("author")}
+              value={motivationForm.author}
+              onChange={(e) =>
+                setMotivationForm({ ...motivationForm, author: e.target.value })
+              }
             />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message}</p>
+            {errors.author && (
+              <p className="text-red-500">{errors.author.message}</p>
+            )}
+            <textarea
+              className="border px-3 py-2 rounded w-full"
+              placeholder="Isi pesan motivasi"
+              value={motivationForm.content}
+              {...register("content")}
+              onChange={(e) =>
+                setMotivationForm({
+                  ...motivationForm,
+                  content: e.target.value,
+                })
+              }
+            />
+            {errors.content && (
+              <p className="text-red-500">{errors.content.message}</p>
+            )}
+            <select
+              className="border px-3 py-2 rounded w-full"
+              value={motivationForm.motivation_category_id}
+              {...register("motivation_category_id")}
+              onChange={(e) =>
+                setMotivationForm({
+                  ...motivationForm,
+                  motivation_category_id: e.target.value,
+                })
+              }
+            >
+              <option value="">Pilih kategori</option>
+              {categories.map((category) => (
+                <option
+                  key={category.motivation_category_id}
+                  value={category.motivation_category_id}
+                >
+                  {category.motivation_category_name}
+                </option>
+              ))}
+            </select>
+            {errors.motivation_category_id && (
+              <p className="text-red-500">
+                {errors.motivation_category_id.message}
+              </p>
             )}
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+              className="bg-green-600 text-white px-4 py-2 rounded"
             >
               {loading ? "Mengirim..." : "Submit"}
             </button>
           </div>
         </form>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {categories.map((category) => (
+
+        {/* <ul className="space-y-4">
+          {motivations.map((m) => (
             <li
-              key={category.motivation_category_id}
-              className="bg-white p-4 rounded shadow flex flex-col justify-between"
+              key={m.id}
+              className="border rounded p-4 flex justify-between items-start"
             >
               <div>
-                <h3 className="font-semibold text-gray-800 mb-2">
-                  {category.motivation_category_name}
-                </h3>
+                <p className="text-sm text-gray-600">Author: {m.author}</p>
+                <p className="text-gray-800">{m.content}</p>
+                <p className="text-xs text-gray-400">
+                  Kategori: {categories.find(c => c.id === m.motivation_category_id)?.name || "-"}
+                </p>
               </div>
-              <div className="mt-2 flex justify-end space-x-2">
+              <div className="space-x-2">
                 <button
                   onClick={() => {
-                    setCategoryInput(category.motivation_category_name);
-                    // setEditingCategory(category); // Uncomment jika edit mode digunakan
+                    setEditingMotivation(m);
+                    setMotivationForm({
+                      author: m.author,
+                      content: m.content,
+                      motivation_category_id: m.motivation_category_id,
+                    });
                   }}
-                  className="text-sm px-3 py-1 rounded bg-blue-100 text-blue-600 hover:bg-blue-200"
+                  className="text-blue-600"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() =>
-                    handleDeleteCategory(category.motivation_category_id)
-                  }
-                  className="text-sm px-3 py-1 rounded bg-red-100 text-red-600 hover:bg-red-200"
+                  onClick={() => handleDeleteMotivation(m.id)}
+                  className="text-red-600"
                 >
                   Delete
                 </button>
               </div>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </section>
     </div>
   );
