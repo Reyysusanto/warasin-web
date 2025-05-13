@@ -2,9 +2,11 @@
 "use client";
 
 import { createCategoryMotivationService } from "@/services/dahsboardService/motivation/createCategory";
+import { getAllCategoryMotivation } from "@/services/dahsboardService/motivation/getAllCategoryMotivation";
+import { CategoryList } from "@/types/categoryMotivation";
 import { createCategoryMotivationSchema } from "@/validations/categoryMotivation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -13,11 +15,26 @@ type CreateCategoryMotivationSchemaType = z.infer<
 >;
 
 const MotivationSection = () => {
-  //   const [categories, setCategories] = useState<CategoryList[]>([]);
+  const [categories, setCategories] = useState<CategoryList[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [categoryInput, setCategoryInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await getAllCategoryMotivation();
+        if (response.status === true) {
+          setCategories(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch category motivation:", error);
+      }
+    };
+
+    fetchCategory();
+  }, []);
 
   const {
     register,
@@ -75,30 +92,39 @@ const MotivationSection = () => {
             </button>
           </div>
         </form>
-        {/* <ul className="space-y-2">
-          {categories.map((cat) => (
-            <li key={cat.id} className="flex justify-between items-center">
-              <span>{cat.name}</span>
-              <div className="space-x-2">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {categories.map((category) => (
+            <li
+              key={category.motivation_category_id}
+              className="bg-white p-4 rounded shadow flex flex-col justify-between"
+            >
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-2">
+                  {category.motivation_category_name}
+                </h3>
+              </div>
+              <div className="mt-2 flex justify-end space-x-2">
                 <button
                   onClick={() => {
-                    setEditingCategory(cat);
-                    setCategoryInput(cat.name);
+                    setCategoryInput(category.motivation_category_name);
+                    // setEditingCategory(category); // Uncomment jika edit mode digunakan
                   }}
-                  className="text-blue-600"
+                  className="text-sm px-3 py-1 rounded bg-blue-100 text-blue-600 hover:bg-blue-200"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDeleteCategory(cat.id)}
-                  className="text-red-600"
+                //   onClick={() =>
+                //     handleDeleteCategory(category.motivation_category_id)
+                //   }
+                  className="text-sm px-3 py-1 rounded bg-red-100 text-red-600 hover:bg-red-200"
                 >
                   Delete
                 </button>
               </div>
             </li>
           ))}
-        </ul> */}
+        </ul>
       </section>
     </div>
   );
