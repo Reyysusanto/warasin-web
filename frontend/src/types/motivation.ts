@@ -22,3 +22,21 @@ export type CreateMotivationSuccessResponse = {
   };
   timestamp: string;
 };
+
+export type GetAllMotivationsSuccessRespone = {
+  status: true;
+  message: string;
+  data: Array<{
+    motivation_id: string;
+    motivation_author: string;
+    motivation_content: string;
+    motivation_category_id: string;
+  }>;
+  timestamp: string;
+  meta: {
+    page: 1;
+    per_page: 10;
+    max_page: 2;
+    count: 12;
+  };
+};

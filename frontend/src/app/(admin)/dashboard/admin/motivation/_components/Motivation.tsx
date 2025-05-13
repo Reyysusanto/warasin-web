@@ -3,17 +3,20 @@
 
 import { createMotivationService } from "@/services/dahsboardService/motivation/createMotivation";
 import { getAllCategoryMotivation } from "@/services/dahsboardService/motivation/getAllCategoryMotivation";
+import { GetAllMotivationsService } from "@/services/dahsboardService/motivation/getAllMotivation";
 import { CategoryList } from "@/types/categoryMotivation";
+import { MotivationList } from "@/types/motivation";
 import { createMotivationSchema } from "@/validations/motivation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { MdDelete, MdModeEdit } from "react-icons/md";
 
 type CreateMotivationSchemaType = z.infer<typeof createMotivationSchema>;
 
 const MotivationSection = () => {
-  //   const [motivations, setMotivations] = useState<MotivationList[]>([]);
+  const [motivations, setMotivations] = useState<MotivationList[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoryList[]>([]);
@@ -44,7 +47,19 @@ const MotivationSection = () => {
       }
     };
 
+    const fetchMotivation = async () => {
+      try {
+        const response = await GetAllMotivationsService();
+        if (response.status === true) {
+          setMotivations(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch motivation:", error);
+      }
+    };
+
     fetchCategory();
+    fetchMotivation();
   }, []);
 
   const onSubmit = async (data: CreateMotivationSchemaType) => {
@@ -53,12 +68,12 @@ const MotivationSection = () => {
       content: data.content,
       motivation_category_id: data.motivation_category_id,
     };
-    console.log(formattedData)
+    console.log(formattedData);
 
     try {
       setLoading(true);
       const result = await createMotivationService(formattedData);
-      console.log(result)
+      console.log(result);
 
       if (result.status) {
         setSuccess("Kategori motivasi berhasil ditambahkan");
@@ -143,43 +158,63 @@ const MotivationSection = () => {
           </div>
         </form>
 
-        {/* <ul className="space-y-4">
-          {motivations.map((m) => (
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {motivations.map((motivation) => (
             <li
-              key={m.id}
-              className="border rounded p-4 flex justify-between items-start"
+              key={motivation.motivation_id}
+              className="bg-white border border-gray-200 rounded-lg shadow p-5 flex flex-col justify-between"
             >
-              <div>
-                <p className="text-sm text-gray-600">Author: {m.author}</p>
-                <p className="text-gray-800">{m.content}</p>
+              <div className="space-y-2">
+                <p className="text-sm text-gray-500">
+                  Author:{" "}
+                  <span className="font-medium text-gray-700">
+                    {motivation.motivation_author}
+                  </span>
+                </p>
+
+                <p className="text-gray-800">{motivation.motivation_content}</p>
+
                 <p className="text-xs text-gray-400">
-                  Kategori: {categories.find(c => c.id === m.motivation_category_id)?.name || "-"}
+                  Kategori:{" "}
+                  <span className="inline-block bg-blue-100 text-blue-600 px-2 py-0.5 rounded text-xs">
+                    {categories.find(
+                      (category) =>
+                        category.motivation_category_id ===
+                        motivation.motivation_category_id
+                    )?.motivation_category_name || "-"}
+                  </span>
                 </p>
               </div>
-              <div className="space-x-2">
+
+              <div className="flex justify-end space-x-2 mt-4">
                 <button
                   onClick={() => {
-                    setEditingMotivation(m);
+                    // setEditingMotivation(motivation);
                     setMotivationForm({
-                      author: m.author,
-                      content: m.content,
-                      motivation_category_id: m.motivation_category_id,
+                      author: motivation.motivation_author,
+                      content: motivation.motivation_content,
+                      motivation_category_id: motivation.motivation_category_id,
                     });
                   }}
-                  className="text-blue-600"
+                  className="flex items-center gap-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 transition"
                 >
-                  Edit
+                  <MdModeEdit className="text-blue-600" />
+                  <span className="text-blue-600">Edit</span>
                 </button>
+
                 <button
-                  onClick={() => handleDeleteMotivation(m.id)}
-                  className="text-red-600"
+                //   onClick={() =>
+                //     handleDeleteMotivation(motivation.motivation_id)
+                //   }
+                  className="flex items-center gap-1 px-3 py-1 text-sm border border-red-200 rounded hover:bg-red-50 transition"
                 >
-                  Delete
+                  <MdDelete className="text-red-600" />
+                  <span className="text-red-600">Delete</span>
                 </button>
               </div>
             </li>
           ))}
-        </ul> */}
+        </ul>
       </section>
     </div>
   );
