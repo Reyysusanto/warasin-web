@@ -1,10 +1,12 @@
 "use client";
 
+import CategorySection from "./_components/Category";
 import MotivationSection from "./_components/Motivation";
 
 const NewsDashboard = () => {
   return (
-    <div>
+    <div className="flex flex-col">
+      <CategorySection />
       <MotivationSection />
     </div>
   );
