@@ -66,18 +66,15 @@ const CreateNews = () => {
       image: data.image,
       date: dayjs().format("YYYY-MM-DD"),
     };
-    console.log(formattedData)
 
     try {
       const result = await createNewsService(formattedData);
-      console.log(result)
       if (result?.status) {
         setSuccess("Berita berhasil ditambahkan");
       } else {
         setError("Berita gagal ditambahkan");
       }
     } catch (error: any) {
-      console.error(error);
       setError(error.message || "Terjadi kesalahan");
     } finally {
       setLoading(false);

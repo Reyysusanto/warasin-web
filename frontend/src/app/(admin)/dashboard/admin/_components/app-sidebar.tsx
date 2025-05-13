@@ -60,8 +60,8 @@ const data = {
       icon: UsersIcon,
     },
     {
-      title: "Dopamin",
-      url: "#",
+      title: "Motivations",
+      url: "/dashboard/admin/motivation",
       icon: UsersIcon,
     },
   ],
