@@ -1,30 +1,27 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { createNewsSuccessResponse } from "@/types/news";
-import { CreateNewsSchema } from "@/validations/news";
+import { UpdateUserAdminRequest, updateUserAdminResponse } from "@/types/user";
 import axios, { AxiosError } from "axios";
-import { z } from "zod";
 
-type CreateNewsSchemaType = z.infer<typeof CreateNewsSchema>;
-
-export const createNewsService = async (
-  data: CreateNewsSchemaType,
+export const updateUserAdminService = async (
+  user_id: string,
+  data: Partial<UpdateUserAdminRequest>
 ) => {
   try {
-    const token = localStorage.getItem('token')
-    const response = await axios.post<
-      createNewsSuccessResponse | ErrorResponse
-    >(`${baseURL}/admin/create-news`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const token = localStorage.getItem("token");
+    const response = await axios.patch<updateUserAdminResponse | ErrorResponse>(
+      `${baseURL}/admin/update-user/${user_id}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
-      return response.data as createNewsSuccessResponse;
+      return response.data as updateUserAdminResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -53,7 +50,5 @@ export const createNewsService = async (
         }
       }
     }
-
-    throw new Error("Gagal menambahkan berita");
   }
 };

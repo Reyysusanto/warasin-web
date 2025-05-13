@@ -9,7 +9,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-// Tipe infer dari schema
 type CreateNewsSchemaType = z.infer<typeof CreateNewsSchema>;
 
 const CreateNews = () => {
@@ -33,7 +32,8 @@ const CreateNews = () => {
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
       reader.readAsDataURL(file);
-    });
+    }
+  );
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -41,7 +41,7 @@ const CreateNews = () => {
       try {
         const base64 = await fileToBase64(file);
         setImageBase64(base64);
-        setValue("image_header", base64);
+        setValue("image", base64);
       } catch (error) {
         console.error(error);
         setError("Gagal membaca gambar");
@@ -63,12 +63,14 @@ const CreateNews = () => {
     const formattedData = {
       title: data.title,
       body: data.body,
-      image: imageBase64,
+      image: data.image,
       date: dayjs().format("YYYY-MM-DD"),
     };
+    console.log(formattedData)
 
     try {
       const result = await createNewsService(formattedData);
+      console.log(result)
       if (result?.status) {
         setSuccess("Berita berhasil ditambahkan");
       } else {
@@ -103,8 +105,8 @@ const CreateNews = () => {
             onChange={handleImageChange}
             className="w-full"
           />
-          {errors.image_header && (
-            <p className="text-red-500">{errors.image_header.message}</p>
+          {errors.image && (
+            <p className="text-red-500">{errors.image.message}</p>
           )}
         </div>
 

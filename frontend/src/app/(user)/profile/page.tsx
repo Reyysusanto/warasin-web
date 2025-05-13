@@ -203,9 +203,7 @@ const ProfilePage = () => {
         formattedData.user_birth_date = submittedBirthDate;
       }
 
-      console.log(formattedData);
       const result = await updateDetailUser(formattedData);
-      console.log(result);
 
       if (result?.status === true) {
         alert("User berhasil diupdate");
