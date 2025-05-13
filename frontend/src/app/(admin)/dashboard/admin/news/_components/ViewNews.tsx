@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getAllNewsService } from "@/services/dahsboardService/news/getAllNews";
 import { NewsLlist } from "@/types/news";
 import dayjs from "dayjs";
+import { deleteNewsService } from "@/services/dahsboardService/news/deleteNews";
 
 const ViewNewsPage = () => {
   const [newsList, setNewsList] = useState<NewsLlist[]>([]);
@@ -32,22 +33,22 @@ const ViewNewsPage = () => {
     }
   };
 
-  //   const handleDelete = async (id: string) => {
-  //     const confirmed = confirm("Apakah Anda yakin ingin menghapus berita ini?");
-  //     if (!confirmed) return;
+  const handleDelete = async (id: string) => {
+    const confirmed = confirm("Apakah Anda yakin ingin menghapus berita ini?");
+    if (!confirmed) return;
 
-  //     try {
-  //       const result = await deleteNewsService(id);
-  //       if (result.status) {
-  //         setNewsList((prev) => prev.filter((news) => news.id !== id));
-  //         alert("Berita berhasil dihapus");
-  //       } else {
-  //         alert("Gagal menghapus berita");
-  //       }
-  //     } catch (err) {
-  //       alert("Terjadi kesalahan saat menghapus berita");
-  //     }
-  //   };
+    try {
+      const result = await deleteNewsService(id);
+      if (result.status) {
+        setNewsList((prev) => prev.filter((news) => news.news_id !== id));
+        alert("Berita berhasil dihapus");
+      } else {
+        alert("Gagal menghapus berita");
+      }
+    } catch (error) {
+      alert(error || "Terjadi kesalahan saat menghapus berita");
+    }
+  };
 
   useEffect(() => {
     fetchNews();
@@ -80,8 +81,12 @@ const ViewNewsPage = () => {
               <h3 className="font-bold text-lg text-primaryTextColor">
                 {news.news_title}
               </h3>
-              <p className="text-sm text-gray-600 line-clamp-3">{news.news_body}</p>
-              <p className="text-xs text-gray-400">{dayjs(news.news_date).format("DD/MM/YYYY")}</p>
+              <p className="text-sm text-gray-600 line-clamp-3">
+                {news.news_body}
+              </p>
+              <p className="text-xs text-gray-400">
+                {dayjs(news.news_date).format("DD/MM/YYYY")}
+              </p>
               <div className="flex gap-3">
                 <Link
                   href={`/admin/news/${news.news_id}`}
@@ -89,7 +94,10 @@ const ViewNewsPage = () => {
                 >
                   Edit
                 </Link>
-                <button className="px-3 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700">
+                <button
+                  onClick={() => handleDelete(news.news_id)}
+                  className="px-3 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700"
+                >
                   Delete
                 </button>
               </div>
