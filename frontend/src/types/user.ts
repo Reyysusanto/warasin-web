@@ -153,3 +153,30 @@ export type updateUserAdminResponse = {
   };
   timestamp: string;
 };
+
+export type GetDetailUserSuccessResponse = {
+  status: true;
+  message: string;
+  data: {
+    user_id: string;
+    user_name: string;
+    user_email: string;
+    user_password: string;
+    user_phone_number: string;
+    is_verified: boolean;
+    city: {
+      city_id: string;
+      city_name: string;
+      city_type: string;
+      province: {
+        province_id: string;
+        province_name: string;
+      };
+    };
+    role: {
+      role_id: string;
+      role_name: string;
+    };
+  };
+  timestamp: string;
+};

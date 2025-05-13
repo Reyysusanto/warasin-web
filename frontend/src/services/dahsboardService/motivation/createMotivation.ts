@@ -1,6 +1,10 @@
 import { baseURL } from "@/config/api";
+import { adminRefreshTokenService } from "@/services/role/adminRefreshToken";
 import { ErrorResponse } from "@/types/error";
-import { CreateMotivationRequest, CreateMotivationSuccessResponse } from "@/types/motivation";
+import {
+  CreateMotivationRequest,
+  CreateMotivationSuccessResponse,
+} from "@/types/motivation";
 import axios, { AxiosError } from "axios";
 
 export const createMotivationService = async (
@@ -26,31 +30,33 @@ export const createMotivationService = async (
       return response.data as ErrorResponse;
     }
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<ErrorResponse>;
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      try {
+        const newAccessToken = await adminRefreshTokenService();
 
-      if (axiosError.response) {
-        if (error.response?.status === 401) {
-          localStorage.removeItem("token");
-          window.location.href = "/login-admin";
-          throw new Error("Token telah kadaluarsa");
-        }
+        const retryResponse = await axios.post(
+          `${baseURL}/admin/create-motivation`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${newAccessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-        if (axiosError.response.data.status === false) {
-          throw new Error(
-            axiosError.response.data.error ||
-              axiosError.response.data.message ||
-              "Gagal menambahkan data"
-          );
-        }
-
-        if (axiosError.response.status === 401) {
-          localStorage.removeItem("token");
-          throw new Error("Token telah kadaluarsa");
-        }
+        return retryResponse.data as CreateMotivationSuccessResponse;
+      } catch (error) {
+        console.log(error)
+        throw new Error("Session expired. Please log in again.");
       }
     }
 
-    throw new Error("Gagal menambahkan berita");
+    if (axios.isAxiosError(error)) {
+      const err = error as AxiosError<ErrorResponse>;
+      throw new Error(err.response?.data?.message || "Gagal menambahkan data");
+    }
+
+    throw new Error("Terjadi kesalahan saat menambahkan data motivasi");
   }
 };

@@ -9,18 +9,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getCityService, getProvincesService } from "@/services/province";
 import { City, Province } from "@/types/region";
-import dayjs from "dayjs";
 import { UpdateUserAdminRequest } from "@/types/user";
 import { updateUserAdminService } from "@/services/dahsboardService/user/updateUser";
 import { useParams } from "next/navigation";
 import Input from "./_components/Input";
 import GenderOption from "./_components/GenderOption";
 import Options from "./_components/Option";
+import { getUserDetailAdminService } from "@/services/dahsboardService/user/getDetailUser";
 
 type userDetailAdminSchemaType = z.infer<typeof userDetailAdminSchema>;
 
 const EditProfilePage = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -33,7 +32,6 @@ const EditProfilePage = () => {
     user_phone_number: "",
     province_id: "",
     city_id: "",
-    user_birth_date: "",
     role_id: "",
   });
 
@@ -50,15 +48,15 @@ const EditProfilePage = () => {
       no_hp: "",
       province: "",
       city: "",
-      birth_date: undefined,
       role: "",
     },
   });
 
   useEffect(() => {
     const getUserData = async () => {
+      const user_id = params.id as string;
       try {
-        const response = await getUserDetailService();
+        const response = await getUserDetailAdminService(user_id);
         if (response.status === true) {
           const data = response.data;
           console.log(data);
@@ -69,7 +67,6 @@ const EditProfilePage = () => {
             user_phone_number: data.user_phone_number,
             province_id: data.city?.province?.province_id || "",
             city_id: data.city?.city_id || "",
-            user_birth_date: data.user_birth_date,
             role_id: data.role.role_id,
           });
 
@@ -79,10 +76,6 @@ const EditProfilePage = () => {
           setValue("no_hp", data.user_phone_number);
           setValue("province", data.city?.province?.province_id || "");
           setValue("city", data.city?.city_id || "");
-          if (data.user_birth_date) {
-            setSelectedDate(new Date(data.user_birth_date));
-            setValue("birth_date", new Date(data.user_birth_date));
-          }
           setValue("role", data.role.role_id || "");
         }
       } catch (error) {
@@ -95,8 +88,9 @@ const EditProfilePage = () => {
 
   useEffect(() => {
     const fetchInitialData = async () => {
+      const user_id = params.id as string;
       try {
-        const userResponse = await getUserDetailService();
+        const userResponse = await getUserDetailAdminService(user_id);
 
         if (userResponse.status && userResponse.data) {
           const userProvince = userResponse.data.city?.province;
@@ -121,7 +115,7 @@ const EditProfilePage = () => {
     };
 
     fetchInitialData();
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -181,11 +175,6 @@ const EditProfilePage = () => {
         formattedData.province_id = data.province;
       }
 
-      const submittedBirthDate = dayjs(data.birth_date).toISOString();
-      if (submittedBirthDate !== userData.user_birth_date) {
-        formattedData.user_birth_date = submittedBirthDate;
-      }
-
       if (data.role !== userData.role_id) {
         formattedData.role_id = data.role;
       }
@@ -204,7 +193,6 @@ const EditProfilePage = () => {
             user_phone_number: newData.user_phone_number,
             province_id: newData.city?.province?.province_id ?? "",
             city_id: newData.city?.city_id ?? "",
-            user_birth_date: newData.user_birth_date,
             role_id: newData.role.role_id,
           });
 
@@ -213,11 +201,6 @@ const EditProfilePage = () => {
           setValue("no_hp", newData.user_phone_number);
           setValue("province", newData.city?.province?.province_id ?? "");
           setValue("city", newData.city?.city_id ?? "");
-          if (newData.user_birth_date) {
-            const dt = new Date(newData.user_birth_date);
-            setSelectedDate(dt);
-            setValue("birth_date", dt);
-          }
         }
       } else {
         alert("Gagal mengupdate user");

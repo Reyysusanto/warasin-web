@@ -14,7 +14,9 @@ export const loginService = async (data: {
 
     if (response.data.status === true && response.data.data.access_token) {
       const token = response.data.data.access_token;
+      const refreshToken = response.data.data.refresh_token;
       localStorage.setItem("token", token);
+      localStorage.setItem("refresh_token", refreshToken);
       return true;
     }
 
