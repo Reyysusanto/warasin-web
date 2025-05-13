@@ -38,3 +38,16 @@ export type getAllNewsSuccessResponse = {
   }>;
   timestamp: string;
 };
+
+export type DeleteNewsSuccessResponse = {
+  status: true;
+  message: string;
+  data: {
+    news_id: string;
+    news_image: string;
+    news_title: string;
+    news_body: string;
+    news_date: string;
+  };
+  timestamp: string;
+};
