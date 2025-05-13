@@ -7,7 +7,7 @@ import { z } from "zod";
 import { createUserSchema } from "@/validations/user";
 import dayjs from "dayjs";
 import { getCityService, getProvincesService } from "@/services/province";
-import { createUserService } from "@/services/dahsboardService/createUser";
+import { createUserService } from "@/services/dahsboardService/user/createUser";
 import { getRoleService } from "@/services/role";
 import { City, Province } from "@/types/region";
 import { Role } from "@/types/role";

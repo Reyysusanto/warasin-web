@@ -60,7 +60,7 @@ export const getUserDetailService = async (): Promise<
         throw new Error("Email atau password salah");
       }
     }
-    throw new Error("Error fetching user details:");
+    throw new Error("Error fetching user details");
   }
 };
 

@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
-import { GetAllUsers } from "@/services/users";
-import { Users } from "@/types/user";
 import AddUserPage from "./_components/createUser";
-import { deleteUserService } from "@/services/dahsboardService/deleteUser";
+import { deleteUserService } from "@/services/dahsboardService/user/deleteUser";
+import { useRouter } from "next/navigation";
+import { GetAllUsers } from "@/services/dahsboardService/user/users";
+import { UserList } from "@/types/user";
 
 const UserDashboard = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [userList, setUserList] = useState<Users[]>([]);
+  const [userList, setUserList] = useState<UserList[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -34,7 +37,7 @@ const UserDashboard = () => {
   };
 
   const editData = (id: string) => {
-    console.log("Edit user:", id);
+    router.push(`/dashboard/admin/users/${id}`)
   };
 
   const removeData = async (id: string) => {
@@ -89,7 +92,7 @@ const UserDashboard = () => {
                 </td>
                 <td className="px-4 py-4 flex items-center gap-4 whitespace-nowrap">
                   <Image
-                    src="/images/default-avatar.png"
+                    src="/Images/default_profile.png"
                     alt={user.user_name}
                     width={36}
                     height={36}

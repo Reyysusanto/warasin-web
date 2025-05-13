@@ -1,22 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { createNewsSuccessResponse } from "@/types/news";
-import { CreateNewsSchema } from "@/validations/news";
+import { getAllNewsSuccessResponse } from "@/types/news";
 import axios, { AxiosError } from "axios";
-import { z } from "zod";
 
-type CreateNewsSchemaType = z.infer<typeof CreateNewsSchema>;
-
-export const createNewsService = async (
-  data: CreateNewsSchemaType,
-) => {
+export const getAllNewsService = async (): Promise<
+  getAllNewsSuccessResponse | ErrorResponse
+> => {
   try {
-    const token = localStorage.getItem('token')
-    const response = await axios.post<
-      createNewsSuccessResponse | ErrorResponse
-    >(`${baseURL}/admin/create-news`, data, {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${baseURL}/admin/get-all-news`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -24,7 +16,7 @@ export const createNewsService = async (
     });
 
     if (response.status === 200) {
-      return response.data as createNewsSuccessResponse;
+      return response.data as getAllNewsSuccessResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -36,14 +28,14 @@ export const createNewsService = async (
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
           window.location.href = "/login-admin";
-          return null;
+          throw new Error("Token telah kadaularsa");
         }
 
         if (axiosError.response.data.status === false) {
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Gagal menambahkan data"
+              "Gagal mengambil data"
           );
         }
 
@@ -54,6 +46,8 @@ export const createNewsService = async (
       }
     }
 
-    throw new Error("Gagal menambahkan berita");
+    throw new Error(
+      "Terjadi kesalahan saat mengambil data. Silakan coba lagi."
+    );
   }
 };

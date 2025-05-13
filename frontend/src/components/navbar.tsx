@@ -8,7 +8,8 @@ import { usePathname } from "next/navigation";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaChevronDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { DetailUserSuccessResponse, getUserDetailService } from "@/services/detailUser";
+import { getUserDetailService } from "@/services/detailUser";
+import { DetailUserSuccessResponse } from "@/types/user";
 
 const NavigationBar = () => {
   const router = useRouter();
@@ -41,8 +42,13 @@ const NavigationBar = () => {
   useEffect(() => {
     const getUser = async () => {
       const data = await getUserDetailService();
-      if (data) {
-        setUser(data);
+
+      if(!data) {
+        setUser(null)
+      } else {
+        if (data.status === true) {
+          setUser(data);
+        } 
       }
     };
   
