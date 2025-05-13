@@ -2,6 +2,7 @@
 "use client";
 
 import { createCategoryMotivationService } from "@/services/dahsboardService/motivation/createCategory";
+import { deleteCategoryMotivationService } from "@/services/dahsboardService/motivation/deleteCategoryMotivation";
 import { getAllCategoryMotivation } from "@/services/dahsboardService/motivation/getAllCategoryMotivation";
 import { CategoryList } from "@/types/categoryMotivation";
 import { createCategoryMotivationSchema } from "@/validations/categoryMotivation";
@@ -65,6 +66,28 @@ const MotivationSection = () => {
     }
   };
 
+  const handleDeleteCategory = async (category_id: string) => {
+    const confirmed = window.confirm(
+      "Apakah anda yakin akan menghapus category ini?"
+    );
+    if (!confirmed) return;
+
+    try {
+      const result = await deleteCategoryMotivationService(category_id);
+
+      if (result.status === true) {
+        setCategories((prev) =>
+          prev.filter(
+            (category) => category.motivation_category_id !== category_id
+          )
+        );
+        alert("User deleted successfully");
+      }
+    } catch (error) {
+      alert(error || "Error occurred while deleting user");
+    }
+  };
+
   return (
     <div className="space-y-10 p-6 bg-gray-50 min-h-screen">
       <section className="bg-white p-6 rounded shadow">
@@ -114,9 +137,9 @@ const MotivationSection = () => {
                   Edit
                 </button>
                 <button
-                //   onClick={() =>
-                //     handleDeleteCategory(category.motivation_category_id)
-                //   }
+                  onClick={() =>
+                    handleDeleteCategory(category.motivation_category_id)
+                  }
                   className="text-sm px-3 py-1 rounded bg-red-100 text-red-600 hover:bg-red-200"
                 >
                   Delete
