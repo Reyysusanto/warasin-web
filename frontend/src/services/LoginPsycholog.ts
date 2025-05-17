@@ -3,14 +3,14 @@ import { LoginSuccessResponse } from "@/types/auth";
 import { ErrorResponse } from "@/types/error";
 import axios, { AxiosError } from "axios";
 
-export const LoginAdminService = async (data: {
+export const LoginPsychologService = async (data: {
   email: string;
   password: string;
 }) => {
   try {
     const response = await axios.post<
       LoginSuccessResponse | ErrorResponse
-    >(`${baseURL}/admin/login`, data);
+    >(`${baseURL}/psycholog/login`, data);
 
     if (response.data.status === true) {
       const token = response.data.data.access_token;

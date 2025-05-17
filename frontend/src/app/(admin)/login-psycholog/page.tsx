@@ -10,7 +10,7 @@ import { z } from "zod";
 import { LoginAdminSchema } from "@/validations/admin";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginAdminService } from "@/services/LoginAdmin";
+import { LoginPsychologService } from "@/services/LoginPsycholog";
 
 type LoginAdminSchemaType = z.infer<typeof LoginAdminSchema>;
 
@@ -37,13 +37,13 @@ const LoginDashboard = () => {
     setSuccessMessage("");
 
     try {
-      const successLogin = await LoginAdminService(data);
+      const successLogin = await LoginPsychologService(data);
 
       if (successLogin) {
-        setSuccessMessage("Login admin berhasil");
-        router.push("/dashboard/admin");
+        setSuccessMessage("Login psycholog berhasil");
+        router.push("/dashboard/psycholog");
       } else {
-        setErrorMessage("Login admin gagal");
+        setErrorMessage("Login psycholog gagal");
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -73,7 +73,7 @@ const LoginDashboard = () => {
               htmlFor="email"
               className="block text-primaryTextColor font-medium mb-2"
             >
-              Email Admin
+              Email Psycholog
             </label>
             <div className="relative flex items-center">
               <FaEnvelope className="absolute left-3 text-tertiaryTextColor" />
@@ -99,7 +99,7 @@ const LoginDashboard = () => {
               htmlFor="password"
               className="block text-primaryTextColor font-medium mb-1"
             >
-              Password Admin
+              Password Psycholog
             </label>
             <div className="relative flex items-center">
               <FaLock className="absolute left-3 text-tertiaryTextColor" />
@@ -153,8 +153,8 @@ const LoginDashboard = () => {
 
             <p className="mt-4 text-tertiaryTextColor text-sm text-center">
               Login sebagai{" "}
-              <Link href="/login-psycholog" className="text-primaryColor hover:underline">
-                Psycholog
+              <Link href="/login-admin" className="text-primaryColor hover:underline">
+                Admin
               </Link>
             </p>
           </div>

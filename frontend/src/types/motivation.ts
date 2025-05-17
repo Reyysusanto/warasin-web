@@ -2,7 +2,10 @@ export type MotivationList = {
   motivation_id: string;
   motivation_author: string;
   motivation_content: string;
-  motivation_category_id: string;
+  motivation_category: {
+    motivation_category_id: string;
+    motivation_category_name: string;
+  };
 };
 
 export type CreateMotivationRequest = {
@@ -30,7 +33,10 @@ export type GetAllMotivationsSuccessRespone = {
     motivation_id: string;
     motivation_author: string;
     motivation_content: string;
-    motivation_category_id: string;
+    motivation_category: {
+      motivation_category_id: string;
+      motivation_category_name: string;
+    };
   }>;
   timestamp: string;
   meta: {

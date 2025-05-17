@@ -64,7 +64,9 @@ export const getUserDetailService = async (): Promise<
   }
 };
 
-export const updateDetailUser = async (data: Partial<UpdateDetailUserRequest>) => {
+export const updateDetailUserService = async (
+  data: Partial<UpdateDetailUserRequest>
+): Promise<UpdateDetailUserSuccessResponse | ErrorResponse> => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.patch<
@@ -89,7 +91,7 @@ export const updateDetailUser = async (data: Partial<UpdateDetailUserRequest>) =
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
           window.location.href = "/login";
-          return null;
+          throw new Error("Token kadaluarsa");
         }
 
         if (axiosError.response.data.status === false) {
@@ -106,5 +108,6 @@ export const updateDetailUser = async (data: Partial<UpdateDetailUserRequest>) =
         }
       }
     }
+    throw new Error("Terjadi kesalahan saat memperbarui data pengguna.");
   }
 };

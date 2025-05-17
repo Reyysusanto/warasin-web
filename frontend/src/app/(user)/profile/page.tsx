@@ -4,13 +4,14 @@ import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import { FaCalendarAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import Input from "./_components/Input";
 import Options from "./_components/Option";
 import HistoryConsultation from "./_components/historyConsultation";
-import { getUserDetailService, updateDetailUser } from "@/services/detailUser";
+import {
+  getUserDetailService,
+  updateDetailUserService,
+} from "@/services/detailUser";
 import { z } from "zod";
 import { userDetailSchema } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -70,7 +71,8 @@ const ProfilePage = () => {
       no_hp: "",
       province: "",
       city: "",
-      birth_date: undefined,
+      birth_date: new Date(),
+      // gender: false,
     },
   });
 
@@ -80,7 +82,6 @@ const ProfilePage = () => {
         const response = await getUserDetailService();
         if (response.status === true) {
           const data = response.data;
-          console.log(data);
           setUserData({
             user_name: data.user_name,
             user_email: data.user_email,
@@ -93,7 +94,7 @@ const ProfilePage = () => {
 
           setValue("name", data.user_name);
           setValue("email", data.user_email);
-          setValue("gender", false);
+          // setValue("gender", false);
           setValue("no_hp", data.user_phone_number);
           setValue("province", data.city?.province?.province_id || "");
           setValue("city", data.city?.city_id || "");
@@ -118,7 +119,7 @@ const ProfilePage = () => {
         if (userResponse.status && userResponse.data) {
           const userProvince = userResponse.data.city?.province;
 
-          if (userProvince) {
+          if (userProvince?.province_id) {
             const provinceId = userProvince.province_id ?? "";
             setSelectedProvince(provinceId);
             setUserData((prev) => ({
@@ -142,9 +143,10 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchCities = async () => {
-      if (!userData.province_id) return;
+      if (!selectedProvince) return;
 
       try {
+        console.log(userData.province_id);
         const response = await getCityService(selectedProvince);
         if (response?.status === true) {
           setCities(response.data);
@@ -187,10 +189,10 @@ const ProfilePage = () => {
       }
 
       if (data.no_hp !== userData.user_phone_number) {
-        formattedData.user_phone_number = data.no_hp;
+        formattedData.phone_number = data.no_hp;
       }
 
-      if (data.city && data.city !== userData.city_id) {
+      if (data.city !== userData.city_id) {
         formattedData.city_id = data.city;
       }
 
@@ -198,14 +200,15 @@ const ProfilePage = () => {
         formattedData.province_id = data.province;
       }
 
-      const submittedBirthDate = dayjs(data.birth_date).toISOString();
+      const submittedBirthDate = dayjs(data.birth_date).format("YYYY-MM-DD");
       if (submittedBirthDate !== userData.user_birth_date) {
-        formattedData.user_birth_date = submittedBirthDate;
+        formattedData.birth_date = submittedBirthDate;
       }
 
-      const result = await updateDetailUser(formattedData);
+      console.log(formattedData);
+      const result = await updateDetailUserService(formattedData);
 
-      if (result?.status === true) {
+      if (result.status === true) {
         alert("User berhasil diupdate");
         const refresh = await getUserDetailService();
         if (refresh.status === true) {
@@ -226,9 +229,8 @@ const ProfilePage = () => {
           setValue("province", newData.city?.province?.province_id ?? "");
           setValue("city", newData.city?.city_id ?? "");
           if (newData.user_birth_date) {
-            const dt = new Date(newData.user_birth_date);
-            setSelectedDate(dt);
-            setValue("birth_date", dt);
+            setSelectedDate(new Date(newData.user_birth_date));
+            setValue("birth_date", new Date(newData.user_birth_date));
           }
         }
       } else {
@@ -252,7 +254,7 @@ const ProfilePage = () => {
       <main className="flex flex-col items-center px-16 pt-32 pb-20 gap-20">
         <div className="flex flex-col md:w-1/2 items-center gap-6">
           <Image
-            src={"/Images/FAQ.png"}
+            src={"/Images/default_profile.png"}
             height={250}
             width={250}
             alt="Profile"
@@ -323,45 +325,58 @@ const ProfilePage = () => {
                   onChange={handleInputChange}
                   isRequired={true}
                 />
+
                 <div className="flex flex-col gap-y-3">
                   <h3 className="text-sm md:text-base text-primaryTextColor">
                     Tanggal Lahir
                   </h3>
                   <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between px-3 w-full border border-primaryColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor">
-                      <DatePicker
+                      <input
+                        type="date"
                         id="birth_date"
-                        selected={selectedDate}
-                        onChange={(date: Date | null) => {
+                        value={
+                          selectedDate
+                            ? dayjs(selectedDate).format("YYYY-MM-DD")
+                            : ""
+                        }
+                        onChange={(e) => {
+                          const date = e.target.value
+                            ? new Date(e.target.value)
+                            : null;
                           setSelectedDate(date);
+                          setValue("birth_date", date || new Date());
                           setUserData((prev) => ({
                             ...prev,
                             birth_date: date
-                              ? dayjs().format("YYYY-MM-DD")
+                              ? dayjs(date).format("YYYY-MM-DD")
                               : "",
                           }));
                         }}
-                        dateFormat="dd/MM/yyyy"
                         className="w-full rounded-md p-2 bg-transparent focus:ring-0 focus:outline-none"
                       />
-                      <FaCalendarAlt className="text-xl text-primaryTextColor" />
                     </div>
                   </div>
+                  {errors.birth_date && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.birth_date.message}
+                    </p>
+                  )}
                 </div>
 
                 <GenderOption
                   id="gender"
                   label="Gender"
                   value={userData.user_gender}
-                  updateUser={formData("gender")}
-                  error={errors.gender?.message}
+                  // updateUser={formData("gender")}
+                  // error={errors.gender?.message}
                   onChange={(id, value) => {
                     const booleanValue = value === "true";
                     setUserData((prev) => ({
                       ...prev,
                       user_gender: booleanValue,
                     }));
-                    setValue("gender", booleanValue);
+                    // setValue("gender", booleanValue);
                   }}
                 />
 
@@ -373,6 +388,11 @@ const ProfilePage = () => {
                     handleOptionChange(id, value);
                     setSelectedProvince(value);
                     setValue("province", value);
+                    setValue("city", "");
+                    setUserData((prev) => ({
+                      ...prev,
+                      city_id: "",
+                    }));
                   }}
                   value={userData.province_id}
                   options={provinces.map((p) => ({

@@ -22,15 +22,15 @@ const GenderOption = ({
   id,
   label,
   value,
-  updateUser,
-  error,
+  // updateUser,
+  // error,
   onChange,
 }: {
   id: string;
   label: string;
   value?: boolean;
-  updateUser: any;
-  error?: string;
+  // updateUser: any;
+  // error?: string;
   onChange: (id: string, value: string) => void;
 }) => {
   const [strValue, setStrValue] = useState<string>("");
@@ -56,7 +56,7 @@ const GenderOption = ({
             name={id}
             id={id}
             value={strValue}
-            {...updateUser}
+            // {...updateUser}
             onChange={handleChange}
             className="appearance-none w-full rounded-md p-2 bg-transparent focus:ring-2 focus:ring-primaryColor"
           >
@@ -75,7 +75,7 @@ const GenderOption = ({
           </select>
           <FaAngleDown className="text-xl pr-2 text-primaryTextColor" />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
       </div>
     </div>
   );
