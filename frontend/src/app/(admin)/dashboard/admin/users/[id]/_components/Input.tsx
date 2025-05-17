@@ -34,7 +34,7 @@ const Input = ({
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-y-2">
       <label 
         htmlFor={id} 
         id={id} 

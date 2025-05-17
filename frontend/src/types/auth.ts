@@ -29,17 +29,12 @@ export type RegisterSuccessResponse = {
   };
 };
 
-export type LoginSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    access_token: string;
-    refresh_token: string;
-  };
-  timestamp: string;
+export type LoginRequest = {
+  email: string;
+  password: string;
 };
 
-export type LoginAdminSuccessResponse = {
+export type LoginSuccessResponse = {
   status: true;
   message: string;
   data: {

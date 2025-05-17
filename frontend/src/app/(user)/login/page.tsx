@@ -21,7 +21,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const {
     register,
     handleSubmit,
@@ -40,13 +40,13 @@ const Login = () => {
 
     try {
       const success = await loginService(data);
-      if(success) {
-        setSuccessMessage("Login berhasil!")
-        router.push("/")
+      if (success) {
+        setSuccessMessage("Login berhasil!");
+        router.push("/");
       } else {
-        setErrorMessage("login gagal")
+        setErrorMessage("login gagal");
       }
-    } catch(error) {
+    } catch (error) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
@@ -125,12 +125,21 @@ const Login = () => {
 
             <p className="mt-4 text-tertiaryTextColor text-sm text-center">
               Login sebagai{" "}
-              <Link
-                href="/login-admin"
-                className="text-primaryColor hover:underline"
-              >
-                Admin
-              </Link>
+              <span>
+                <Link
+                  href="/login-admin"
+                  className="text-primaryColor hover:underline"
+                >
+                  Admin
+                </Link>
+                {" / "}
+                <Link
+                  href="/login-psycholog"
+                  className="text-primaryColor hover:underline"
+                >
+                  Psycholog
+                </Link>
+              </span>
             </p>
           </div>
         </form>

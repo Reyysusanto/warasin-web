@@ -53,10 +53,10 @@ export type UsersSuccessResponse = {
 
 export type UpdateDetailUserRequest = {
   name: string;
-  user_phone_number: string;
+  phone_number: string;
   email: string;
-  user_birth_date: string;
-  // user_gender: boolean;
+  birth_date: string;
+  // gender: boolean;
   province_id: string;
   city_id: string;
 };

@@ -28,7 +28,7 @@ const userDetailSchema = z.object({
     .min(10, "No Handphone tidak valid")
     .max(16, "No Hanphone tidak valid"),
   birth_date: z.date(),
-  gender: z.boolean(),
+  // gender: z.boolean().optional(),
   province: z.string(),
   city: z.string(),
   email: z.string().email("Format email tidak valid"),
@@ -39,28 +39,27 @@ const userDetailAdminSchema = z.object({
   no_hp: z
     .string()
     .min(10, "No Handphone tidak valid")
-    .max(16, "No Hanphone tidak valid"),
-  birth_date: z.date(),
+    .max(16, "No Hanphone tidak valid")
+    .optional(),
+  birth_date: z.date().optional(),
   gender: z.boolean(),
   province: z.string(),
-  city: z.string(),
+  city: z.string().optional(),
   email: z.string().email("Format email tidak valid"),
-  role: z.string()
+  role: z.string().optional(),
 });
 
 const updateUserSchema = z.object({
   user_name: z.string().min(8, "Password minimal 8 karakter"),
-  user_phone_number: z.optional(
-    z
-      .string()
-      .min(10, "No Handphone tidak valid")
-      .max(16, "No Hanphone tidak valid")
-  ),
-  user_email: z.string().email("Format email tidak valid"),
-  user_birth_date: z.optional(z.date()),
-  user_gender: z.optional(z.boolean()),
-  province_id: z.optional(z.string()),
-  city_id: z.optional(z.string()),
+  user_phone_number: z
+    .string()
+    .min(10, "No Handphone tidak valid")
+    .max(16, "No Hanphone tidak valid"),
+  user_email: z.string().email("Format email tidak valid").optional(),
+  user_birth_date: z.date().optional(),
+  // user_gender: z.optional(z.boolean()),
+  province_id: z.string().optional(),
+  city_id: z.string().optional(),
 });
 
 const createUserSchema = z.object({

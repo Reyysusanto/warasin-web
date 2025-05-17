@@ -180,7 +180,7 @@ const MotivationSection = () => {
                     {categories.find(
                       (category) =>
                         category.motivation_category_id ===
-                        motivation.motivation_category_id
+                        motivation.motivation_category.motivation_category_id
                     )?.motivation_category_name || "-"}
                   </span>
                 </p>
@@ -193,7 +193,8 @@ const MotivationSection = () => {
                     setMotivationForm({
                       author: motivation.motivation_author,
                       content: motivation.motivation_content,
-                      motivation_category_id: motivation.motivation_category_id,
+                      motivation_category_id:
+                        motivation.motivation_category.motivation_category_id,
                     });
                   }}
                   className="flex items-center gap-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 transition"
@@ -203,9 +204,9 @@ const MotivationSection = () => {
                 </button>
 
                 <button
-                //   onClick={() =>
-                //     handleDeleteMotivation(motivation.motivation_id)
-                //   }
+                  //   onClick={() =>
+                  //     handleDeleteMotivation(motivation.motivation_id)
+                  //   }
                   className="flex items-center gap-1 px-3 py-1 text-sm border border-red-200 rounded hover:bg-red-50 transition"
                 >
                   <MdDelete className="text-red-600" />
