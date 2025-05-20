@@ -41,13 +41,13 @@ export function NavUser({
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      router.replace("/login-admin");
+      router.replace("/login-psycholog");
     }
   }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    router.replace("/login-admin");
+    router.replace("/login-psycholog");
   };
 
   return (

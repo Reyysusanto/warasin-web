@@ -26,7 +26,7 @@ const AddUserPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
   } = useForm<CreateUserSchemaType>({
     resolver: zodResolver(createUserSchema),
   });
@@ -35,18 +35,18 @@ const AddUserPage = () => {
     const fetchProvinces = async () => {
       try {
         const response = await getProvincesService();
-        if(response.status === true) {
+        if (response.status === true) {
           setProvinces(response.data);
         }
       } catch (error) {
         console.error("Gagal mengambil data provinsi", error);
       }
     };
-    
+
     const fetchRoles = async () => {
       try {
         const response = await getRoleService();
-        if(response && response.status === true) {
+        if (response && response.status === true) {
           setRoles(response.data);
         }
       } catch (error) {
@@ -54,11 +54,10 @@ const AddUserPage = () => {
       }
     };
 
-
     fetchProvinces();
     fetchRoles();
   }, []);
-  
+
   useEffect(() => {
     const fetchCities = async () => {
       if (!selectedProvince) return;
@@ -89,11 +88,9 @@ const AddUserPage = () => {
       birth_date: dayjs(data.birth_date).format("DD-MM-YYYY"),
       role_id: data.role_id,
     };
-    console.log(formattedData)
 
     try {
       const result = await createUserService(formattedData);
-      console.log(result)
       if (result) {
         alert("User berhasil ditambahkan");
         setSelectedProvince("");
@@ -125,13 +122,21 @@ const AddUserPage = () => {
 
         <div>
           <label className="block">Email</label>
-          <input type="email" {...register("email")} className="px-3 py-2 input w-full" />
+          <input
+            type="email"
+            {...register("email")}
+            className="px-3 py-2 input w-full"
+          />
           <p className="text-red-500 text-sm">{errors.email?.message}</p>
         </div>
 
         <div>
           <label className="block">Password</label>
-          <input type="password" {...register("password")} className="px-3 py-2 input w-full" />
+          <input
+            type="password"
+            {...register("password")}
+            className="px-3 py-2 input w-full"
+          />
           <p className="text-red-500 text-sm">{errors.password?.message}</p>
         </div>
 
@@ -152,13 +157,21 @@ const AddUserPage = () => {
 
         <div>
           <label className="block">Tanggal Lahir</label>
-          <input type="date" {...register("birth_date")} className="px-3 py-2 input w-full" />
+          <input
+            type="date"
+            {...register("birth_date")}
+            className="px-3 py-2 input w-full"
+          />
           <p className="text-red-500 text-sm">{errors.birth_date?.message}</p>
         </div>
 
         <div>
           <label className="block">Nomor HP</label>
-          <input type="text" {...register("phone_number")} className="px-3 py-2 input w-full" />
+          <input
+            type="text"
+            {...register("phone_number")}
+            className="px-3 py-2 input w-full"
+          />
           <p className="text-red-500 text-sm">{errors.phone_number?.message}</p>
         </div>
 

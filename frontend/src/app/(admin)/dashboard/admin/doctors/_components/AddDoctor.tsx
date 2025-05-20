@@ -1,179 +1,265 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { CreatePsychologService } from "@/services/dahsboardService/doctor/createPsycholog";
+import { getCityService, getProvincesService } from "@/services/province";
+import { getRoleService } from "@/services/role";
+import { City, Province } from "@/types/region";
+import { Role } from "@/types/role";
+import { createPsychologSchema } from "@/validations/psycholog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import FormInput from "./FormInput";
+import FormSelect from "./FormSelect";
+import FormTextarea from "./FormDescription";
+
+type CreatePsychologSchemaType = z.infer<typeof createPsychologSchema>;
 
 const AddDoctorForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedRole, setSelectedRole] = useState("");
   const [formData, setFormData] = useState({
     name: "",
+    str_number: "",
     email: "",
     password: "",
-    phone: "",
-    specialist: "",
-    workYear: "",
+    work_year: "",
     description: "",
+    phone_number: "",
+    city_id: "",
+    role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<CreatePsychologSchemaType>({
+    resolver: zodResolver(createPsychologSchema),
+    defaultValues: {
+      psy_name: "",
+      psy_phone_number: "",
+      psy_email: "",
+      psy_password: "",
+      psy_work_year: "",
+      psy_description: "",
+      psy_str_number: "",
+      city_id: "",
+      role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Doctor Data:", formData);
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const response = await getProvincesService();
+        if (response.status === true) {
+          setProvinces(response.data);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data provinsi", error);
+      }
+    };
+
+    const fetchRoles = async () => {
+      try {
+        const response = await getRoleService();
+        if (response && response.status === true) {
+          setRoles(response.data);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data role", error);
+      }
+    };
+
+    fetchProvinces();
+    fetchRoles();
+  }, []);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (!selectedProvince) return;
+
+      try {
+        const response = await getCityService(selectedProvince);
+        if (response?.status === true) {
+          setCities(response.data);
+          setValue("city_id", "");
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data kota", error);
+      }
+    };
+
+    fetchCities();
+  }, [selectedProvince, setValue]);
+
+  const onSubmit = async (data: CreatePsychologSchemaType) => {
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
+    setFormData({
+      name: data.psy_name,
+      str_number: data.psy_str_number,
+      email: data.psy_email,
+      password: data.psy_password,
+      work_year: data.psy_work_year,
+      description: data.psy_description,
+      phone_number: data.psy_phone_number,
+      city_id: data.city_id,
+      role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
+    });
+
+    try {
+      const result = await CreatePsychologService(formData);
+      if (result) {
+        setSuccess("Psycholog berhasil ditambahkan");
+        setSelectedProvince("");
+        setCities([]);
+      } else {
+        setError("Gagal menambahkan psycholog");
+      }
+    } catch (error: any) {
+      setError(error.message || "Terjadi kesalahan");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="bg-white shadow-md mb-6 p-6 rounded-lg space-y-5 w-full"
     >
       <h2 className="text-xl font-semibold text-gray-800 mb-2">
         Add New Doctor
       </h2>
 
-      <div className="grid md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Full Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            placeholder="John Doe"
-            value={formData.name}
-            onChange={handleChange}
-            className="px-3 py-2 input"
-            required
-          />
-        </div>
+      {success && <p className="text-green-500 text-sm">{success}</p>}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <FormInput
+          label="Psycholog Name"
+          id="name"
+          placeholder="psycholog name"
+          register={register("psy_name")}
+          error={errors.psy_name}
+          value={formData.name}
+        />
+
+        <FormInput
+          label="Psycholog Email"
+          id="email"
+          placeholder="psycholog@gmail.com"
+          register={register("psy_email")}
+          error={errors.psy_email}
+          value={formData.email}
+        />
+
+        <FormInput
+          label="Psycholog Password"
+          type="password"
+          id="password"
+          placeholder="*************"
+          register={register("psy_password")}
+          error={errors.psy_password}
+          value={formData.password}
+        />
+
+        <FormInput
+          label="Phone Number"
+          id="phoneNumber"
+          placeholder="08*********"
+          register={register("psy_phone_number")}
+          error={errors.psy_phone_number}
+          value={formData.phone_number}
+        />
+
+        <FormInput
+          label="STR Number"
+          id="strNumber"
+          placeholder="ST*******"
+          register={register("psy_str_number")}
+          error={errors.psy_str_number}
+          value={formData.str_number}
+        />
+
+        <FormInput
+          label="Work Year"
+          id="workYear"
+          placeholder="2005"
+          register={register("psy_work_year")}
+          error={errors.psy_work_year}
+          value={formData.work_year}
+        />
 
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
+          <label className="block text-sm font-medium text-gray-700">
+            Provinsi
           </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            placeholder="example@email.com"
-            value={formData.email}
-            onChange={handleChange}
-            className="px-3 py-2 input"
-            required
-          />
+          <select
+            value={selectedProvince}
+            onChange={(e) => setSelectedProvince(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">-- Pilih Provinsi --</option>
+            {provinces.map((prov) => (
+              <option key={prov.province_id} value={prov.province_id}>
+                {prov.province_name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Enter password"
-            value={formData.password}
-            onChange={handleChange}
-            className="px-3 py-2 input"
-            required
-          />
-        </div>
+        <FormSelect
+          label="Kota"
+          id="city_id"
+          options={cities.map((city) => ({
+            label: `${city.city_type} ${city.city_name}`,
+            value: city.city_id,
+          }))}
+          register={register("city_id")}
+          error={errors.city_id}
+        />
 
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Phone Number
-          </label>
-          <input
-            type="text"
-            name="phone"
-            id="phone"
-            placeholder="08xxxxxxx"
-            value={formData.phone}
-            onChange={handleChange}
-            className="px-3 py-2 input"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="specialist"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Specialist{" "}
-            <span className="text-xs text-gray-500">
-              (Pisahkan dengan koma jika lebih dari satu)
-            </span>
-          </label>
-          <input
-            type="text"
-            name="specialist"
-            id="specialist"
-            placeholder="Anxiety, Depression"
-            value={formData.specialist}
-            onChange={handleChange}
-            className="px-3 py-2 input"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="workYear"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Work Year
-          </label>
-          <input
-            type="text"
-            name="workYear"
-            id="workYear"
-            placeholder="5 Years"
-            value={formData.workYear}
-            onChange={handleChange}
-            className="px-3 py-2 input"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Description
-          </label>
-          <textarea
-            name="description"
-            id="description"
-            placeholder="Brief description about the doctor"
-            value={formData.description}
-            onChange={handleChange}
-            className="px-3 py-2 input h-28 w-full"
-            required
-          />
-        </div>
+        <FormSelect
+          label="Peran"
+          id="role_id"
+          options={roles.map((role) => ({
+            label: role.role_name,
+            value: role.role_id,
+          }))}
+          register={register("role_id")}
+          value={formData.role_id}
+          onChange={(e) => setSelectedRole(e.target.value)}
+          disabled={true}
+        />
       </div>
+      
+      <FormTextarea
+        label="Description"
+        id="psy_description"
+        placeholder="Brief description about the doctor"
+        register={register("psy_description")}
+        error={errors.psy_description}
+      />
 
       <button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md w-full transition"
+        disabled={loading}
       >
         Add Doctor
       </button>

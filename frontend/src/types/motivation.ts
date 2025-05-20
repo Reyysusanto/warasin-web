@@ -46,3 +46,18 @@ export type GetAllMotivationsSuccessRespone = {
     count: 12;
   };
 };
+
+export type DeleteMotivationResponse = {
+  status: true;
+  message: string;
+  data: {
+    motivation_id: string;
+    motivation_author: string;
+    motivation_content: string;
+    motivation_category: {
+      motivation_category_id: string;
+      motivation_category_name: string;
+    };
+  };
+  timestamp: string;
+};
