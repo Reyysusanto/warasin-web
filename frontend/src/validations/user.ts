@@ -28,7 +28,7 @@ const userDetailSchema = z.object({
     .min(10, "No Handphone tidak valid")
     .max(16, "No Hanphone tidak valid"),
   birth_date: z.date(),
-  // gender: z.boolean().optional(),
+  gender: z.boolean().nullable(),
   province: z.string(),
   city: z.string(),
   email: z.string().email("Format email tidak valid"),
@@ -57,7 +57,7 @@ const updateUserSchema = z.object({
     .max(16, "No Hanphone tidak valid"),
   user_email: z.string().email("Format email tidak valid").optional(),
   user_birth_date: z.date().optional(),
-  // user_gender: z.optional(z.boolean()),
+  user_gender: z.boolean(),
   province_id: z.string().optional(),
   city_id: z.string().optional(),
 });

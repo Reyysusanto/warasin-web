@@ -37,7 +37,7 @@ export const getUserDetailService = async (): Promise<
 > => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get<DetailUserSuccessResponse>(
+    const response = await axios.get<DetailUserSuccessResponse | ErrorResponse>(
       `${baseURL}/user/get-detail-user`,
       {
         headers: {
@@ -47,7 +47,7 @@ export const getUserDetailService = async (): Promise<
       }
     );
 
-    if (response.data.status === true) {
+    if (response.status === 200) {
       return response.data as DetailUserSuccessResponse;
     } else {
       return response.data as ErrorResponse;

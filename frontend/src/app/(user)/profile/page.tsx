@@ -41,6 +41,16 @@ const options = [
 
 type userDetailSchemaType = z.infer<typeof userDetailSchema>;
 
+type UserData = {
+  user_name: string;
+  user_email: string;
+  user_gender: boolean | null;
+  user_phone_number: string;
+  province_id: string;
+  city_id: string;
+  user_birth_date: string;
+};
+
 const ProfilePage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedTab, setSelectedTab] = useState<string>("personal");
@@ -48,10 +58,10 @@ const ProfilePage = () => {
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<UserData>({
     user_name: "",
     user_email: "",
-    user_gender: false,
+    user_gender: null,
     user_phone_number: "",
     province_id: "",
     city_id: "",
@@ -72,7 +82,7 @@ const ProfilePage = () => {
       province: "",
       city: "",
       birth_date: new Date(),
-      // gender: false,
+      gender: null as boolean | null,
     },
   });
 
@@ -85,7 +95,7 @@ const ProfilePage = () => {
           setUserData({
             user_name: data.user_name,
             user_email: data.user_email,
-            user_gender: false,
+            user_gender: data.user_gender || null,
             user_phone_number: data.user_phone_number,
             province_id: data.city?.province?.province_id || "",
             city_id: data.city?.city_id || "",
@@ -94,7 +104,7 @@ const ProfilePage = () => {
 
           setValue("name", data.user_name);
           setValue("email", data.user_email);
-          // setValue("gender", false);
+          setValue("gender", data.user_gender);
           setValue("no_hp", data.user_phone_number);
           setValue("province", data.city?.province?.province_id || "");
           setValue("city", data.city?.city_id || "");
@@ -146,7 +156,6 @@ const ProfilePage = () => {
       if (!selectedProvince) return;
 
       try {
-        console.log(userData.province_id);
         const response = await getCityService(selectedProvince);
         if (response?.status === true) {
           setCities(response.data);
@@ -200,23 +209,27 @@ const ProfilePage = () => {
         formattedData.province_id = data.province;
       }
 
+      if (data.gender !== userData.user_gender) {
+        formattedData.gender = data.gender;
+      }
+
       const submittedBirthDate = dayjs(data.birth_date).format("YYYY-MM-DD");
       if (submittedBirthDate !== userData.user_birth_date) {
         formattedData.birth_date = submittedBirthDate;
       }
 
-      console.log(formattedData);
       const result = await updateDetailUserService(formattedData);
 
       if (result.status === true) {
         alert("User berhasil diupdate");
         const refresh = await getUserDetailService();
+        console.log(refresh);
         if (refresh.status === true) {
           const newData = refresh.data;
           setUserData({
             user_name: newData.user_name,
             user_email: newData.user_email,
-            user_gender: Boolean(newData.is_verified),
+            user_gender: newData.user_gender,
             user_phone_number: newData.user_phone_number,
             province_id: newData.city?.province?.province_id ?? "",
             city_id: newData.city?.city_id ?? "",
@@ -232,6 +245,7 @@ const ProfilePage = () => {
             setSelectedDate(new Date(newData.user_birth_date));
             setValue("birth_date", new Date(newData.user_birth_date));
           }
+          setValue("gender", newData.user_gender);
         }
       } else {
         alert("Gagal mengupdate user");
@@ -368,15 +382,8 @@ const ProfilePage = () => {
                   id="gender"
                   label="Gender"
                   value={userData.user_gender}
-                  // updateUser={formData("gender")}
-                  // error={errors.gender?.message}
                   onChange={(id, value) => {
-                    const booleanValue = value === "true";
-                    setUserData((prev) => ({
-                      ...prev,
-                      user_gender: booleanValue,
-                    }));
-                    // setValue("gender", booleanValue);
+                    setValue("gender", value);
                   }}
                 />
 
@@ -393,6 +400,7 @@ const ProfilePage = () => {
                       ...prev,
                       city_id: "",
                     }));
+                    console.log(userData);
                   }}
                   value={userData.province_id}
                   options={provinces.map((p) => ({
