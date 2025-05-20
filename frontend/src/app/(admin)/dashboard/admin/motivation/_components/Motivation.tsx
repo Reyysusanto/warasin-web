@@ -78,7 +78,7 @@ const MotivationSection = () => {
         alert("Gagal menghapus kalimat motivasi");
       }
     } catch (error) {
-      alert(error || "Terjadi kesalahan saat menghapus berita");
+      alert(error || "Terjadi kesalahan saat menghapus motivasi");
     }
   };
 

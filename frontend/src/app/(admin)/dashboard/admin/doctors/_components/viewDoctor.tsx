@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { deletePsychologService } from "@/services/dahsboardService/doctor/deletePsycholog";
 import { getAllPsychologService } from "@/services/dahsboardService/doctor/getAllPsycholog";
 import { Psycholog } from "@/types/psycholog";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -12,22 +14,13 @@ const ViewDoctor = () => {
     console.log("edit", id);
   };
 
-  const removeData = ({ id }: { id: string }) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this doctor?"
-    );
-    if (confirmed) {
-      setPsychologList((prev) => prev.filter((p) => p.psy_id !== id));
-    }
-  };
-
   useEffect(() => {
     const fetchPsychologData = async () => {
       try {
         const result = await getAllPsychologService();
 
         if (result.status === true) {
-          setPsychologList(result.data)
+          setPsychologList(result.data);
         } else {
           setError(result.message);
         }
@@ -38,6 +31,25 @@ const ViewDoctor = () => {
 
     fetchPsychologData();
   }, []);
+
+  const handleDelete = async (id: string) => {
+    const confirmed = confirm("Apakah Anda yakin ingin menghapus berita ini?");
+    if (!confirmed) return;
+
+    try {
+      const result = await deletePsychologService(id);
+      if (result.status) {
+        setPsychologList((prev) =>
+          prev.filter((psycholog) => psycholog.psy_id !== id)
+        );
+        alert("Psycholog berhasil dihapus");
+      } else {
+        alert("Gagal menghapus psycholog");
+      }
+    } catch (error) {
+      alert(error || "Terjadi kesalahan saat menghapus psycholog");
+    }
+  };
 
   return (
     <>
@@ -86,14 +98,14 @@ const ViewDoctor = () => {
                       className="hover:text-blue-600"
                       title="Edit"
                     >
-                      ✏️
+                      <PencilIcon className="size-5 text-gray-500 hover:text-blue-600 cursor-pointer transition" />
                     </button>
                     <button
-                      onClick={() => removeData({ id: psycholog.psy_id })}
+                      onClick={() => handleDelete(psycholog.psy_id)}
                       className="hover:text-red-500"
                       title="Delete"
                     >
-                      🗑️
+                      <Trash2Icon className="size-5 text-gray-500 hover:text-red-500 cursor-pointer transition" />
                     </button>
                   </div>
                 </td>
