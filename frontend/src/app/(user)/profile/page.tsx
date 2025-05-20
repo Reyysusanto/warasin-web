@@ -33,12 +33,6 @@ const options = [
   },
 ];
 
-// const genderOptions = [
-//   { optionId: "male", optionName: "Laki-laki" },
-//   { optionId: "female", optionName: "Perempuan" },
-//   { optionId: "other", optionName: "Lainnya" },
-// ];
-
 type userDetailSchemaType = z.infer<typeof userDetailSchema>;
 
 type UserData = {

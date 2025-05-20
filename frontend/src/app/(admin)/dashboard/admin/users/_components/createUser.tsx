@@ -111,7 +111,7 @@ const AddUserPage = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto w-full p-6 bg-white rounded-md shadow-md mt-10">
+    <div className="w-full p-6 bg-white rounded-md shadow-md mt-10">
       <h2 className="text-2xl font-semibold mb-6">Tambah User Baru</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div>
