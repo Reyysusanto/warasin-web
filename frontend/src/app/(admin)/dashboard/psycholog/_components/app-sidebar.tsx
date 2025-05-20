@@ -9,6 +9,7 @@ import {
   HelpCircleIcon,
   LayoutDashboardIcon,
   SettingsIcon,
+  UsersIcon,
 } from "lucide-react"
 
 import { NavMain } from "./nav-main"
@@ -41,6 +42,11 @@ const data = {
       title: "Consultation",
       url: "/dashboard/psycholog/consultation",
       icon: ClipboardListIcon,
+    },
+        {
+      title: "Profile",
+      url: "/dashboard/psycholog/profile",
+      icon: UsersIcon,
     },
   ],
   navClouds: [

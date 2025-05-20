@@ -4,12 +4,14 @@ import * as React from "react"
 import {
   CameraIcon,
   ClipboardListIcon,
+  ClipboardPlusIcon,
   FileCodeIcon,
   FileTextIcon,
-  FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
+  NewspaperIcon,
   SettingsIcon,
+  StethoscopeIcon,
   UsersIcon,
 } from "lucide-react"
 
@@ -47,7 +49,7 @@ const data = {
     {
       title: "Doctors",
       url: "/dashboard/admin/doctors",
-      icon: FolderIcon,
+      icon: StethoscopeIcon,
     },
     {
       title: "Consultation",
@@ -57,12 +59,12 @@ const data = {
     {
       title: "News",
       url: "/dashboard/admin/news",
-      icon: UsersIcon,
+      icon: NewspaperIcon,
     },
     {
       title: "Motivations",
       url: "/dashboard/admin/motivation",
-      icon: UsersIcon,
+      icon: ClipboardPlusIcon,
     },
   ],
   navClouds: [
