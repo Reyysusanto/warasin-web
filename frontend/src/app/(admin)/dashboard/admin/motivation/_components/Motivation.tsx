@@ -12,14 +12,15 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { MdDelete, MdModeEdit } from "react-icons/md";
+import { deleteMotivationService } from "@/services/dahsboardService/motivation/deleteMotivation";
 
 type CreateMotivationSchemaType = z.infer<typeof createMotivationSchema>;
 
 const MotivationSection = () => {
-  const [motivations, setMotivations] = useState<MotivationList[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoryList[]>([]);
+  const [motivationList, setMotivationList] = useState<MotivationList[]>([]);
   const [loading, setLoading] = useState(false);
   const [motivationForm, setMotivationForm] = useState({
     author: "",
@@ -51,7 +52,7 @@ const MotivationSection = () => {
       try {
         const response = await GetAllMotivationsService();
         if (response.status === true) {
-          setMotivations(response.data);
+          setMotivationList(response.data);
         }
       } catch (error) {
         console.error("Failed to fetch motivation:", error);
@@ -61,6 +62,25 @@ const MotivationSection = () => {
     fetchCategory();
     fetchMotivation();
   }, []);
+
+  const handleDelete = async (id: string) => {
+    const confirmed = confirm("Apakah Anda yakin ingin menghapus berita ini?");
+    if (!confirmed) return;
+
+    try {
+      const result = await deleteMotivationService(id);
+      if (result.status) {
+        setMotivationList((prev) =>
+          prev.filter((motivation) => motivation.motivation_id !== id)
+        );
+        alert("Motivasi berhasil dihapus");
+      } else {
+        alert("Gagal menghapus kalimat motivasi");
+      }
+    } catch (error) {
+      alert(error || "Terjadi kesalahan saat menghapus berita");
+    }
+  };
 
   const onSubmit = async (data: CreateMotivationSchemaType) => {
     const formattedData = {
@@ -159,7 +179,7 @@ const MotivationSection = () => {
         </form>
 
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {motivations.map((motivation) => (
+          {motivationList.map((motivation) => (
             <li
               key={motivation.motivation_id}
               className="bg-white border border-gray-200 rounded-lg shadow p-5 flex flex-col justify-between"
@@ -204,9 +224,7 @@ const MotivationSection = () => {
                 </button>
 
                 <button
-                  //   onClick={() =>
-                  //     handleDeleteMotivation(motivation.motivation_id)
-                  //   }
+                  onClick={() => handleDelete(motivation.motivation_id)}
                   className="flex items-center gap-1 px-3 py-1 text-sm border border-red-200 rounded hover:bg-red-50 transition"
                 >
                   <MdDelete className="text-red-600" />
