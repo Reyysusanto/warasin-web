@@ -102,7 +102,7 @@ const EditProfilePage = () => {
     };
 
     getUserData();
-  }, [setValue]);
+  }, [setValue, params.id]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
