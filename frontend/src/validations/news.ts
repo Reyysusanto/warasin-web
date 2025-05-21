@@ -1,9 +1,22 @@
 import { z } from "zod";
 
 const CreateNewsSchema = z.object({
-    image: z.string().min(1, "Image harus diisi"),
-    title: z.string().min(10, "Judul berita harus disertakan"),
-    body: z.string().min(20, "Body harus diisi")
-})
+  image: z.string().min(1, "Image harus diisi"),
+  title: z.string().min(10, "Judul berita harus disertakan"),
+  body: z.string().min(20, "Body harus diisi"),
+});
 
-export { CreateNewsSchema }
+const UpdateNewsSchema = z.object({
+  image: z.string().min(1, "Image harus diisi"),
+  title: z.string().min(1, "title harus diisi"),
+  body: z.string().min(1, "body harus diisi"),
+});
+
+const GetNewsSchema = z.object({
+  image: z.string().min(1, "Image harus diisi"),
+  title: z.string().min(1, "title harus diisi"),
+  body: z.string().min(1, "body harus diisi"),
+  date: z.string().min(1, "date harus diisi"),
+});
+
+export { CreateNewsSchema, UpdateNewsSchema, GetNewsSchema };

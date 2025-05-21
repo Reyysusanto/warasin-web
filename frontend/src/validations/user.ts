@@ -42,7 +42,7 @@ const userDetailAdminSchema = z.object({
     .max(16, "No Hanphone tidak valid")
     .optional(),
   birth_date: z.date().optional(),
-  gender: z.boolean(),
+  gender: z.boolean().nullable(),
   province: z.string(),
   city: z.string().optional(),
   email: z.string().email("Format email tidak valid"),

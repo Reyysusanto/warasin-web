@@ -13,16 +13,16 @@ export type createNewsRequest = {
   image: string;
 };
 
-export type createNewsSuccessResponse = {
+export type CreateNewsSuccessResponse = {
   status: true;
   message: string;
-  data: Array<{
+  data: {
     news_id: string;
     news_image: string;
     news_title: string;
     news_body: string;
     news_date: Date;
-  }>;
+  };
   timestamp: string;
 };
 
@@ -36,6 +36,26 @@ export type getAllNewsSuccessResponse = {
     news_body: string;
     news_date: string;
   }>;
+  timestamp: string;
+};
+
+export type UpdateNewsRequest = {
+  image: string;
+  title: string;
+  body: string;
+  date: string;
+};
+
+export type GetDetailNewsSuccessResponse = {
+  status: true;
+  message: string;
+  data: {
+    news_id: string;
+    news_image: string;
+    news_title: string;
+    news_body: string;
+    news_date: string;
+  };
   timestamp: string;
 };
 

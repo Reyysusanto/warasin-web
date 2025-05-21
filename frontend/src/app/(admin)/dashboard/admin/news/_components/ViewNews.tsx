@@ -89,7 +89,7 @@ const ViewNewsPage = () => {
               </p>
               <div className="flex gap-3">
                 <Link
-                  href={`/admin/news/${news.news_id}`}
+                  href={`/dashboard/admin/news/${news.news_id}`}
                   className="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
                 >
                   Edit

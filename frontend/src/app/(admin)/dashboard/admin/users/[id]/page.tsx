@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { getUserDetailService } from "@/services/detailUser";
 import { z } from "zod";
 import { userDetailAdminSchema } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,22 +12,40 @@ import { UpdateUserAdminRequest } from "@/types/user";
 import { updateUserAdminService } from "@/services/dahsboardService/user/updateUser";
 import { useParams } from "next/navigation";
 import Input from "./_components/Input";
-import GenderOption from "./_components/GenderOption";
 import Options from "./_components/Option";
 import { getUserDetailAdminService } from "@/services/dahsboardService/user/getDetailUser";
+import BooleanOption from "./_components/BooleanOption";
+import { Role } from "@/types/role";
+import { getRoleService } from "@/services/role";
 
 type userDetailAdminSchemaType = z.infer<typeof userDetailAdminSchema>;
+
+const genderOptions = [
+  { label: "Laki-laki", value: false },
+  { label: "Perempuan", value: true },
+];
+
+type UserData = {
+  user_name: string;
+  user_email: string;
+  user_gender: boolean | null;
+  user_phone_number: string;
+  province_id: string;
+  city_id: string;
+  role_id: string;
+};
 
 const EditProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
   const params = useParams();
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<UserData>({
     user_name: "",
     user_email: "",
-    user_gender: false,
+    user_gender: null,
     user_phone_number: "",
     province_id: "",
     city_id: "",
@@ -47,6 +64,7 @@ const EditProfilePage = () => {
       email: "",
       no_hp: "",
       province: "",
+      gender: null as boolean | null,
       city: "",
       role: "",
     },
@@ -63,7 +81,7 @@ const EditProfilePage = () => {
           setUserData({
             user_name: data.user_name,
             user_email: data.user_email,
-            user_gender: false,
+            user_gender: data.user_gender,
             user_phone_number: data.user_phone_number,
             province_id: data.city?.province?.province_id || "",
             city_id: data.city?.city_id || "",
@@ -72,7 +90,7 @@ const EditProfilePage = () => {
 
           setValue("name", data.user_name);
           setValue("email", data.user_email);
-          setValue("gender", false);
+          setValue("gender", data.user_gender);
           setValue("no_hp", data.user_phone_number);
           setValue("province", data.city?.province?.province_id || "");
           setValue("city", data.city?.city_id || "");
@@ -84,7 +102,7 @@ const EditProfilePage = () => {
     };
 
     getUserData();
-  }, [setValue]);
+  }, [setValue, params.id]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -114,12 +132,24 @@ const EditProfilePage = () => {
       }
     };
 
+    const fetchRoles = async () => {
+      try {
+        const response = await getRoleService();
+        if (response && response.status === true) {
+          setRoles(response.data);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data role", error);
+      }
+    };
+
+    fetchRoles();
     fetchInitialData();
   }, [params.id]);
 
   useEffect(() => {
     const fetchCities = async () => {
-      if (!userData.province_id) return;
+      if (!selectedProvince) return;
 
       try {
         const response = await getCityService(selectedProvince);
@@ -171,6 +201,10 @@ const EditProfilePage = () => {
         formattedData.city_id = data.city;
       }
 
+      if (data.gender !== userData.user_gender) {
+        formattedData.user_gender = data.gender;
+      }
+
       if (data.province !== userData.province_id) {
         formattedData.province_id = data.province;
       }
@@ -183,13 +217,13 @@ const EditProfilePage = () => {
 
       if (result?.status === true) {
         alert("User berhasil diupdate");
-        const refresh = await getUserDetailService();
+        const refresh = await getUserDetailAdminService(id);
         if (refresh.status === true) {
           const newData = refresh.data;
           setUserData({
             user_name: newData.user_name,
             user_email: newData.user_email,
-            user_gender: Boolean(newData.is_verified),
+            user_gender: newData.user_gender,
             user_phone_number: newData.user_phone_number,
             province_id: newData.city?.province?.province_id ?? "",
             city_id: newData.city?.city_id ?? "",
@@ -198,9 +232,11 @@ const EditProfilePage = () => {
 
           setValue("name", newData.user_name);
           setValue("email", newData.user_email);
+          setValue("gender", newData.user_gender);
           setValue("no_hp", newData.user_phone_number);
           setValue("province", newData.city?.province?.province_id ?? "");
           setValue("city", newData.city?.city_id ?? "");
+          setValue("role", newData.role.role_id ?? "");
         }
       } else {
         alert("Gagal mengupdate user");
@@ -255,20 +291,14 @@ const EditProfilePage = () => {
                 error={errors.no_hp?.message}
               />
 
-              <GenderOption
+              <BooleanOption
                 id="gender"
-                label="Jenis Kelamin"
+                label="Gender"
                 value={userData.user_gender}
-                updateUser={formData("gender")}
-                error={errors.gender?.message}
                 onChange={(id, value) => {
-                  const booleanValue = value === "true";
-                  setUserData((prev) => ({
-                    ...prev,
-                    user_gender: booleanValue,
-                  }));
-                  setValue("gender", booleanValue);
+                  setValue("gender", value);
                 }}
+                options={genderOptions}
               />
 
               <Options
@@ -303,6 +333,22 @@ const EditProfilePage = () => {
                   optionName: `${c.city_type} ${c.city_name}`,
                 }))}
               />
+              
+              <Options
+                id="role"
+                label="Role"
+                value={userData.role_id}
+                updateUser={formData("role")}
+                onChange={(id, value) => {
+                  handleOptionChange(id, value);
+                  setValue("role", value);
+                }}
+                error={errors.role?.message}
+                options={roles.map((role) => ({
+                  optionId: role.role_id,
+                  optionName: `${role.role_name}`,
+                }))}
+              />
             </div>
 
             <button
@@ -312,128 +358,6 @@ const EditProfilePage = () => {
             >
               {loading ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
-
-            {/* <div>
-              <label className="block">Nama</label>
-              <input {...register("name")} className="px-3 py-2 input w-full" />
-              <p className="text-red-500 text-sm">{errors.name?.message}</p>
-            </div>
-
-            <div>
-              <label className="block">Email</label>
-              <input
-                type="email"
-                {...register("email")}
-                className="px-3 py-2 input w-full"
-              />
-              <p className="text-red-500 text-sm">{errors.email?.message}</p>
-            </div>
-
-            <div>
-              <label className="block">Password</label>
-              <input
-                type="password"
-                {...register("password")}
-                className="px-3 py-2 input w-full"
-              />
-              <p className="text-red-500 text-sm">{errors.password?.message}</p>
-            </div>
-
-            <div>
-              <label className="block">Jenis Kelamin</label>
-              <select
-                {...register("gender", {
-                  setValueAs: (value) =>
-                    value === "" ? undefined : value === "true",
-                })}
-                className="px-3 py-2 input w-full"
-              >
-                <option value="false">Laki-laki</option>
-                <option value="true">Perempuan</option>
-              </select>
-              <p className="text-red-500 text-sm">{errors.gender?.message}</p>
-            </div>
-
-            <div>
-              <label className="block">Tanggal Lahir</label>
-              <input
-                type="date"
-                {...register("birth_date")}
-                className="px-3 py-2 input w-full"
-              />
-              <p className="text-red-500 text-sm">
-                {errors.birth_date?.message}
-              </p>
-            </div>
-
-            <div>
-              <label className="block">Nomor HP</label>
-              <input
-                type="text"
-                {...register("phone_number")}
-                className="px-3 py-2 input w-full"
-              />
-              <p className="text-red-500 text-sm">
-                {errors.phone_number?.message}
-              </p>
-            </div>
-
-            <div>
-              <label className="block">Provinsi</label>
-              <select
-                value={selectedProvince}
-                onChange={(e) => setSelectedProvince(e.target.value)}
-                className="px-3 py-2 input w-full"
-              >
-                <option value="">-- Pilih Provinsi --</option>
-                {provinces.map((prov) => (
-                  <option key={prov.province_id} value={prov.province_id}>
-                    {prov.province_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block">Kota</label>
-              <select
-                {...register("city_id")}
-                className="px-3 py-2 input w-full"
-              >
-                <option value="">-- Pilih Kota --</option>
-                {cities.map((city) => (
-                  <option key={city.city_id} value={city.city_id}>
-                    {city.city_type} {city.city_name}
-                  </option>
-                ))}
-              </select>
-              <p className="text-red-500 text-sm">{errors.city_id?.message}</p>
-            </div>
-
-            <div>
-              <label className="block">Peran</label>
-              <select
-                value={selectedRole}
-                {...register("role_id")}
-                onChange={(e) => setSelectedRole(e.target.value)}
-                className="px-3 py-2 input w-full"
-              >
-                <option value="">-- Pilih Peran --</option>
-                {roles.map((role) => (
-                  <option key={role.role_id} value={role.role_id}>
-                    {role.role_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-              disabled={loading}
-            >
-              {loading ? "Menyimpan..." : "Tambah User"}
-            </button> */}
           </form>
         </section>
       </main>
