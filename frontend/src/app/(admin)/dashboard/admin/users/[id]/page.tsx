@@ -26,10 +26,10 @@ const genderOptions = [
 ];
 
 type UserData = {
-  user_name: string;
-  user_email: string;
-  user_gender: boolean | null;
-  user_phone_number: string;
+  name: string;
+  email: string;
+  gender: boolean | null;
+  phone_number: string;
   province_id: string;
   city_id: string;
   role_id: string;
@@ -43,10 +43,10 @@ const EditProfilePage = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const params = useParams();
   const [userData, setUserData] = useState<UserData>({
-    user_name: "",
-    user_email: "",
-    user_gender: null,
-    user_phone_number: "",
+    name: "",
+    email: "",
+    gender: null,
+    phone_number: "",
     province_id: "",
     city_id: "",
     role_id: "",
@@ -62,7 +62,7 @@ const EditProfilePage = () => {
     defaultValues: {
       name: "",
       email: "",
-      no_hp: "",
+      phone_number: "",
       province: "",
       gender: null as boolean | null,
       city: "",
@@ -77,12 +77,11 @@ const EditProfilePage = () => {
         const response = await getUserDetailAdminService(user_id);
         if (response.status === true) {
           const data = response.data;
-          console.log(data);
           setUserData({
-            user_name: data.user_name,
-            user_email: data.user_email,
-            user_gender: data.user_gender,
-            user_phone_number: data.user_phone_number,
+            name: data.user_name,
+            email: data.user_email,
+            gender: data.user_gender,
+            phone_number: data.user_phone_number,
             province_id: data.city?.province?.province_id || "",
             city_id: data.city?.city_id || "",
             role_id: data.role.role_id,
@@ -91,7 +90,7 @@ const EditProfilePage = () => {
           setValue("name", data.user_name);
           setValue("email", data.user_email);
           setValue("gender", data.user_gender);
-          setValue("no_hp", data.user_phone_number);
+          setValue("phone_number", data.user_phone_number);
           setValue("province", data.city?.province?.province_id || "");
           setValue("city", data.city?.city_id || "");
           setValue("role", data.role.role_id || "");
@@ -185,24 +184,24 @@ const EditProfilePage = () => {
       const id = params.id as string;
       const formattedData: Partial<UpdateUserAdminRequest> = {};
 
-      if (data.name !== userData.user_name) {
+      if (data.name !== userData.name) {
         formattedData.name = data.name;
       }
 
-      if (data.email !== userData.user_email) {
+      if (data.email !== userData.email) {
         formattedData.email = data.email;
       }
 
-      if (data.no_hp !== userData.user_phone_number) {
-        formattedData.user_phone_number = data.no_hp;
+      if (data.phone_number !== userData.phone_number) {
+        formattedData.phone_number = data.phone_number;
       }
 
       if (data.city && data.city !== userData.city_id) {
         formattedData.city_id = data.city;
       }
 
-      if (data.gender !== userData.user_gender) {
-        formattedData.user_gender = data.gender;
+      if (data.gender !== userData.gender) {
+        formattedData.gender = data.gender;
       }
 
       if (data.province !== userData.province_id) {
@@ -222,10 +221,10 @@ const EditProfilePage = () => {
         if (refresh.status === true) {
           const newData = refresh.data;
           setUserData({
-            user_name: newData.user_name,
-            user_email: newData.user_email,
-            user_gender: newData.user_gender,
-            user_phone_number: newData.user_phone_number,
+            name: newData.user_name,
+            email: newData.user_email,
+            gender: newData.user_gender,
+            phone_number: newData.user_phone_number,
             province_id: newData.city?.province?.province_id ?? "",
             city_id: newData.city?.city_id ?? "",
             role_id: newData.role.role_id,
@@ -234,7 +233,7 @@ const EditProfilePage = () => {
           setValue("name", newData.user_name);
           setValue("email", newData.user_email);
           setValue("gender", newData.user_gender);
-          setValue("no_hp", newData.user_phone_number);
+          setValue("phone_number", newData.user_phone_number);
           setValue("province", newData.city?.province?.province_id ?? "");
           setValue("city", newData.city?.city_id ?? "");
           setValue("role", newData.role.role_id ?? "");
@@ -266,7 +265,7 @@ const EditProfilePage = () => {
                 id="name"
                 label="Nama Lengkap"
                 type="text"
-                value={userData.user_name}
+                value={userData.name}
                 updateUser={formData("name")}
                 onChange={handleInputChange}
                 error={errors.name?.message}
@@ -276,26 +275,26 @@ const EditProfilePage = () => {
                 id="email"
                 label="Email"
                 type="email"
-                value={userData.user_email}
+                value={userData.email}
                 updateUser={formData("email")}
                 onChange={handleInputChange}
                 error={errors.email?.message}
               />
 
               <Input
-                id="no_hp"
+                id="phone_number"
                 label="Nomor HP"
                 type="text"
-                value={userData.user_phone_number}
-                updateUser={formData("no_hp")}
+                value={userData.phone_number}
+                updateUser={formData("phone_number")}
                 onChange={handleInputChange}
-                error={errors.no_hp?.message}
+                error={errors.phone_number?.message}
               />
 
               <BooleanOption
                 id="gender"
                 label="Gender"
-                value={userData.user_gender}
+                value={userData.gender}
                 onChange={(id, value) => {
                   setValue("gender", value);
                 }}

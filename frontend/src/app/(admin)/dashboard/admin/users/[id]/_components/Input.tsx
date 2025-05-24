@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 
 const Input = ({
   id,
@@ -18,21 +17,6 @@ const Input = ({
   error?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
-  const [strValue, setStrValue] = useState(value ?? "");
-
-  useEffect(() => {
-    if (value !== undefined) {
-      setStrValue(value);
-    }
-  }, [value]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStrValue(e.target.value);
-    if (onChange) {
-      onChange(e);
-    }
-  };
-
   return (
     <div className="flex flex-col gap-y-2">
       <label 
@@ -46,8 +30,8 @@ const Input = ({
         id={id}
         name={id}
         type={type}
-        value={strValue}
-        onChange={handleChange}
+        defaultValue={value}
+        onChange={onChange}
         {...updateUser} 
         className="px-3 py-2 input w-full" 
       />
