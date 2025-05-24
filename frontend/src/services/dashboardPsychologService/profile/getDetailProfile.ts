@@ -48,7 +48,6 @@ export const GetPsychologDetailService = async (): Promise<
         }
       }
     }
+    throw new Error("Terjadi kesalahan saat mengambil data. Silakan coba lagi");
   }
-
-  throw new Error("Terjadi kesalahan saat mengambil data. Silakan coba lagi");
 };

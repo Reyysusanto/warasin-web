@@ -21,6 +21,7 @@ const UpdateMotivation = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoryList[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const params = useParams();
@@ -209,9 +210,9 @@ const UpdateMotivation = () => {
               error={errors.content?.message}
             />
             <Options
-              id="category"
+              id="motivation_category_id"
               label="Category"
-              value={selectedCategory}
+              value={motivationForm.motivation_category_id}
               updateUser={formData("motivation_category_id")}
               onChange={(id, value) => {
                 handleOptionChange(id, value);
