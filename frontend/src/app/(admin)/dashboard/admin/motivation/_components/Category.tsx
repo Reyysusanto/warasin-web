@@ -93,8 +93,21 @@ const CategorySection = () => {
       <section className="bg-white p-6 rounded shadow">
         <h2 className="text-xl font-bold mb-4">Kategori Motivasi</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {error && <p className="text-red-500">{error}</p>}
-          {success && <p className="text-green-600">{success}</p>}
+          {error && (
+            <div className="border border-dashed border-dangerColor text-dangerColor px-3 py-2 mb-4 rounded-lg">
+              <span>{error}</span>
+            </div>
+          )}
+          {errors.name && (
+            <div className="border border-dashed border-dangerColor text-dangerColor px-3 py-2 mb-4 rounded-lg">
+              <span>{errors.name.message}</span>
+            </div>
+          )}
+          {success && (
+            <div className="border border-dashed border-green-500 text-green-500 px-3 py-2 mb-4 rounded-lg">
+              <span>{success}</span>
+            </div>
+          )}
           <div className="flex space-x-4 mb-4">
             <input
               type="text"
@@ -104,9 +117,6 @@ const CategorySection = () => {
               onChange={(e) => setCategoryInput(e.target.value)}
               placeholder="Nama Kategori"
             />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message}</p>
-            )}
             <button
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded"

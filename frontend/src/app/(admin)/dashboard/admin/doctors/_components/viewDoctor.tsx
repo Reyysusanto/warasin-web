@@ -4,14 +4,16 @@ import { getAllPsychologService } from "@/services/dahsboardService/doctor/getAl
 import { Psycholog } from "@/types/psycholog";
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ViewDoctor = () => {
   const [psychologList, setPsychologList] = useState<Psycholog[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const editData = ({ id }: { id: string }) => {
-    console.log("edit", id);
+  const editData = (id: string) => {
+    router.push(`/dashboard/admin/doctors/${id}`)
   };
 
   useEffect(() => {
@@ -94,7 +96,7 @@ const ViewDoctor = () => {
                 <td className="px-4 py-4 text-center">
                   <div className="flex justify-center gap-3">
                     <button
-                      onClick={() => editData({ id: psycholog.psy_id })}
+                      onClick={() => editData(psycholog.psy_id)}
                       className="hover:text-blue-600"
                       title="Edit"
                     >

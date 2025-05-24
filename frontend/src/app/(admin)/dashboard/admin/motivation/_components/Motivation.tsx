@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { MdDelete, MdModeEdit } from "react-icons/md";
 import { deleteMotivationService } from "@/services/dahsboardService/motivation/deleteMotivation";
+import { useRouter } from "next/navigation";
 
 type CreateMotivationSchemaType = z.infer<typeof createMotivationSchema>;
 
@@ -22,6 +23,7 @@ const MotivationSection = () => {
   const [categories, setCategories] = useState<CategoryList[]>([]);
   const [motivationList, setMotivationList] = useState<MotivationList[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [motivationForm, setMotivationForm] = useState({
     author: "",
     content: "",
@@ -81,6 +83,10 @@ const MotivationSection = () => {
       alert(error || "Terjadi kesalahan saat menghapus motivasi");
     }
   };
+
+  const editMotivation = (motivationId: string) => {
+    router.push(`/dashboard/admin/motivation/${motivationId}`)
+  }
 
   const onSubmit = async (data: CreateMotivationSchemaType) => {
     const formattedData = {
@@ -208,15 +214,7 @@ const MotivationSection = () => {
 
               <div className="flex justify-end space-x-2 mt-4">
                 <button
-                  onClick={() => {
-                    // setEditingMotivation(motivation);
-                    setMotivationForm({
-                      author: motivation.motivation_author,
-                      content: motivation.motivation_content,
-                      motivation_category_id:
-                        motivation.motivation_category.motivation_category_id,
-                    });
-                  }}
+                  onClick={() => editMotivation(motivation.motivation_id)}
                   className="flex items-center gap-1 px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 transition"
                 >
                   <MdModeEdit className="text-blue-600" />

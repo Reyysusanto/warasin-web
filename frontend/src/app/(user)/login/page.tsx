@@ -95,9 +95,9 @@ const Login = () => {
             <label className="flex items-center text-tertiaryTextColor">
               <input type="checkbox" className="mr-2" /> Ingat saya
             </label>
-            <a href="#" className="text-primaryColor hover:underline">
+            <Link href="/forget_password" className="text-primaryColor hover:underline">
               Lupa Password?
-            </a>
+            </Link>
           </div>
 
           <button

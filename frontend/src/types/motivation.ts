@@ -14,6 +14,12 @@ export type CreateMotivationRequest = {
   motivation_category_id: string;
 };
 
+export type UpdateMotivationRequest = {
+  author: string;
+  content: string;
+  motivation_category_id: string;
+};
+
 export type CreateMotivationSuccessResponse = {
   status: true;
   message: string;
@@ -45,6 +51,21 @@ export type GetAllMotivationsSuccessRespone = {
     max_page: 2;
     count: 12;
   };
+};
+
+export type GetDetailMotivationsSuccessRespone = {
+  status: true;
+  message: string;
+  data: {
+    motivation_id: string;
+    motivation_author: string;
+    motivation_content: string;
+    motivation_category: {
+      motivation_category_id: string;
+      motivation_category_name: string;
+    };
+  };
+  timestamp: string;
 };
 
 export type DeleteMotivationResponse = {

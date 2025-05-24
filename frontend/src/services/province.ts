@@ -7,7 +7,7 @@ export const getProvincesService = async (): Promise<
   ProvincesSuccessResponse | ErrorResponse
 > => {
   try {
-    const response = await axios.get(`${baseURL}/user/get-all-province`);
+    const response = await axios.get(`${baseURL}/get-all-province`);
 
     if (response.status === 200) {
       return response.data as ProvincesSuccessResponse;
@@ -39,7 +39,7 @@ export const getCityService = async (province_id: string): Promise<
   CitySuccessResponse | ErrorResponse | null
 > => {
   try {
-    const response = await axios.get(`${baseURL}/user/get-all-city?province_id=${province_id}`);
+    const response = await axios.get(`${baseURL}/get-all-city?province_id=${province_id}`);
 
     if (response.status === 200) {
       return response.data as CitySuccessResponse;
