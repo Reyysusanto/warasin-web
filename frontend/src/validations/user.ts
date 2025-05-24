@@ -36,7 +36,7 @@ const userDetailSchema = z.object({
 
 const userDetailAdminSchema = z.object({
   name: z.string().min(8, "Password minimal 8 karakter"),
-  no_hp: z
+  phone_number: z
     .string()
     .min(10, "No Handphone tidak valid")
     .max(16, "No Hanphone tidak valid")

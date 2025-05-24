@@ -37,6 +37,12 @@ export type getAllNewsSuccessResponse = {
     news_date: string;
   }>;
   timestamp: string;
+  meta: {
+    page: number;
+    per_page: number;
+    max_page: number;
+    count: number;
+  };
 };
 
 export type UpdateNewsRequest = {

@@ -63,10 +63,10 @@ export type UpdateDetailUserRequest = {
 
 export type UpdateUserAdminRequest = {
   name: string;
-  user_phone_number: string;
+  phone_number: string;
   email: string;
-  user_birth_date: string;
-  user_gender: boolean | null;
+  birth_date: string;
+  gender: boolean | null;
   province_id: string;
   city_id: string;
   role_id: string;
