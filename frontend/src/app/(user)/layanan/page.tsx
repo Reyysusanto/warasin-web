@@ -9,7 +9,7 @@ import FadeInFromLeft from "@/components/animation/FadeInFromLeft";
 const Services = [
   {
     icon: "konsulin",
-    link: "/concultation",
+    link: "/consultation",
     service: "Konsulin",
     desc: "Layanan konsultasi dengan psikolog profesional.",
   },
@@ -21,7 +21,7 @@ const Services = [
   },
   {
     icon: "ajarin",
-    link: "",
+    link: "/news",
     service: "Ajarin",
     desc: "Konten edukatif terkait kesehatan mental.",
   },

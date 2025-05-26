@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import FadeInFromLeft from "@/components/animation/FadeInFromLeft";

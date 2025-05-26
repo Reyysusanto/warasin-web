@@ -212,7 +212,6 @@ const EditProfilePage = () => {
         formattedData.role_id = data.role;
       }
 
-      console.log(formattedData)
       const result = await updateUserAdminService(id, formattedData);
 
       if (result?.status === true) {

@@ -63,7 +63,7 @@ const NavigationBar = () => {
   const options = [
     { name: "Konsulin", path: "/concultation" },
     { name: "Tanyain", path: "/chatbot" },
-    { name: "Ajarin", path: "/ajarin" },
+    { name: "Ajarin", path: "/news" },
     { name: "Dopamin", path: "/dopamin" },
     { name: "Terapiin", path: "/terapiin" },
     { name: "Emosiin", path: "/emosiin" },

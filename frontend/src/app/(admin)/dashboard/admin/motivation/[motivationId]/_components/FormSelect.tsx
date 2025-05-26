@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 
 interface options {
   optionId: string;
@@ -23,16 +22,8 @@ const Options = ({
   error?: string;
   onChange: (id: string, value: string) => void;
 }) => {
-  const [strValue, setStrValue] = useState(value ?? "");
-
-  useEffect(() => {
-    if (value !== undefined) {
-      setStrValue(value);
-    }
-  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setStrValue(e.target.value);
     onChange(id, e.target.value);
   };
 
@@ -42,7 +33,7 @@ const Options = ({
       <select
         name={id}
         id={id}
-        value={strValue}
+        defaultValue={value}
         {...updateUser}
         onChange={handleChange}
         className="px-3 py-2 input w-full"

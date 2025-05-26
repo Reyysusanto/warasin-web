@@ -1,21 +1,16 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import {
-  CreateMotivationSuccessResponse,
-  UpdateMotivationRequest,
-} from "@/types/motivation";
+import { GetDetailNewsSuccessResponse } from "@/types/news";
 import axios, { AxiosError } from "axios";
 
-export const updateMotivationService = async (
-  motivationId: string,
-  data: Partial<UpdateMotivationRequest>
-): Promise<CreateMotivationSuccessResponse | ErrorResponse> => {
+export const getDetailNewsService = async (
+  newsId: string
+): Promise<GetDetailNewsSuccessResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.patch(
-      `${baseURL}/admin/update-motivation/${motivationId}`,
-      data,
+    const response = await axios.get(
+      `${baseURL}/user/get-detail-news/${newsId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -25,7 +20,7 @@ export const updateMotivationService = async (
     );
 
     if (response.status === 200) {
-      return response.data as CreateMotivationSuccessResponse;
+      return response.data as GetDetailNewsSuccessResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -36,11 +31,11 @@ export const updateMotivationService = async (
       if (axiosError.response) {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
-          window.location.href = "/login-admin";
+          window.location.href = "/login";
         }
       }
     }
 
-    throw new Error("Terjadi kesalahan saat mengubah data. Silakan coba lagi.");
+    throw new Error("Terjadi kesalahan saat mengambil data");
   }
 };
