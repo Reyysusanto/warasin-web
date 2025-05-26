@@ -45,6 +45,25 @@ export type getAllNewsSuccessResponse = {
   };
 };
 
+export type getDetailNewsSuccessResponse = {
+  status: true;
+  message: string;
+  data: {
+    news_id: string;
+    news_image: string;
+    news_title: string;
+    news_body: string;
+    news_date: string;
+  };
+  timestamp: string;
+  meta: {
+    page: number;
+    per_page: number;
+    max_page: number;
+    count: number;
+  };
+};
+
 export type UpdateNewsRequest = {
   image: string;
   title: string;

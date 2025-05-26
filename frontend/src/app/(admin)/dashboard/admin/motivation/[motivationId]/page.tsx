@@ -14,6 +14,7 @@ import { updateMotivationService } from "@/services/dahsboardService/motivation/
 import Input from "./_components/FormInput";
 import Textarea from "./_components/FormTextArea";
 import Options from "./_components/FormSelect";
+import { UpdateMotivationRequest } from "@/types/motivation";
 
 type CreateMotivationSchemaType = z.infer<typeof createMotivationSchema>;
 
@@ -38,6 +39,11 @@ const UpdateMotivation = () => {
     formState: { errors },
   } = useForm<CreateMotivationSchemaType>({
     resolver: zodResolver(createMotivationSchema),
+    defaultValues: {
+      author: "",
+      content: "",
+      motivation_category_id: "",
+    },
   });
 
   useEffect(() => {
@@ -102,33 +108,6 @@ const UpdateMotivation = () => {
     fetchCategory();
   }, [params.motivationId]);
 
-  useEffect(() => {
-    const getCategory = async () => {
-      try {
-        const response = await getAllCategoryMotivation();
-        if (response.status === true) {
-          setCategories(response.data);
-
-          if (!motivationForm.motivation_category_id) {
-            setValue("motivation_category_id", "");
-          }
-        }
-      } catch (error) {
-        console.error("Gagal mengambil data kategori", error);
-      }
-    };
-
-    getCategory();
-  }, [setValue, motivationForm.motivation_category_id]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setMotivationForm((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
-
   const handleOptionChange = (id: string, value: string) => {
     setMotivationForm((prev) => ({
       ...prev,
@@ -136,24 +115,34 @@ const UpdateMotivation = () => {
     }));
   };
 
-  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setMotivationForm((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
-
+  // console.log(motivationForm);
   const onSubmit = async (data: CreateMotivationSchemaType) => {
+    console.log(data);
+    console.log(motivationForm);
     setError(null);
     setSuccess(null);
     setLoading(true);
 
     try {
       const id = params.motivationId as string;
+      const formattedData: Partial<UpdateMotivationRequest> = {};
 
-      const result = await updateMotivationService(id, data);
-      console.log("data diubah");
+      if (data.author !== motivationForm.author) {
+        formattedData.author = data.author;
+      }
+
+      if (data.content !== motivationForm.content) {
+        formattedData.content = data.content;
+      }
+
+      if (
+        data.motivation_category_id !== motivationForm.motivation_category_id
+      ) {
+        formattedData.motivation_category_id = data.motivation_category_id;
+      }
+
+      console.log(formattedData);
+      const result = await updateMotivationService(id, formattedData);
       console.log(result);
       if (result.status === true) {
         setSuccess("Motivasi berhasil diperbarui");
@@ -198,13 +187,11 @@ const UpdateMotivation = () => {
               type="text"
               placeholder="Elena Nad"
               updateMotivation={formData("author")}
-              onChange={handleInputChange}
               error={errors.author?.message}
             />
             <Textarea
-              label="Content"
               id="content"
-              onChange={handleTextAreaChange}
+              label="Content"
               placeholder="Isi pesan motivasi"
               updateMotivation={formData("content")}
               error={errors.content?.message}
@@ -216,7 +203,6 @@ const UpdateMotivation = () => {
               updateUser={formData("motivation_category_id")}
               onChange={(id, value) => {
                 handleOptionChange(id, value);
-                setSelectedCategory(value);
                 setValue("motivation_category_id", value);
               }}
               error={errors.motivation_category_id?.message}

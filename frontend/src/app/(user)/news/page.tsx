@@ -45,6 +45,10 @@ const UserNewsPage = () => {
     getAllNews();
   }, []);
 
+  const handleViewMore = (id: string) => {
+    router.push(`/news/${id}`)
+  }
+
   const filteredNews = newsList.filter(
     (news) =>
       news.news_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -132,7 +136,7 @@ const UserNewsPage = () => {
                   <div className="mt-4">
                     <button
                       onClick={() =>
-                        console.log(`Go to detail of news ID ${news.news_id}`)
+                        handleViewMore(news.news_id)
                       }
                       className="text-sm font-medium text-blue-600 hover:underline"
                     >
