@@ -1,6 +1,6 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { CreatePsychologRequest, CreatePsychologResponse } from "@/types/psycholog";
+import { CreatePsychologRequest, PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const updatePsychologAdminService = async (
@@ -9,7 +9,7 @@ export const updatePsychologAdminService = async (
 ) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.patch<CreatePsychologResponse | ErrorResponse>(
+    const response = await axios.patch<PsychologResponse | ErrorResponse>(
       `${baseURL}/admin/update-psycholog/${psy_id}`,
       data,
       {
@@ -21,7 +21,7 @@ export const updatePsychologAdminService = async (
     );
 
     if (response.status === 200) {
-      return response.data as CreatePsychologResponse;
+      return response.data as PsychologResponse;
     } else {
       return response.data as ErrorResponse;
     }

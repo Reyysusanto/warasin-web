@@ -1,15 +1,12 @@
 import { baseURL } from "@/config/api";
 import { adminRefreshTokenService } from "@/services/role/adminRefreshToken";
 import { ErrorResponse } from "@/types/error";
-import {
-  CreatePsychologRequest,
-  CreatePsychologResponse,
-} from "@/types/psycholog";
+import { CreatePsychologRequest, PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const CreatePsychologService = async (
   data: CreatePsychologRequest
-): Promise<CreatePsychologResponse | ErrorResponse> => {
+): Promise<PsychologResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 
   try {
@@ -25,7 +22,7 @@ export const CreatePsychologService = async (
     );
 
     if (response.status === 200) {
-      return response.data as CreatePsychologResponse;
+      return response.data as PsychologResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -45,7 +42,7 @@ export const CreatePsychologService = async (
           }
         );
 
-        return retryResponse.data as CreatePsychologResponse;
+        return retryResponse.data as PsychologResponse;
       } catch (error) {
         console.log(error);
         throw new Error("Session expired. Please log in again.");

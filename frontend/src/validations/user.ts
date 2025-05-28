@@ -21,6 +21,10 @@ const loginSchema = z.object({
   password: z.string().min(8, "Password minimal 8 karakter"),
 });
 
+const forgetPasswordSchema = z.object({
+  email: z.string().email("Format email tidak valid"),
+});
+
 const userDetailSchema = z.object({
   name: z.string().min(8, "Password minimal 8 karakter"),
   no_hp: z
@@ -96,6 +100,7 @@ const updateUserAdminSchema = z.object({
 export {
   registerSchema,
   loginSchema,
+  forgetPasswordSchema,
   userDetailSchema,
   updateUserSchema,
   createUserSchema,
