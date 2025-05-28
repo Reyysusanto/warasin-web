@@ -1,11 +1,11 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { DeletePsychologResponse } from "@/types/psycholog";
+import { PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const deletePsychologService = async (
   psychologId: string
-): Promise<DeletePsychologResponse | ErrorResponse> => {
+): Promise<PsychologResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 
   try {
@@ -20,7 +20,7 @@ export const deletePsychologService = async (
     );
 
     if (response.status === 200) {
-      return response.data as DeletePsychologResponse;
+      return response.data as PsychologResponse;
     } else {
       return response.data as ErrorResponse;
     }

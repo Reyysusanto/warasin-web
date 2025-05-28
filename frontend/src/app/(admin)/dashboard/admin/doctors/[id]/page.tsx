@@ -9,13 +9,14 @@ import { getDetailPsychologSchema } from "@/validations/psycholog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import FormInput from "./_components/FormInput";
 import FormSelect from "./_components/FormSelect";
 import FormTextarea from "./_components/FormDescription";
 import { useParams } from "next/navigation";
 import { getDetailPsychologService } from "@/services/dahsboardService/doctor/getDetailPsycholog";
 import { updatePsychologAdminService } from "@/services/dahsboardService/doctor/updatePsycholog";
+import { z } from "zod";
+import { Education, Specialization } from "@/types/psycholog";
 
 type GetDetailPsychologSchemaType = z.infer<typeof getDetailPsychologSchema>;
 
@@ -40,6 +41,9 @@ const DetailDoctorPage = () => {
     phone_number: "",
     city_id: "",
     role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
+    language_id: [] as string[],
+    specialization: [] as Specialization[],
+    education: [] as Education[],
   });
 
   const {
@@ -79,6 +83,9 @@ const DetailDoctorPage = () => {
             phone_number: data.psy_phone_number,
             city_id: data.city.city_id,
             role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
+            language_id: data.language.map((lang) => lang.lang_name),
+            specialization: data.specialization,
+            education: data.education,
           });
 
           setValue("psy_name", data.psy_name);
@@ -97,7 +104,7 @@ const DetailDoctorPage = () => {
     };
 
     getPsychologData();
-  }, [setValue, params.id]);
+  }, [setValue, params.id, formData]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -201,6 +208,9 @@ const DetailDoctorPage = () => {
       phone_number: data.psy_phone_number,
       city_id: data.city_id,
       role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
+      language_id: data.language,
+      specialization: data.specialization,
+      education: data.education,
     });
 
     console.log(formData);
@@ -224,6 +234,9 @@ const DetailDoctorPage = () => {
             phone_number: newData.psy_phone_number,
             city_id: newData.city.city_id,
             role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
+            language_id: newData.language.map((lang) => lang.lang_id),
+            specialization: newData.specialization,
+            education: newData.education,
           });
 
           setValue("psy_name", newData.psy_name);
@@ -292,7 +305,7 @@ const DetailDoctorPage = () => {
 
         <FormInput
           label="Phone Number"
-          id="phoneNumber"
+          id="phone_number"
           placeholder="08*********"
           onChange={handleInputChange}
           register={register("psy_phone_number")}
@@ -373,6 +386,79 @@ const DetailDoctorPage = () => {
         register={register("psy_description")}
         error={errors.psy_description}
       />
+
+      {formData.language_id.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-medium text-primaryTextColor mb-1">
+            Bahasa yang Dikuasai
+          </h3>
+          <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+            {formData.language_id.map((name) => (
+              <input
+                key={name}
+                type="text"
+                id={name}
+                value={name}
+                disabled={true}
+                className="w-full px-3 py-2 border rounded-md shadow-sm text-primaryTextColor"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {formData.specialization.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-medium text-primaryTextColor mb-1">
+            Spesialis Dokter
+          </h3>
+          <div className="flex flex-col gap-4 text-sm text-prima">
+            {formData.specialization.map((spec) => (
+              <div
+                className="flex flex-col border-tertiaryTextColor border gap-2 px-2 py-3 rounded-md"
+                key={spec.spe_id}
+              >
+                <input
+                  type="text"
+                  id={spec.spe_id}
+                  value={spec.spe_name}
+                  disabled={true}
+                  className="w-full px-3 py-2 border rounded-md shadow-sm font-semibold bg-blue-200 text-primaryTextColor"
+                />
+                <textarea
+                  rows={3}
+                  disabled={true}
+                  defaultValue={spec.spe_desc}
+                  className="w-full px-3 py-2 border rounded-md shadow-sm bg-purple-100"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {formData.education.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-medium text-primaryTextColor mb-1">
+            Riwayat Pendidikan
+          </h3>
+          <div className="grid grid-cols-2 gap-4 text-sm text-prima">
+            {formData.education.map((edu) => (
+              <div
+                className="flex flex-col border-tertiaryTextColor border gap-2 px-2 py-3 rounded-md"
+                key={edu.edu_id}
+              >
+                <textarea
+                  rows={3}
+                  disabled={true}
+                  defaultValue={`${edu.edu_degree} ${edu.edu_major}\n${edu.edu_graduation_year}\n${edu.edu_institution}`}
+                  className="w-full px-3 py-2 font-normal border rounded-md shadow-sm bg-red-100"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <button
         type="submit"

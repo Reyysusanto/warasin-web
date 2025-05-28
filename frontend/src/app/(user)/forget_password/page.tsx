@@ -7,7 +7,7 @@ import { FaEnvelope } from "react-icons/fa";
 
 const ForgetPasswordPage = () => {
   const [email, setEmail] = useState<string>("");
-//   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 //   const [successMessage, setSuccessMessage] = useState<string>("");
 
   //   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,10 +58,10 @@ const ForgetPasswordPage = () => {
                 membuat yang baru.
               </p>
             </div>
-            {/* {errorMessage && (
+            {errorMessage && (
               <p className="text-red-500 text-center mb-4">{errorMessage}</p>
             )}
-            {successMessage && (
+            {/* {successMessage && (
               <p className="text-green-500 text-center mb-4">
                 {successMessage}
               </p>

@@ -10,6 +10,7 @@ type FormInputProps = {
   type?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 };
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -21,6 +22,7 @@ const FormInput: React.FC<FormInputProps> = ({
   type = "text",
   value,
   onChange,
+  disabled = false,
 }) => {
   return (
     <div className="mb-4">
@@ -36,6 +38,7 @@ const FormInput: React.FC<FormInputProps> = ({
         placeholder={placeholder}
         {...register}
         defaultValue={value}
+        disabled={disabled}
         onChange={onChange}
         className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
