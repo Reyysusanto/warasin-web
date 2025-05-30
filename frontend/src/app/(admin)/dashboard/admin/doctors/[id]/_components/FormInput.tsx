@@ -1,48 +1,37 @@
-import React from "react";
-import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-type FormInputProps = {
-  label: string;
-  id: string;
-  placeholder: string;
-  register: UseFormRegisterReturn;
-  error?: FieldError;
-  type?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  disabled?: boolean;
-};
-
-const FormInput: React.FC<FormInputProps> = ({
-  label,
+const FormInput = ({
   id,
-  placeholder,
-  register,
-  error,
+  label,
   type = "text",
   value,
+  updateData,
+  error,
   onChange,
-  disabled = false,
+}: {
+  id: string;
+  label: string;
+  value?: string;
+  type?: string;
+  updateData: any;
+  error?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
-    <div className="mb-4">
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-gray-700 mb-1"
-      >
+    <div className="flex flex-col gap-y-2">
+      <label htmlFor={id} id={id} className="block">
         {label}
       </label>
       <input
-        type={type}
         id={id}
-        placeholder={placeholder}
-        {...register}
+        name={id}
+        type={type}
         defaultValue={value}
-        disabled={disabled}
         onChange={onChange}
-        className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        {...updateData}
+        className="px-3 py-2 input w-full"
       />
-      {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 };

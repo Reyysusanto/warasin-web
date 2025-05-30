@@ -1,4 +1,4 @@
-export type NewsLlist = {
+export type News = {
   news_id: string;
   news_image: string;
   news_title: string;
@@ -13,20 +13,14 @@ export type createNewsRequest = {
   image: string;
 };
 
-export type CreateNewsSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    news_id: string;
-    news_image: string;
-    news_title: string;
-    news_body: string;
-    news_date: Date;
-  };
-  timestamp: string;
+export type UpdateNewsRequest = {
+  image: string;
+  title: string;
+  body: string;
+  date: string;
 };
 
-export type getAllNewsSuccessResponse = {
+export type AllNewsResponse = {
   status: true;
   message: string;
   data: Array<{
@@ -45,46 +39,7 @@ export type getAllNewsSuccessResponse = {
   };
 };
 
-export type getDetailNewsSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    news_id: string;
-    news_image: string;
-    news_title: string;
-    news_body: string;
-    news_date: string;
-  };
-  timestamp: string;
-  meta: {
-    page: number;
-    per_page: number;
-    max_page: number;
-    count: number;
-  };
-};
-
-export type UpdateNewsRequest = {
-  image: string;
-  title: string;
-  body: string;
-  date: string;
-};
-
-export type GetDetailNewsSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    news_id: string;
-    news_image: string;
-    news_title: string;
-    news_body: string;
-    news_date: string;
-  };
-  timestamp: string;
-};
-
-export type DeleteNewsSuccessResponse = {
+export type NewsResponse = {
   status: true;
   message: string;
   data: {

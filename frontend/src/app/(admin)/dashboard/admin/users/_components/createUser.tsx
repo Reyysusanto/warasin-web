@@ -20,6 +20,7 @@ const AddUserPage = () => {
   const [cities, setCities] = useState<City[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [roles, setRoles] = useState<Role[]>([]);
+  const [success, setSuccess] = useState<string>();
   const [selectedRole, setSelectedRole] = useState("");
 
   const {
@@ -85,14 +86,14 @@ const AddUserPage = () => {
       gender: data.gender,
       phone_number: data.phone_number,
       city_id: data.city_id,
-      birth_date: dayjs(data.birth_date).format("DD-MM-YYYY"),
+      birth_date: dayjs(data.birth_date).format("YYYY-MM-DD"),
       role_id: data.role_id,
     };
 
     try {
       const result = await createUserService(formattedData);
       if (result) {
-        alert("User berhasil ditambahkan");
+        setSuccess("User berhasil ditambahkan");
         setSelectedProvince("");
         setSelectedRole("");
         setCities([]);
@@ -113,6 +114,9 @@ const AddUserPage = () => {
   return (
     <div className="w-full p-6 bg-white rounded-md shadow-md mt-10">
       <h2 className="text-2xl font-semibold mb-6">Tambah User Baru</h2>
+      {success && (
+        <p className="text-green-500 font-semibold text-sm">{success}</p>
+      )}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div>
           <label className="block">Nama</label>

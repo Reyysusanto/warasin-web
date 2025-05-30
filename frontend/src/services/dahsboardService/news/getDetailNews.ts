@@ -1,11 +1,11 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { GetDetailNewsSuccessResponse } from "@/types/news";
+import { NewsResponse } from "@/types/news";
 import axios, { AxiosError } from "axios";
 
 export const getDetailNewsService = async (
   newsId: string
-): Promise<GetDetailNewsSuccessResponse | ErrorResponse> => {
+): Promise<NewsResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 
   try {
@@ -20,7 +20,7 @@ export const getDetailNewsService = async (
     );
 
     if (response.status === 200) {
-      return response.data as GetDetailNewsSuccessResponse;
+      return response.data as NewsResponse;
     } else {
       return response.data as ErrorResponse;
     }

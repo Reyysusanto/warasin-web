@@ -1,6 +1,6 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { UpdateUserAdminRequest, updateUserAdminResponse } from "@/types/user";
+import { UpdateUserAdminRequest, UserResponse } from "@/types/user";
 import axios, { AxiosError } from "axios";
 
 export const updateUserAdminService = async (
@@ -9,7 +9,7 @@ export const updateUserAdminService = async (
 ) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.patch<updateUserAdminResponse | ErrorResponse>(
+    const response = await axios.patch<UserResponse | ErrorResponse>(
       `${baseURL}/admin/update-user/${user_id}`,
       data,
       {
@@ -21,7 +21,7 @@ export const updateUserAdminService = async (
     );
 
     if (response.status === 200) {
-      return response.data as updateUserAdminResponse;
+      return response.data as UserResponse;
     } else {
       return response.data as ErrorResponse;
     }

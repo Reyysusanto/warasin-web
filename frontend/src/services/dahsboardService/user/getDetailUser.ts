@@ -1,23 +1,26 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { GetDetailUserSuccessResponse } from "@/types/user";
+import { UserResponse } from "@/types/user";
 import axios from "axios";
 
 export const getUserDetailAdminService = async (
   user_id: string
-): Promise<GetDetailUserSuccessResponse | ErrorResponse> => {
+): Promise<UserResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(`${baseURL}/admin/get-detail-user/${user_id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.get(
+      `${baseURL}/admin/get-detail-user/${user_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
-      return response.data as GetDetailUserSuccessResponse;
+      return response.data as UserResponse;
     } else {
       return response.data as ErrorResponse;
     }

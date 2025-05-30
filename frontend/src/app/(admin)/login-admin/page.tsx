@@ -85,7 +85,7 @@ const LoginDashboard = () => {
                 className="w-full pl-10 p-2 border border-tertiaryTextColor rounded-md focus:outline-none focus:ring-2 focus:ring-primaryColor"
               />
             </div>
-            <div className="flex justify-center">
+            <div className="flex">
               {errors.email && (
                 <p className="mt-1 text-sm text-red-500">
                   {errors.email.message}
@@ -118,7 +118,7 @@ const LoginDashboard = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            <div className="flex justify-center">
+            <div className="flex">
               {errors.password && (
                 <p className="mt-1 text-sm text-red-500">
                   {errors.password.message}

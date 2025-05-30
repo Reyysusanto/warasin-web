@@ -2,7 +2,7 @@
 
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { createNewsSuccessResponse } from "@/types/news";
+import { NewsResponse } from "@/types/news";
 import { CreateNewsSchema } from "@/validations/news";
 import axios, { AxiosError } from "axios";
 import { z } from "zod";
@@ -15,7 +15,7 @@ export const createNewsService = async (
   try {
     const token = localStorage.getItem('token')
     const response = await axios.post<
-      createNewsSuccessResponse | ErrorResponse
+      NewsResponse | ErrorResponse
     >(`${baseURL}/admin/create-news`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -24,7 +24,7 @@ export const createNewsService = async (
     });
 
     if (response.status === 200) {
-      return response.data as createNewsSuccessResponse;
+      return response.data as NewsResponse;
     } else {
       return response.data as ErrorResponse;
     }

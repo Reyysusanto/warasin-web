@@ -1,6 +1,6 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { DeleteNewsSuccessResponse } from "@/types/news";
+import { NewsResponse } from "@/types/news";
 import axios, { AxiosError } from "axios";
 
 export const deleteNewsService = async (newsId: string) => {
@@ -16,7 +16,7 @@ export const deleteNewsService = async (newsId: string) => {
     );
 
     if (response.status === 200) {
-      return response.data as DeleteNewsSuccessResponse;
+      return response.data as NewsResponse;
     } else {
       return response.data as ErrorResponse;
     }

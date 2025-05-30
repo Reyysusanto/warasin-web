@@ -1,82 +1,104 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
-import Input from "./_components/Input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { GetPsychologDetailService } from "@/services/dashboardPsychologService/profile/getDetailProfile";
 import { getCityService, getProvincesService } from "@/services/province";
-import Options from "./_components/Option";
-import { psychologDetailSchema } from "@/validations/psycholog";
 import { City, Province } from "@/types/region";
+import {
+  getDetailPsychologSchema,
+  psychologSchema,
+} from "@/validations/psycholog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Education,
+  Language,
+  PsychologRequest,
+  Specialization,
+} from "@/types/psycholog";
+import FormInput from "./_components/Input";
+import FormSelect from "./_components/Option";
+import FormTextarea from "./_components/TextArea";
+import { getPsychologDetailService } from "@/services/dashboardPsychologService/profile/getDetailProfile";
+import { updatePsychologService } from "@/services/dashboardPsychologService/profile/updateProfile";
 
-type psychologDetailAdminSchemaType = z.infer<typeof psychologDetailSchema>;
+type GetDetailPsychologSchemaType = z.infer<typeof psychologSchema>;
 
-export default function AdminPsychologProfile() {
+const UpdateProfilePage = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
-  const [userData, setUserData] = useState({
-    psy_name: "",
-    psy_str_number: "",
-    psy_email: "",
-    psy_work_year: "",
-    psy_description: "",
-    psy_phone_number: "",
-    psy_image: "",
+  const [formData, setFormData] = useState({
+    name: "",
+    str_number: "",
+    email: "",
+    password: "",
+    work_year: "",
+    description: "",
+    phone_number: "",
     city_id: "",
-    province_id: "",
+    language: [] as Language[],
+    specialization: [] as Specialization[],
+    education: [] as Education[],
   });
 
   const {
-    register: formData,
+    register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<psychologDetailAdminSchemaType>({
-    resolver: zodResolver(psychologDetailSchema),
+  } = useForm<GetDetailPsychologSchemaType>({
+    resolver: zodResolver(getDetailPsychologSchema),
     defaultValues: {
-      psy_name: "",
-      psy_str_number: "",
-      psy_email: "",
-      psy_work_year: "",
-      psy_description: "",
-      psy_phone_number: "",
-      psy_image: "",
+      name: "",
+      phone_number: "",
+      email: "",
+      password: "",
+      work_year: "",
+      description: "",
+      str_number: "",
       city_id: "",
-      province_id: "",
+      language: [],
+      specialization: [],
+      education: [],
     },
   });
 
   useEffect(() => {
     const getPsychologData = async () => {
       try {
-        const response = await GetPsychologDetailService();
+        const response = await getPsychologDetailService();
         if (response.status === true) {
           const data = response.data;
-          setUserData({
-            psy_name: data.psy_name,
-            psy_str_number: data.psy_str_number,
-            psy_email: data.psy_email,
-            psy_work_year: data.psy_work_year,
-            psy_description: data.psy_description,
-            psy_phone_number: data.psy_phone_number,
-            psy_image: data.psy_image,
-            city_id: data.city.city_id || "",
-            province_id: data.city.province.province_id || "",
+          setFormData({
+            name: data.psy_name,
+            str_number: data.psy_str_number,
+            email: data.psy_email,
+            password: data.psy_password,
+            work_year: data.psy_work_year,
+            description: data.psy_description,
+            phone_number: data.psy_phone_number,
+            city_id: data.city.city_id,
+            language: data.language,
+            specialization: data.specialization,
+            education: data.education,
           });
-          setValue("psy_name", data.psy_name);
-          setValue("psy_email", data.psy_email);
-          setValue("psy_str_number", data.psy_str_number);
-          setValue("psy_work_year", data.psy_work_year);
-          setValue("psy_description", data.psy_description);
-          setValue("psy_phone_number", data.psy_phone_number);
-          setValue("psy_image", data.psy_image);
+
+          setValue("name", data.psy_name);
+          setValue("str_number", data.psy_str_number);
+          setValue("email", data.psy_email);
+          setValue("password", data.psy_password);
+          setValue("work_year", data.psy_work_year);
+          setValue("description", data.psy_description);
+          setValue("phone_number", data.psy_phone_number);
           setValue("city_id", data.city.city_id);
-          setValue("province_id", data.city.province.province_id);
+          setValue("language", data.language);
+          setValue("specialization", data.specialization);
+          setValue("education", data.education);
         }
       } catch (error) {
         console.log(error);
@@ -89,15 +111,15 @@ export default function AdminPsychologProfile() {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const userResponse = await GetPsychologDetailService();
+        const userResponse = await getPsychologDetailService();
 
         if (userResponse.status && userResponse.data) {
           const userProvince = userResponse.data.city?.province;
 
-          if (userProvince?.province_id) {
+          if (userProvince) {
             const provinceId = userProvince.province_id ?? "";
             setSelectedProvince(provinceId);
-            setUserData((prev) => ({
+            setFormData((prev) => ({
               ...prev,
               province: userProvince.province_id,
             }));
@@ -121,10 +143,13 @@ export default function AdminPsychologProfile() {
       if (!selectedProvince) return;
 
       try {
-        console.log(userData.province_id);
         const response = await getCityService(selectedProvince);
         if (response?.status === true) {
           setCities(response.data);
+
+          if (!formData.city_id) {
+            setValue("city_id", "");
+          }
         }
       } catch (error) {
         console.error("Gagal mengambil data kota", error);
@@ -132,151 +157,313 @@ export default function AdminPsychologProfile() {
     };
 
     fetchCities();
-  }, [selectedProvince, setValue]);
+  }, [selectedProvince, setValue, formData.city_id]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setUserData((prev) => ({
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
       [id]: value,
     }));
   };
 
   const handleOptionChange = (id: string, value: string) => {
-    setUserData((prev) => ({
+    setFormData((prev) => ({
       ...prev,
       [id]: value,
     }));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onSubmit = async (data: psychologDetailAdminSchemaType) => {
+  const onSubmit = async (data: GetDetailPsychologSchemaType) => {
+    setError(null);
+    setSuccess(null);
     setLoading(true);
 
     try {
-      console.log("hai");
-    } catch (error) {
-      console.log(error);
+      const formattedData: Partial<PsychologRequest> = {};
+      console.log("Form submitted with data:", data);
+
+      if (data.name !== formData.name) {
+        formattedData.name = data.name;
+      }
+
+      if (data.email !== formData.email) {
+        formattedData.email = data.email;
+      }
+
+      if (data.str_number !== formData.str_number) {
+        formattedData.str_number = data.str_number;
+      }
+
+      if (data.password !== formData.password) {
+        formattedData.password = data.password;
+      }
+
+      if (data.phone_number !== formData.phone_number) {
+        formattedData.phone_number = data.phone_number;
+      }
+
+      if (data.work_year !== formData.work_year) {
+        formattedData.work_year = data.work_year;
+      }
+
+      if (data.description !== formData.description) {
+        formattedData.description = data.description;
+      }
+
+      if (data.city_id && data.city_id !== formData.city_id) {
+        formattedData.city_id = data.city_id;
+      }
+
+      console.log("Formatted data:", formattedData);
+
+      const result = await updatePsychologService(formattedData);
+      console.log(result);
+      if (result?.status === true) {
+        setSuccess("Psycholog berhasil ditambahkan");
+        const refresh = await getPsychologDetailService();
+        if (refresh.status === true) {
+          const newData = refresh.data;
+          setFormData({
+            name: newData.psy_name,
+            str_number: newData.psy_str_number,
+            email: newData.psy_email,
+            password: newData.psy_password,
+            work_year: newData.psy_work_year,
+            description: newData.psy_description,
+            phone_number: newData.psy_phone_number,
+            city_id: newData.city.city_id,
+            language: newData.language,
+            specialization: newData.specialization,
+            education: newData.education,
+          });
+
+          setValue("name", newData.psy_name);
+          setValue("str_number", newData.psy_str_number);
+          setValue("email", newData.psy_email);
+          setValue("password", newData.psy_password);
+          setValue("work_year", newData.psy_work_year);
+          setValue("description", newData.psy_description);
+          setValue("phone_number", newData.psy_phone_number);
+          setValue("city_id", newData.city.city_id);
+          setValue("role_id", newData.role.role_id);
+        }
+      } else {
+        setError("Gagal menambahkan psycholog");
+      }
+    } catch (error: any) {
+      setError(error.message || "Terjadi kesalahan");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Profil Psikolog</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Input
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="bg-white shadow-md mb-6 p-6 rounded-lg space-y-5 w-full"
+    >
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">
+        Add New Doctor
+      </h2>
+
+      {success && <p className="text-green-500 text-sm">{success}</p>}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <FormInput
+          label="Psycholog Name"
           id="name"
-          label="Nama Lengkap"
           type="text"
-          updateUser={formData("psy_name")}
-          value={userData.psy_name}
+          updateData={register("name")}
+          error={errors.name?.message}
           onChange={handleInputChange}
-          error={errors.psy_name?.message}
-          isRequired={true}
+          value={formData.name}
         />
-        <Input
-          id="strId"
-          label="Nomor STR"
-          type="text"
-          updateUser={formData("psy_str_number")}
-          value={userData.psy_str_number}
-          onChange={handleInputChange}
-          error={errors.psy_str_number?.message}
-          isRequired={true}
-        />
-        <Input
+
+        <FormInput
+          label="Psycholog Email"
           id="email"
-          label="Email"
           type="text"
-          updateUser={formData("psy_email")}
-          value={userData.psy_email}
+          updateData={register("email")}
+          error={errors.email?.message}
           onChange={handleInputChange}
-          error={errors.psy_email?.message}
-          isRequired={true}
-        />
-        <Input
-          id="workYear"
-          label="Tahun Praktik"
-          type="text"
-          updateUser={formData("psy_work_year")}
-          value={userData.psy_work_year}
-          onChange={handleInputChange}
-          error={errors.psy_work_year?.message}
-          isRequired={true}
-        />
-        <Input
-          id="description"
-          label="Deskripsi"
-          type="text"
-          updateUser={formData("psy_description")}
-          value={userData.psy_description}
-          onChange={handleInputChange}
-          error={errors.psy_description?.message}
-          isRequired={false}
-        />
-        <Input
-          id="phoneNumber"
-          label="Nomer Telepon"
-          type="text"
-          updateUser={formData("psy_phone_number")}
-          value={userData.psy_phone_number}
-          onChange={handleInputChange}
-          error={errors.psy_phone_number?.message}
-          isRequired={true}
+          value={formData.email}
         />
 
-        {/* <Input
-          label="Gambar"
-          name="image"
-          type="file"
-          onChange={userData.psy_image}
-          previewUrl={imagePreview ?? ""}
-        /> */}
-
-        <Options
-          id="province"
-          label="Provinsi"
-          updateUser={formData("province_id")}
-          onChange={(id, value) => {
-            handleOptionChange(id, value);
-            setSelectedProvince(value);
-            setValue("province_id", value);
-            setValue("city_id", "");
-            setUserData((prev) => ({
-              ...prev,
-              city_id: "",
-            }));
-          }}
-          value={userData.province_id}
-          options={provinces.map((p) => ({
-            optionId: p.province_id,
-            optionName: p.province_name,
-          }))}
+        <FormInput
+          label="Psycholog Password"
+          type="password"
+          id="password"
+          updateData={register("password")}
+          error={errors.password?.message}
+          onChange={handleInputChange}
+          value={formData.password}
         />
 
-        <Options
-          id="city"
+        <FormInput
+          label="Phone Number"
+          id="phone_number"
+          type="text"
+          onChange={handleInputChange}
+          updateData={register("phone_number")}
+          error={errors.phone_number?.message}
+          value={formData.phone_number}
+        />
+
+        <FormInput
+          label="STR Number"
+          id="str_number"
+          onChange={handleInputChange}
+          updateData={register("str_number")}
+          error={errors.str_number?.message}
+          value={formData.str_number}
+        />
+
+        <FormInput
+          label="Work Year"
+          id="work_year"
+          onChange={handleInputChange}
+          updateData={register("work_year")}
+          error={errors.work_year?.message}
+          value={formData.work_year}
+        />
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Provinsi
+          </label>
+          <select
+            value={selectedProvince}
+            onChange={(e) => setSelectedProvince(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">-- Pilih Provinsi --</option>
+            {provinces.map((prov) => (
+              <option key={prov.province_id} value={prov.province_id}>
+                {prov.province_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <FormSelect
           label="Kota"
-          updateUser={formData("city_id")}
-          value={userData.city_id}
-          onChange={(id, value) => {
-            handleOptionChange(id, value);
-            setValue("city_id", value);
-          }}
-          options={cities.map((c) => ({
-            optionId: c.city_id,
-            optionName: c.city_name,
+          id="city_id"
+          value={formData.city_id}
+          options={cities.map((city) => ({
+            label: `${city.city_type} ${city.city_name}`,
+            value: city.city_id,
           }))}
+          onChange={handleOptionChange}
+          register={register("city_id")}
+          error={errors.city_id}
         />
+      </div>
 
-        <button
-          type="submit"
-          className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          disabled={loading}
-        >
-          Simpan Perubahan
-        </button>
-      </form>
-    </div>
+      <FormTextarea
+        label="Description"
+        id="description"
+        value={formData.description}
+        onChange={handleTextAreaChange}
+        placeholder="Brief description about the doctor"
+        register={register("description")}
+        error={errors.description?.message}
+      />
+
+      {/* Language Section */}
+      <section id="language">
+        {formData.language.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <h3 className="text-sm font-medium text-primaryTextColor mb-1">
+              Bahasa yang Dikuasai
+            </h3>
+            <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+              {formData.language.map((lang) => (
+                <input
+                  key={lang.lang_id}
+                  type="text"
+                  id={lang.lang_id}
+                  value={lang.lang_name}
+                  disabled={true}
+                  className="w-full px-3 py-2 border rounded-md shadow-sm text-primaryTextColor"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {formData.specialization.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-medium text-primaryTextColor mb-1">
+            Spesialis Dokter
+          </h3>
+          <div className="flex flex-col gap-4 text-sm text-prima">
+            {formData.specialization.map((spec) => (
+              <div
+                className="flex flex-col border-tertiaryTextColor border gap-2 px-2 py-3 rounded-md"
+                key={spec.spe_id}
+              >
+                <input
+                  type="text"
+                  id={spec.spe_id}
+                  value={spec.spe_name}
+                  disabled={true}
+                  className="w-full px-3 py-2 border rounded-md shadow-sm font-semibold bg-blue-200 text-primaryTextColor"
+                />
+                <textarea
+                  rows={3}
+                  disabled={true}
+                  defaultValue={spec.spe_desc}
+                  className="w-full px-3 py-2 border rounded-md shadow-sm bg-purple-100"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {formData.education.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-medium text-primaryTextColor mb-1">
+            Riwayat Pendidikan
+          </h3>
+          <div className="grid grid-cols-2 gap-4 text-sm text-prima">
+            {formData.education.map((edu) => (
+              <div
+                className="flex flex-col border-tertiaryTextColor border gap-2 px-2 py-3 rounded-md"
+                key={edu.edu_id}
+              >
+                <textarea
+                  rows={3}
+                  disabled={true}
+                  defaultValue={`${edu.edu_degree} ${edu.edu_major}\n${edu.edu_graduation_year}\n${edu.edu_institution}`}
+                  className="w-full px-3 py-2 font-normal border rounded-md shadow-sm bg-red-100"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <button
+        type="submit"
+        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md w-full transition"
+        disabled={loading}
+      >
+        {loading ? "Menyimpan..." : "Simpan Perubahan"}
+      </button>
+    </form>
   );
-}
+};
+
+export default UpdateProfilePage;

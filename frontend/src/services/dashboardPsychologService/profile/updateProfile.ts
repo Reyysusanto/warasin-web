@@ -1,22 +1,27 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { AllUserResponse } from "@/types/user";
+import { PsychologRequest, PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
-export const GetAllUsers = async (): Promise<
-  AllUserResponse | ErrorResponse
-> => {
+export const updatePsychologService = async (
+  data: Partial<PsychologRequest>
+): Promise<PsychologResponse | ErrorResponse> => {
+  const token = localStorage.getItem("token");
+
   try {
-    const token = localStorage.getItem("token");
-    const response = await axios.get(`${baseURL}/admin/get-all-user`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.patch(
+      `${baseURL}/psycholog/update-psycholog`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
-      return response.data as AllUserResponse;
+      return response.data as PsychologResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -27,7 +32,8 @@ export const GetAllUsers = async (): Promise<
       if (axiosError.response) {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
-          window.location.href = "/login-admin";
+          window.location.href = "login-psycholog";
+          throw new Error("Token telah kadaluarsa");
         }
 
         if (axiosError.response.data.status === false) {
@@ -37,16 +43,8 @@ export const GetAllUsers = async (): Promise<
               "Gagal mengambil data"
           );
         }
-
-        if (axiosError.response.status === 401) {
-          localStorage.removeItem("token");
-          throw new Error("Token telah kadaluarsa");
-        }
       }
     }
-
-    throw new Error(
-      "Terjadi kesalahan saat mengambil data. Silakan coba lagi."
-    );
+    throw new Error("Terjadi kesalahan saat memperbarui data");
   }
 };

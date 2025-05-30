@@ -37,6 +37,7 @@ type UserData = {
 
 const EditProfilePage = () => {
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState<string>();
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -215,7 +216,7 @@ const EditProfilePage = () => {
       const result = await updateUserAdminService(id, formattedData);
 
       if (result?.status === true) {
-        alert("User berhasil diupdate");
+        setSuccess("User berhasil diupdate");
         const refresh = await getUserDetailAdminService(id);
         if (refresh.status === true) {
           const newData = refresh.data;
@@ -259,6 +260,11 @@ const EditProfilePage = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-y-6"
           >
+            {success && (
+              <p className="text-green-500 font-semibold text-sm">
+                {success}
+              </p>
+            )}
             <div className="grid grid-cols-2 gap-x-5 gap-y-1">
               <Input
                 id="name"
@@ -332,7 +338,7 @@ const EditProfilePage = () => {
                   optionName: `${c.city_type} ${c.city_name}`,
                 }))}
               />
-              
+
               <Options
                 id="role"
                 label="Role"

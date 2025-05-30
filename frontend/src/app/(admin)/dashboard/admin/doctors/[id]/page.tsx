@@ -16,7 +16,12 @@ import { useParams } from "next/navigation";
 import { getDetailPsychologService } from "@/services/dahsboardService/doctor/getDetailPsycholog";
 import { updatePsychologAdminService } from "@/services/dahsboardService/doctor/updatePsycholog";
 import { z } from "zod";
-import { Education, Specialization } from "@/types/psycholog";
+import {
+  Education,
+  Language,
+  PsychologRequest,
+  Specialization,
+} from "@/types/psycholog";
 
 type GetDetailPsychologSchemaType = z.infer<typeof getDetailPsychologSchema>;
 
@@ -41,7 +46,7 @@ const DetailDoctorPage = () => {
     phone_number: "",
     city_id: "",
     role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
-    language_id: [] as string[],
+    language: [] as Language[],
     specialization: [] as Specialization[],
     education: [] as Education[],
   });
@@ -54,15 +59,18 @@ const DetailDoctorPage = () => {
   } = useForm<GetDetailPsychologSchemaType>({
     resolver: zodResolver(getDetailPsychologSchema),
     defaultValues: {
-      psy_name: "",
-      psy_phone_number: "",
-      psy_email: "",
-      psy_password: "",
-      psy_work_year: "",
-      psy_description: "",
-      psy_str_number: "",
+      name: "",
+      phone_number: "",
+      email: "",
+      password: "",
+      work_year: "",
+      description: "",
+      str_number: "",
       city_id: "",
-      role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
+      role_id: "",
+      language: [],
+      specialization: [],
+      education: [],
     },
   });
 
@@ -82,21 +90,24 @@ const DetailDoctorPage = () => {
             description: data.psy_description,
             phone_number: data.psy_phone_number,
             city_id: data.city.city_id,
-            role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
-            language_id: data.language.map((lang) => lang.lang_name),
+            role_id: data.role.role_id,
+            language: data.language,
             specialization: data.specialization,
             education: data.education,
           });
 
-          setValue("psy_name", data.psy_name);
-          setValue("psy_str_number", data.psy_str_number);
-          setValue("psy_email", data.psy_email);
-          setValue("psy_password", data.psy_password);
-          setValue("psy_work_year", data.psy_work_year);
-          setValue("psy_description", data.psy_description);
-          setValue("psy_phone_number", data.psy_phone_number);
+          setValue("name", data.psy_name);
+          setValue("str_number", data.psy_str_number);
+          setValue("email", data.psy_email);
+          setValue("password", data.psy_password);
+          setValue("work_year", data.psy_work_year);
+          setValue("description", data.psy_description);
+          setValue("phone_number", data.psy_phone_number);
           setValue("city_id", data.city.city_id);
-          setValue("role_id", "dc3f6a8e-4875-4297-a285-4f2439595ee2");
+          setValue("role_id", data.role.role_id);
+          setValue("language", data.language);
+          setValue("specialization", data.specialization);
+          setValue("education", data.education);
         }
       } catch (error) {
         console.log(error);
@@ -104,7 +115,7 @@ const DetailDoctorPage = () => {
     };
 
     getPsychologData();
-  }, [setValue, params.id, formData]);
+  }, [setValue, params.id]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -197,28 +208,52 @@ const DetailDoctorPage = () => {
     setError(null);
     setSuccess(null);
     setLoading(true);
-
-    setFormData({
-      name: data.psy_name,
-      str_number: data.psy_str_number,
-      email: data.psy_email,
-      password: data.psy_password,
-      work_year: data.psy_work_year,
-      description: data.psy_description,
-      phone_number: data.psy_phone_number,
-      city_id: data.city_id,
-      role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
-      language_id: data.language,
-      specialization: data.specialization,
-      education: data.education,
-    });
-
-    console.log(formData);
-
+    
     try {
       const id = params.id as string;
+      const formattedData: Partial<PsychologRequest> = {};
+      console.log("Form submitted with data:", data);
+      
+      if (data.name !== formData.name) {
+        formattedData.name = data.name;
+      }
+      
+      if (data.email !== formData.email) {
+        formattedData.email = data.email;
+      }
 
-      const result = await updatePsychologAdminService(id, formData);
+      if (data.str_number !== formData.str_number) {
+        formattedData.str_number = data.str_number;
+      }
+      
+      if (data.password !== formData.password) {
+        formattedData.password = data.password;
+      }
+      
+      if (data.phone_number !== formData.phone_number) {
+        formattedData.phone_number = data.phone_number;
+      }
+
+      if (data.work_year !== formData.work_year) {
+        formattedData.work_year = data.work_year;
+      }
+      
+      if (data.description !== formData.description) {
+        formattedData.description = data.description;
+      }
+      
+      if (data.city_id && data.city_id !== formData.city_id) {
+        formattedData.city_id = data.city_id;
+      }
+      
+      if (data.role_id !== formData.role_id) {
+        formattedData.role_id = data.role_id;
+      }
+      
+      console.log("Formatted data:", formattedData);
+
+      const result = await updatePsychologAdminService(id, formattedData);
+      console.log(result);
       if (result?.status === true) {
         setSuccess("Psycholog berhasil ditambahkan");
         const refresh = await getDetailPsychologService(id);
@@ -233,21 +268,21 @@ const DetailDoctorPage = () => {
             description: newData.psy_description,
             phone_number: newData.psy_phone_number,
             city_id: newData.city.city_id,
-            role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
-            language_id: newData.language.map((lang) => lang.lang_id),
+            role_id: newData.role.role_id,
+            language: newData.language,
             specialization: newData.specialization,
             education: newData.education,
           });
 
-          setValue("psy_name", newData.psy_name);
-          setValue("psy_str_number", newData.psy_str_number);
-          setValue("psy_email", newData.psy_email);
-          setValue("psy_password", newData.psy_password);
-          setValue("psy_work_year", newData.psy_work_year);
-          setValue("psy_description", newData.psy_description);
-          setValue("psy_phone_number", newData.psy_phone_number);
+          setValue("name", newData.psy_name);
+          setValue("str_number", newData.psy_str_number);
+          setValue("email", newData.psy_email);
+          setValue("password", newData.psy_password);
+          setValue("work_year", newData.psy_work_year);
+          setValue("description", newData.psy_description);
+          setValue("phone_number", newData.psy_phone_number);
           setValue("city_id", newData.city.city_id);
-          setValue("role_id", "dc3f6a8e-4875-4297-a285-4f2439595ee2");
+          setValue("role_id", newData.role.role_id);
         }
       } else {
         setError("Gagal menambahkan psycholog");
@@ -275,9 +310,9 @@ const DetailDoctorPage = () => {
         <FormInput
           label="Psycholog Name"
           id="name"
-          placeholder="psycholog name"
-          register={register("psy_name")}
-          error={errors.psy_name}
+          type="text"
+          updateData={register("name")}
+          error={errors.name?.message}
           onChange={handleInputChange}
           value={formData.name}
         />
@@ -285,9 +320,9 @@ const DetailDoctorPage = () => {
         <FormInput
           label="Psycholog Email"
           id="email"
-          placeholder="psycholog@gmail.com"
-          register={register("psy_email")}
-          error={errors.psy_email}
+          type="text"
+          updateData={register("email")}
+          error={errors.email?.message}
           onChange={handleInputChange}
           value={formData.email}
         />
@@ -296,9 +331,8 @@ const DetailDoctorPage = () => {
           label="Psycholog Password"
           type="password"
           id="password"
-          placeholder="*************"
-          register={register("psy_password")}
-          error={errors.psy_password}
+          updateData={register("password")}
+          error={errors.password?.message}
           onChange={handleInputChange}
           value={formData.password}
         />
@@ -306,30 +340,28 @@ const DetailDoctorPage = () => {
         <FormInput
           label="Phone Number"
           id="phone_number"
-          placeholder="08*********"
+          type="text"
           onChange={handleInputChange}
-          register={register("psy_phone_number")}
-          error={errors.psy_phone_number}
+          updateData={register("phone_number")}
+          error={errors.phone_number?.message}
           value={formData.phone_number}
         />
 
         <FormInput
           label="STR Number"
-          id="strNumber"
+          id="str_number"
           onChange={handleInputChange}
-          placeholder="ST*******"
-          register={register("psy_str_number")}
-          error={errors.psy_str_number}
+          updateData={register("str_number")}
+          error={errors.str_number?.message}
           value={formData.str_number}
         />
 
         <FormInput
           label="Work Year"
-          id="workYear"
-          placeholder="2005"
+          id="work_year"
           onChange={handleInputChange}
-          register={register("psy_work_year")}
-          error={errors.psy_work_year}
+          updateData={register("work_year")}
+          error={errors.work_year?.message}
           value={formData.work_year}
         />
 
@@ -383,22 +415,22 @@ const DetailDoctorPage = () => {
         value={formData.description}
         onChange={handleTextAreaChange}
         placeholder="Brief description about the doctor"
-        register={register("psy_description")}
-        error={errors.psy_description}
+        register={register("description")}
+        error={errors.description?.message}
       />
 
-      {formData.language_id.length > 0 && (
+      {formData.language.length > 0 && (
         <div className="flex flex-col gap-3">
           <h3 className="text-sm font-medium text-primaryTextColor mb-1">
             Bahasa yang Dikuasai
           </h3>
           <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
-            {formData.language_id.map((name) => (
+            {formData.language.map((lang) => (
               <input
-                key={name}
+                key={lang.lang_id}
                 type="text"
-                id={name}
-                value={name}
+                id={lang.lang_id}
+                value={lang.lang_name}
                 disabled={true}
                 className="w-full px-3 py-2 border rounded-md shadow-sm text-primaryTextColor"
               />

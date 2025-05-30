@@ -8,11 +8,11 @@ import AddUserPage from "./_components/createUser";
 import { deleteUserService } from "@/services/dahsboardService/user/deleteUser";
 import { useRouter } from "next/navigation";
 import { GetAllUsers } from "@/services/dahsboardService/user/users";
-import { UserList } from "@/types/user";
+import { User } from "@/types/user";
 
 const UserDashboard = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [userList, setUserList] = useState<UserList[]>([]);
+  const [userList, setUserList] = useState<User[]>([]);
   const router = useRouter();
 
   useEffect(() => {

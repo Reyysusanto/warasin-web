@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllNewsService } from "@/services/dahsboardService/news/getAllNews";
-import { NewsLlist } from "@/types/news";
+import { News } from "@/types/news";
 import dayjs from "dayjs";
 import { deleteNewsService } from "@/services/dahsboardService/news/deleteNews";
 
 const ViewNewsPage = () => {
-  const [newsList, setNewsList] = useState<NewsLlist[]>([]);
+  const [newsList, setNewsList] = useState<News[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

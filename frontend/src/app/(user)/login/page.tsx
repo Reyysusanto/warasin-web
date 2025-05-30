@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import Header from "../_components/header";
 import Image from "next/image";
 import Link from "next/link";
@@ -95,7 +94,10 @@ const Login = () => {
             <label className="flex items-center text-tertiaryTextColor">
               <input type="checkbox" className="mr-2" /> Ingat saya
             </label>
-            <Link href="/forget_password" className="text-primaryColor hover:underline">
+            <Link
+              href="/forget_password"
+              className="text-primaryColor hover:underline"
+            >
               Lupa Password?
             </Link>
           </div>
@@ -105,11 +107,6 @@ const Login = () => {
             className="w-full p-2 bg-primaryColor text-secondaryTextColor rounded-md hover:bg-secondaryColor"
           >
             Masuk
-          </button>
-
-          <button className="flex w-full p-2 bg-backgroundPrimaryColor text-primaryTextColor rounded-md mt-4 items-center justify-center border border-tertiaryTextColor shadow-sm hover:shadow-md transition">
-            <FcGoogle className="mr-2 text-2xl" />
-            Masuk dengan Google
           </button>
 
           <div className="flex justify-between">

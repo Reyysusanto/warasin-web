@@ -1,6 +1,6 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { CreateNewsSuccessResponse, UpdateNewsRequest } from "@/types/news";
+import { NewsResponse, UpdateNewsRequest } from "@/types/news";
 import axios, { AxiosError } from "axios";
 
 export const updateNewsAdminService = async (
@@ -9,17 +9,19 @@ export const updateNewsAdminService = async (
 ) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.patch<
-      CreateNewsSuccessResponse | ErrorResponse
-    >(`${baseURL}/admin/update-news/${news_id}`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.patch<NewsResponse | ErrorResponse>(
+      `${baseURL}/admin/update-news/${news_id}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
-      return response.data as CreateNewsSuccessResponse;
+      return response.data as NewsResponse;
     } else {
       return response.data as ErrorResponse;
     }
