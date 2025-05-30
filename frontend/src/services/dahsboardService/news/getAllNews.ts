@@ -1,10 +1,10 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { getAllNewsSuccessResponse } from "@/types/news";
+import { AllNewsResponse } from "@/types/news";
 import axios, { AxiosError } from "axios";
 
 export const getAllNewsService = async (): Promise<
-  getAllNewsSuccessResponse | ErrorResponse
+  AllNewsResponse | ErrorResponse
 > => {
   try {
     const token = localStorage.getItem("token");
@@ -16,7 +16,7 @@ export const getAllNewsService = async (): Promise<
     });
 
     if (response.status === 200) {
-      return response.data as getAllNewsSuccessResponse;
+      return response.data as AllNewsResponse;
     } else {
       return response.data as ErrorResponse;
     }

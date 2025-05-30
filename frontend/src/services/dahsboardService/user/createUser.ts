@@ -2,39 +2,12 @@
 
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
+import { UserResponse } from "@/types/user";
 import { createUserSchema } from "@/validations/user";
 import axios, { AxiosError } from "axios";
 import { z } from "zod";
 
 type CreateUserSchemaType = z.infer<typeof createUserSchema>;
-
-type CreateUsersSuccessResponse = {
-  status: true;
-  message: string;
-  data: Array<{
-    user_id: string;
-    user_name: string;
-    user_email: string;
-    user_password: string;
-    user_birth_date: string;
-    user_phone_number: string;
-    is_verified: boolean;
-    city: {
-      city_id: string;
-      city_name: string;
-      city_type: string;
-      province: {
-        province_id: string;
-        province_name: string;
-      };
-    };
-    role: {
-      role_id: string;
-      role_name: string;
-    };
-  }>;
-  timestamp: string;
-};
 
 export const createUserService = async (
   data: CreateUserSchemaType,
@@ -42,7 +15,7 @@ export const createUserService = async (
   try {
     const token = localStorage.getItem('token')
     const response = await axios.post<
-      CreateUsersSuccessResponse | ErrorResponse
+      UserResponse | ErrorResponse
     >(`${baseURL}/admin/create-user`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -51,7 +24,7 @@ export const createUserService = async (
     });
 
     if (response.status === 200) {
-      return response.data as CreateUsersSuccessResponse;
+      return response.data as UserResponse;
     } else {
       return response.data as ErrorResponse;
     }

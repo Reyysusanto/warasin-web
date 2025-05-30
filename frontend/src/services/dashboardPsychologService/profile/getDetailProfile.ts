@@ -1,10 +1,10 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { GetDetailPsychologResponse } from "@/types/psycholog";
+import { PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
-export const GetPsychologDetailService = async (): Promise<
-  GetDetailPsychologResponse | ErrorResponse
+export const getPsychologDetailService = async (): Promise<
+  PsychologResponse | ErrorResponse
 > => {
   try {
     const token = localStorage.getItem("token");
@@ -19,7 +19,7 @@ export const GetPsychologDetailService = async (): Promise<
     );
 
     if (response.status === 200) {
-      return response.data as GetDetailPsychologResponse;
+      return response.data as PsychologResponse;
     } else {
       return response.data as ErrorResponse;
     }

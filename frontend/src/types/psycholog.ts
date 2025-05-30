@@ -58,7 +58,7 @@ export type Psycholog = {
   }>;
 };
 
-export type CreatePsychologRequest = {
+export type PsychologRequest = {
   name: string;
   str_number: string;
   email: string;
@@ -146,18 +146,18 @@ export type GetAllPsychologResponse = {
     language: Array<{
       lang_id: string;
       lang_name: string;
-    }>;
+    }> | null;
     specialization: Array<{
       spe_id: string;
       spe_name: string;
       spe_desc: string;
-    }>;
+    }> | null;
     education: Array<{
       edu_id: string;
       edu_degree: string;
       edu_major: string;
       edu_institution: string;
       edu_graduation_year: string;
-    }>;
+    }> | null;
   }>;
 };

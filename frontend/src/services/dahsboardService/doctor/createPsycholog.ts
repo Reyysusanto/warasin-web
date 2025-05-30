@@ -1,11 +1,11 @@
 import { baseURL } from "@/config/api";
 import { adminRefreshTokenService } from "@/services/role/adminRefreshToken";
 import { ErrorResponse } from "@/types/error";
-import { CreatePsychologRequest, PsychologResponse } from "@/types/psycholog";
+import { PsychologRequest, PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const CreatePsychologService = async (
-  data: CreatePsychologRequest
+  data: PsychologRequest
 ): Promise<PsychologResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 

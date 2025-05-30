@@ -8,7 +8,6 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import Header from "../_components/header";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,7 +58,7 @@ const RegisterPage = () => {
       const registerSuccess = await registerService({
         name: data.name,
         email: data.email,
-        password: data.password
+        password: data.password,
       });
       if (registerSuccess) {
         router.push("/login");
@@ -135,12 +134,6 @@ const RegisterPage = () => {
           >
             Daftar
           </button>
-
-          <button className="flex w-full p-2 bg-backgroundPrimaryColor text-primaryTextColor rounded-md mt-4 items-center justify-center border border-tertiaryTextColor shadow-sm hover:shadow-md transition duration-300">
-            <FcGoogle className="mr-2 text-2xl" />
-            Daftar dengan Google
-          </button>
-
           <p className="mt-4 text-tertiaryTextColor text-sm text-center">
             Sudah punya akun?{" "}
             <Link href="/login" className="text-primaryColor hover:underline">

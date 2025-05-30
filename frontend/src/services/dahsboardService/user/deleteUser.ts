@@ -1,40 +1,13 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
+import { UserResponse } from "@/types/user";
 import axios, { AxiosError } from "axios";
-
-type DeleteSuccessResponse = {
-  status: true;
-  message: string;
-  data: {
-    user_id: string;
-    user_name: string;
-    user_email: string;
-    user_password: string;
-    user_birth_date: string;
-    user_phone_number: string;
-    is_verified: boolean;
-    city: {
-      city_id: string;
-      city_name: string;
-      city_type: string;
-      province: {
-        province_id: string;
-        province_name: string;
-      };
-    };
-    role: {
-      role_id: string;
-      role_name: string;
-    };
-  };
-  timestamp: string;
-};
 
 export const deleteUserService = async (userId: string) => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.delete<DeleteSuccessResponse | ErrorResponse>(
+    const response = await axios.delete<UserResponse | ErrorResponse>(
       `${baseURL}/admin/delete-user/${userId}`,
       {
         headers: {
@@ -44,7 +17,7 @@ export const deleteUserService = async (userId: string) => {
     );
 
     if (response.data.status === true && response.status === 200) {
-      return response.data as DeleteSuccessResponse;
+      return response.data as UserResponse;
     } else {
       return response.data as ErrorResponse;
     }
