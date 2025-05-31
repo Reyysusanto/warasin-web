@@ -15,7 +15,6 @@ type FormSelectProps = {
   placeholder?: string;
   value?: string;
   onChange?: (id: string, value: string) => void;
-  disabled?: boolean;
 };
 
 const FormSelect: React.FC<FormSelectProps> = ({
@@ -27,7 +26,6 @@ const FormSelect: React.FC<FormSelectProps> = ({
   placeholder = "-- Pilih --",
   value,
   onChange,
-  disabled = false,
 }) => {
   return (
     <div className="mb-4">
@@ -46,7 +44,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
           register.onChange(e);
           onChange?.(id, e.target.value);
         }}
-        disabled={disabled}
+        disabled={true}
       >
         {placeholder && <option value="">{placeholder}</option>}
         {options.map((opt) => (

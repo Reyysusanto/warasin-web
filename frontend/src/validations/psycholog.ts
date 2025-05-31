@@ -12,7 +12,6 @@ const specializationSchema = z.object({
 });
 
 const educationSchema = z.object({
-  edu_id: z.string().min(1, "ID education tidak boleh kosong"),
   edu_degree: z.string().min(1, "Jenjang tidak boleh kosong"),
   edu_major: z.string().min(1, "major tidak boleh kosong"),
   edu_institution: z.string().min(1, "Institusi tidak boleh kosong"),
@@ -54,8 +53,8 @@ const getDetailPsychologSchema = z.object({
   phone_number: z.string().min(8, "Nomor telepon tidak valid"),
   city_id: z.string().min(1, "ID kota tidak boleh kosong"),
   role_id: z.string().min(1, "ID role tidak boleh kosong"),
-  language: z.array(languageSchema).nonempty(),
-  specialization: z.array(specializationSchema).nonempty(),
+  language: z.array(languageSchema).nullable(),
+  specialization: z.array(specializationSchema).nullable(),
   education: z.array(educationSchema).nonempty(),
 });
 
@@ -69,9 +68,9 @@ const psychologSchema = z.object({
   phone_number: z.string().min(8, "Nomor telepon tidak valid"),
   city_id: z.string().min(1, "ID kota tidak boleh kosong"),
   role_id: z.string().min(1, "ID role tidak boleh kosong"),
-  language: z.array(languageSchema).nonempty(),
-  specialization: z.array(specializationSchema).nonempty(),
-  education: z.array(educationSchema).nonempty(),
+  language: z.array(languageSchema).nonempty().nullable(),
+  specialization: z.array(specializationSchema).nonempty().nullable(),
+  education: z.array(educationSchema).nonempty().nullable(),
 });
 
 export {

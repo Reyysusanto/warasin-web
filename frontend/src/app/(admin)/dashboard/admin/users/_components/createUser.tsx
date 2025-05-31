@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import { getCityService, getProvincesService } from "@/services/province";
 import { createUserService } from "@/services/dahsboardService/user/createUser";
 import { getRoleService } from "@/services/role";
-import { City, Province } from "@/types/region";
+import { City, Province } from "@/types/master";
 import { Role } from "@/types/role";
 
 type CreateUserSchemaType = z.infer<typeof createUserSchema>;

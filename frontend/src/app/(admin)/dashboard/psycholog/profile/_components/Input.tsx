@@ -26,6 +26,7 @@ const FormInput = ({
         id={id}
         name={id}
         type={type}
+        disabled={true}
         defaultValue={value}
         onChange={onChange}
         {...updateData}

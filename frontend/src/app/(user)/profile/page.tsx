@@ -17,7 +17,7 @@ import { userDetailSchema } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getCityService, getProvincesService } from "@/services/province";
-import { City, Province } from "@/types/region";
+import { City, Province } from "@/types/master";
 import dayjs from "dayjs";
 import { UpdateDetailUserRequest } from "@/types/user";
 import GenderOption from "./_components/GenderOption";

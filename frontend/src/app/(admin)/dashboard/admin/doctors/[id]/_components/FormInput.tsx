@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 const FormInput = ({
   id,
   label,
   type = "text",
   value,
-  updateData,
   error,
   onChange,
 }: {
@@ -13,7 +10,6 @@ const FormInput = ({
   label: string;
   value?: string;
   type?: string;
-  updateData: any;
   error?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
@@ -28,7 +24,6 @@ const FormInput = ({
         type={type}
         defaultValue={value}
         onChange={onChange}
-        {...updateData}
         className="px-3 py-2 input w-full"
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
