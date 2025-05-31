@@ -1,6 +1,6 @@
 import { baseURL } from "@/config/api"
 import { ErrorResponse } from "@/types/error"
-import { CitySuccessResponse, ProvincesSuccessResponse } from "@/types/region";
+import { CitySuccessResponse, ProvincesSuccessResponse } from "@/types/master";
 import axios, { AxiosError } from "axios"
 
 export const getProvincesService = async (): Promise<

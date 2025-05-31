@@ -1,11 +1,11 @@
 import { baseURL } from "@/config/api";
 import { adminRefreshTokenService } from "@/services/role/adminRefreshToken";
 import { ErrorResponse } from "@/types/error";
-import { PsychologRequest, PsychologResponse } from "@/types/psycholog";
+import { AddPsychologRequest, PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const CreatePsychologService = async (
-  data: PsychologRequest
+  data: AddPsychologRequest
 ): Promise<PsychologResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 
@@ -32,7 +32,7 @@ export const CreatePsychologService = async (
         const newAccessToken = await adminRefreshTokenService();
 
         const retryResponse = await axios.post(
-          `${baseURL}/admin/create-motivation-category`,
+          `${baseURL}/admin/create-psycholog`,
           data,
           {
             headers: {

@@ -4,7 +4,7 @@
 import { CreatePsychologService } from "@/services/dahsboardService/doctor/createPsycholog";
 import { getCityService, getProvincesService } from "@/services/province";
 import { getRoleService } from "@/services/role";
-import { City, Province } from "@/types/region";
+import { City, Province } from "@/types/master";
 import { Role } from "@/types/role";
 import { createPsychologSchema } from "@/validations/psycholog";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +27,7 @@ const AddDoctorForm = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRole, setSelectedRole] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [formData, setFormData] = useState({
     name: "",
     str_number: "",
@@ -109,7 +110,7 @@ const AddDoctorForm = () => {
     setSuccess(null);
     setLoading(true);
 
-    setFormData({
+    const payload = {
       name: data.psy_name,
       str_number: data.psy_str_number,
       email: data.psy_email,
@@ -119,19 +120,21 @@ const AddDoctorForm = () => {
       phone_number: data.psy_phone_number,
       city_id: data.city_id,
       role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
-    });
+    };
 
     try {
-      const result = await CreatePsychologService(formData);
-      if (result) {
+      const result = await CreatePsychologService(payload);
+      console.log(result);
+      if (result.status === true) {
         setSuccess("Psycholog berhasil ditambahkan");
         setSelectedProvince("");
         setCities([]);
       } else {
         setError("Gagal menambahkan psycholog");
       }
-    } catch (error: any) {
-      setError(error.message || "Terjadi kesalahan");
+    } catch (err: any) {
+      console.log(err);
+      setError(err.message || "Terjadi kesalahan");
     } finally {
       setLoading(false);
     }
@@ -247,7 +250,7 @@ const AddDoctorForm = () => {
           disabled={true}
         />
       </div>
-      
+
       <FormTextarea
         label="Description"
         id="psy_description"

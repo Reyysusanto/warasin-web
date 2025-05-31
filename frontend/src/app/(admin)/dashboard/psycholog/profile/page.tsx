@@ -1,34 +1,23 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { getCityService, getProvincesService } from "@/services/province";
-import { City, Province } from "@/types/region";
+import { City, Province } from "@/types/master";
 import {
-  getDetailPsychologSchema,
   psychologSchema,
 } from "@/validations/psycholog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Education,
-  Language,
-  PsychologRequest,
-  Specialization,
-} from "@/types/psycholog";
+import { Education, Language, Specialization } from "@/types/psycholog";
 import FormInput from "./_components/Input";
 import FormSelect from "./_components/Option";
 import FormTextarea from "./_components/TextArea";
 import { getPsychologDetailService } from "@/services/dashboardPsychologService/profile/getDetailProfile";
-import { updatePsychologService } from "@/services/dashboardPsychologService/profile/updateProfile";
 
 type GetDetailPsychologSchemaType = z.infer<typeof psychologSchema>;
 
 const UpdateProfilePage = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
@@ -41,18 +30,17 @@ const UpdateProfilePage = () => {
     description: "",
     phone_number: "",
     city_id: "",
-    language: [] as Language[],
-    specialization: [] as Specialization[],
-    education: [] as Education[],
+    language: [] as Language[] | null,
+    specialization: [] as Specialization[] | null,
+    education: [] as Education[] | null,
   });
 
   const {
     register,
-    handleSubmit,
     setValue,
     formState: { errors },
   } = useForm<GetDetailPsychologSchemaType>({
-    resolver: zodResolver(getDetailPsychologSchema),
+    resolver: zodResolver(psychologSchema),
     defaultValues: {
       name: "",
       phone_number: "",
@@ -62,9 +50,9 @@ const UpdateProfilePage = () => {
       description: "",
       str_number: "",
       city_id: "",
-      language: [],
-      specialization: [],
-      education: [],
+      language: [] as Language[] | null,
+      specialization: [] as Specialization[] | null,
+      education: [] as Education[] | null,
     },
   });
 
@@ -96,9 +84,6 @@ const UpdateProfilePage = () => {
           setValue("description", data.psy_description);
           setValue("phone_number", data.psy_phone_number);
           setValue("city_id", data.city.city_id);
-          setValue("language", data.language);
-          setValue("specialization", data.specialization);
-          setValue("education", data.education);
         }
       } catch (error) {
         console.log(error);
@@ -182,101 +167,11 @@ const UpdateProfilePage = () => {
     }));
   };
 
-  const onSubmit = async (data: GetDetailPsychologSchemaType) => {
-    setError(null);
-    setSuccess(null);
-    setLoading(true);
-
-    try {
-      const formattedData: Partial<PsychologRequest> = {};
-      console.log("Form submitted with data:", data);
-
-      if (data.name !== formData.name) {
-        formattedData.name = data.name;
-      }
-
-      if (data.email !== formData.email) {
-        formattedData.email = data.email;
-      }
-
-      if (data.str_number !== formData.str_number) {
-        formattedData.str_number = data.str_number;
-      }
-
-      if (data.password !== formData.password) {
-        formattedData.password = data.password;
-      }
-
-      if (data.phone_number !== formData.phone_number) {
-        formattedData.phone_number = data.phone_number;
-      }
-
-      if (data.work_year !== formData.work_year) {
-        formattedData.work_year = data.work_year;
-      }
-
-      if (data.description !== formData.description) {
-        formattedData.description = data.description;
-      }
-
-      if (data.city_id && data.city_id !== formData.city_id) {
-        formattedData.city_id = data.city_id;
-      }
-
-      console.log("Formatted data:", formattedData);
-
-      const result = await updatePsychologService(formattedData);
-      console.log(result);
-      if (result?.status === true) {
-        setSuccess("Psycholog berhasil ditambahkan");
-        const refresh = await getPsychologDetailService();
-        if (refresh.status === true) {
-          const newData = refresh.data;
-          setFormData({
-            name: newData.psy_name,
-            str_number: newData.psy_str_number,
-            email: newData.psy_email,
-            password: newData.psy_password,
-            work_year: newData.psy_work_year,
-            description: newData.psy_description,
-            phone_number: newData.psy_phone_number,
-            city_id: newData.city.city_id,
-            language: newData.language,
-            specialization: newData.specialization,
-            education: newData.education,
-          });
-
-          setValue("name", newData.psy_name);
-          setValue("str_number", newData.psy_str_number);
-          setValue("email", newData.psy_email);
-          setValue("password", newData.psy_password);
-          setValue("work_year", newData.psy_work_year);
-          setValue("description", newData.psy_description);
-          setValue("phone_number", newData.psy_phone_number);
-          setValue("city_id", newData.city.city_id);
-          setValue("role_id", newData.role.role_id);
-        }
-      } else {
-        setError("Gagal menambahkan psycholog");
-      }
-    } catch (error: any) {
-      setError(error.message || "Terjadi kesalahan");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="bg-white shadow-md mb-6 p-6 rounded-lg space-y-5 w-full"
-    >
+    <div className="bg-white shadow-md mb-6 p-6 rounded-lg space-y-5 w-full">
       <h2 className="text-xl font-semibold text-gray-800 mb-2">
         Add New Doctor
       </h2>
-
-      {success && <p className="text-green-500 text-sm">{success}</p>}
-      {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <div className="grid md:grid-cols-2 gap-4">
         <FormInput
@@ -297,16 +192,6 @@ const UpdateProfilePage = () => {
           error={errors.email?.message}
           onChange={handleInputChange}
           value={formData.email}
-        />
-
-        <FormInput
-          label="Psycholog Password"
-          type="password"
-          id="password"
-          updateData={register("password")}
-          error={errors.password?.message}
-          onChange={handleInputChange}
-          value={formData.password}
         />
 
         <FormInput
@@ -342,6 +227,7 @@ const UpdateProfilePage = () => {
             Provinsi
           </label>
           <select
+            disabled={true}
             value={selectedProvince}
             onChange={(e) => setSelectedProvince(e.target.value)}
             className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -381,13 +267,13 @@ const UpdateProfilePage = () => {
 
       {/* Language Section */}
       <section id="language">
-        {formData.language.length > 0 && (
+        {formData.language!.length > 0 && (
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-medium text-primaryTextColor mb-1">
               Bahasa yang Dikuasai
             </h3>
             <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
-              {formData.language.map((lang) => (
+              {formData.language!.map((lang) => (
                 <input
                   key={lang.lang_id}
                   type="text"
@@ -402,13 +288,13 @@ const UpdateProfilePage = () => {
         )}
       </section>
 
-      {formData.specialization.length > 0 && (
+      {formData.specialization!.length > 0 && (
         <div className="flex flex-col gap-3">
           <h3 className="text-sm font-medium text-primaryTextColor mb-1">
             Spesialis Dokter
           </h3>
           <div className="flex flex-col gap-4 text-sm text-prima">
-            {formData.specialization.map((spec) => (
+            {formData.specialization!.map((spec) => (
               <div
                 className="flex flex-col border-tertiaryTextColor border gap-2 px-2 py-3 rounded-md"
                 key={spec.spe_id}
@@ -432,13 +318,13 @@ const UpdateProfilePage = () => {
         </div>
       )}
 
-      {formData.education.length > 0 && (
+      {formData.education!.length > 0 && (
         <div className="flex flex-col gap-3">
           <h3 className="text-sm font-medium text-primaryTextColor mb-1">
             Riwayat Pendidikan
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm text-prima">
-            {formData.education.map((edu) => (
+            {formData.education!.map((edu) => (
               <div
                 className="flex flex-col border-tertiaryTextColor border gap-2 px-2 py-3 rounded-md"
                 key={edu.edu_id}
@@ -454,15 +340,7 @@ const UpdateProfilePage = () => {
           </div>
         </div>
       )}
-
-      <button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md w-full transition"
-        disabled={loading}
-      >
-        {loading ? "Menyimpan..." : "Simpan Perubahan"}
-      </button>
-    </form>
+    </div>
   );
 };
 

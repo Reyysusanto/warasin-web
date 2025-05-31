@@ -7,7 +7,7 @@ import { userDetailAdminSchema } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getCityService, getProvincesService } from "@/services/province";
-import { City, Province } from "@/types/region";
+import { City, Province } from "@/types/master";
 import { UpdateUserAdminRequest } from "@/types/user";
 import { updateUserAdminService } from "@/services/dahsboardService/user/updateUser";
 import { useParams } from "next/navigation";

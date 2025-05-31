@@ -1,5 +1,5 @@
 import React from "react";
-import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import { FieldError } from "react-hook-form";
 
 type Option = {
   label: string;
@@ -10,7 +10,6 @@ type FormSelectProps = {
   label: string;
   id: string;
   options: Option[];
-  register: UseFormRegisterReturn;
   error?: FieldError;
   placeholder?: string;
   value?: string;
@@ -22,9 +21,8 @@ const FormSelect: React.FC<FormSelectProps> = ({
   label,
   id,
   options,
-  register,
   error,
-  placeholder = "-- Pilih --",
+  placeholder = "Pilih",
   value,
   onChange,
   disabled = false,
@@ -40,10 +38,8 @@ const FormSelect: React.FC<FormSelectProps> = ({
       <select
         id={id}
         className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        {...register}
         value={value}
         onChange={(e) => {
-          register.onChange(e);
           onChange?.(id, e.target.value);
         }}
         disabled={disabled}
