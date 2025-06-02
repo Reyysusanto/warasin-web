@@ -91,7 +91,7 @@ export type Practice = {
   prac_name: string;
   prac_address: string;
   prac_phone_number: string;
-  practice_schedule: Schedule[];
+  practice_schedule?: Schedule[];
 };
 
 export type PracticeRequest = {
