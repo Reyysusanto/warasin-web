@@ -1,31 +1,37 @@
+import { AvailableSlot, Practice } from "./master";
 import { Psycholog } from "./psycholog";
 import { User } from "./user";
 
-export type Consulation = {
+export type Consultation = {
   consul_id: string;
   consul_date: string;
   consul_rate: number;
   consul_comment: string;
+  consul_status: number;
   user: User;
-  psycholog: Psycholog;
+  available_slot: AvailableSlot;
+  practice: Practice;
 };
 
-export type GetAllConsultationResponse = {
+export type AllConsultationResponse = {
   status: true;
   message: string;
   timestamp: string;
-  data: Array<{
-    consul_id: string;
-    consul_date: string;
-    consul_rate: number;
-    consul_comment: string;
-    user: User;
+  data: {
     psycholog: Psycholog;
-  }>;
+    consultation: Consultation[];
+  };
   meta: {
     page: number;
     per_page: number;
     max_page: number;
     count: number;
   };
+};
+
+export type ConsultationResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: Consultation;
 };

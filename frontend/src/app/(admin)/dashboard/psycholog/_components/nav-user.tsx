@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  BellIcon,
-  MoreVerticalIcon,
-  UserCircleIcon,
-} from "lucide-react";
+import { BellIcon, MoreVerticalIcon, UserCircleIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -22,21 +18,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiLogOut } from "react-icons/fi";
+import { getPsychologDetailService } from "@/services/dashboardPsychologService/profile/getDetailProfile";
+import { Psycholog } from "@/types/psycholog";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export const NavUser = () => {
   const { isMobile } = useSidebar();
   const router = useRouter();
+  const [psycholog, setPsycholog] = useState<Psycholog>();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -44,6 +35,21 @@ export function NavUser({
       router.replace("/login-psycholog");
     }
   }, [router]);
+
+  useEffect(() => {
+    const detailUser = async () => {
+      try {
+        const result = await getPsychologDetailService();
+        if (result.status === true) {
+          setPsycholog(result.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    detailUser();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -60,13 +66,18 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage
+                  src={psycholog?.psy_image}
+                  alt={psycholog?.psy_name}
+                />
                 <AvatarFallback className="rounded-lg">WW</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">
+                  {psycholog?.psy_name}
+                </span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
+                  {psycholog?.psy_email}
                 </span>
               </div>
               <MoreVerticalIcon className="ml-auto size-4" />
@@ -81,13 +92,18 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage
+                    src={psycholog?.psy_image}
+                    alt={psycholog?.psy_name}
+                  />
                   <AvatarFallback className="rounded-lg">WW</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">
+                    {psycholog?.psy_name}
+                  </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
+                    {psycholog?.psy_email}
                   </span>
                 </div>
               </div>
@@ -115,4 +131,4 @@ export function NavUser({
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
+};

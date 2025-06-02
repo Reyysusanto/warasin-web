@@ -10,6 +10,7 @@ export type Specialization = {
 };
 
 export type Education = {
+  edu_id: string;
   edu_degree: string;
   edu_major: string;
   edu_institution: string;
@@ -39,9 +40,9 @@ export type Psycholog = {
     role_id: string;
     role_name: string;
   };
-  language: Language[];
-  specialization: Specialization[];
-  education: Education[];
+  language: Language[] | null;
+  specialization: Specialization[] | null;
+  education: Education[] | null;
 };
 
 export type AddPsychologRequest = {
