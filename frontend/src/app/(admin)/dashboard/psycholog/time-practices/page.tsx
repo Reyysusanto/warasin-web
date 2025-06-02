@@ -3,13 +3,19 @@
 
 import React, { useEffect, useState } from "react";
 import { Plus, X, Save } from "lucide-react";
-import { AvailableSlot, Practice, PracticeRequest, Schedule } from "@/types/master";
+import {
+  AvailableSlot,
+  Practice,
+  PracticeRequest,
+  Schedule,
+} from "@/types/master";
 import TimeSlotCard from "./_components/AvailableSlot";
 import PracticeCard from "./_components/Practices";
 import { getAvailableSlot } from "@/services/dashboardPsychologService/profile/time-practices/getAvailableSlotService";
 import { getAllPracticesService } from "@/services/dashboardPsychologService/profile/time-practices/getAllPractices";
 import { createPracticeService } from "@/services/dashboardPsychologService/profile/time-practices/createPractice";
 import { updatePracticeService } from "@/services/dashboardPsychologService/profile/time-practices/updatePractice";
+import { deletePracticeService } from "@/services/dashboardPsychologService/profile/time-practices/deletePractice";
 
 const PsychologistDashboard = () => {
   const [timeSlots, setTimeSlots] = useState<AvailableSlot[]>([]);
@@ -77,8 +83,16 @@ const PsychologistDashboard = () => {
     setShowModal(true);
   };
 
-  const handleDeletePractice = (pracId: string) => {
-    setPractices(practices.filter((p) => p.prac_id !== pracId));
+  const handleDeletePractice = async (pracId: string) => {
+    try {
+      const result = await deletePracticeService(pracId);
+
+      if (result.status === true) {
+        setPractices(practices.filter((p) => p.prac_id !== pracId));
+      }
+    } catch (error) {
+      console.error("Error in delete practice:", error);
+    }
   };
 
   const validateForm = (): boolean => {
@@ -165,11 +179,6 @@ const PsychologistDashboard = () => {
       setShowModal(false);
     } catch (error: any) {
       console.error("Error in handleSubmit:", error);
-      alert(
-        `Gagal ${editingPractice ? "memperbarui" : "menambahkan"} praktik: ${
-          error.message || error
-        }`
-      );
     } finally {
       setIsSubmitting(false);
     }
