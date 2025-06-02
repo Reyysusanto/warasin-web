@@ -3,11 +3,12 @@
 
 import React, { useEffect, useState } from "react";
 import { Plus, X, Save } from "lucide-react";
-import { AvailableSlot, Practice } from "@/types/master";
+import { AvailableSlot, Practice, PracticeRequest } from "@/types/master";
 import TimeSlotCard from "./_components/AvailableSlot";
 import PracticeCard from "./_components/Practices";
 import { getAvailableSlot } from "@/services/dashboardPsychologService/profile/time-practices/getAvailableSlotService";
 import { getAllPracticesService } from "@/services/dashboardPsychologService/profile/time-practices/getAllPractices";
+import { createPracticeService } from "@/services/dashboardPsychologService/profile/time-practices/createPractice";
 
 const PsychologistDashboard = () => {
   const [timeSlots, setTimeSlots] = useState<AvailableSlot[]>([]);
@@ -51,10 +52,10 @@ const PsychologistDashboard = () => {
     const fetchPractices = async () => {
       try {
         const result = await getAllPracticesService();
-        console.log(result);
-
         if (result.status === true) {
-          setPractices(result.data.practice);
+          // Pastikan semua practice memiliki ID
+          const validPractices = result.data.practice.filter((p) => p.prac_id);
+          setPractices(validPractices);
         }
       } catch (error) {
         console.log(`Error Consume Practice ${error}`);
@@ -73,6 +74,24 @@ const PsychologistDashboard = () => {
 
   const handleDeletePractice = (pracId: string) => {
     setPractices(practices.filter((p) => p.prac_id !== pracId));
+  };
+
+  const handleSubmit = async (data: PracticeRequest) => {
+    try {
+      const result = await createPracticeService(data);
+      console.log(result);
+      if (result.status === true) {
+        const newPractice = Array.isArray(result.data.practice)
+          ? result.data.practice[0]
+          : result.data.practice;
+
+        setPractices([...practices, newPractice]);
+        setShowModal(false);
+        location.reload();
+      }
+    } catch (error: any) {
+      console.error("Gagal menambahkan praktik:", error.message);
+    }
   };
 
   // const handleSavePractice = () => {
@@ -147,14 +166,16 @@ const PsychologistDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {practices.map((practice) => (
-              <PracticeCard
-                key={practice.prac_id}
-                practice={practice}
-                onEdit={handleEditPractice}
-                onDelete={handleDeletePractice}
-              />
-            ))}
+            {practices
+              .filter((p) => p?.prac_id)
+              .map((practice) => (
+                <PracticeCard
+                  key={`${practice.prac_name}-${practice.prac_type}-${practice.practice_schedule}`}
+                  practice={practice}
+                  onEdit={handleEditPractice}
+                  onDelete={handleDeletePractice}
+                />
+              ))}
           </div>
         </div>
 
@@ -249,7 +270,14 @@ const PsychologistDashboard = () => {
                   Batal
                 </button>
                 <button
-                  // onClick={handleSavePractice}
+                  onClick={() =>
+                    handleSubmit({
+                      prac_name: formData.prac_name,
+                      prac_type: formData.prac_type,
+                      prac_address: formData.prac_address,
+                      prac_phone_number: formData.prac_phone_number,
+                    })
+                  }
                   className="flex-1 py-3 px-4 bg-primaryColor text-white rounded-lg transition-all duration-300 font-medium flex items-center justify-center gap-2"
                 >
                   <Save className="w-4 h-4" />
