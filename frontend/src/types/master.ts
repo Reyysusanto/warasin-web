@@ -1,3 +1,5 @@
+import { Psycholog } from "./psycholog";
+
 export type Province = {
   province_id: string;
   province_name: string;
@@ -18,6 +20,49 @@ export type Specialization = {
   spe_id: string;
   spe_name: string;
   spe_desc: string;
+};
+
+export type AvailableSlot = {
+  slot_id: string;
+  slot_start: string;
+  slot_end: string;
+  slot_is_booked: boolean;
+};
+
+export type Schedule = {
+  prac_sched_id: string;
+  prac_sched_day: string;
+  prac_sched_open: string;
+  prac_sched_close: string;
+};
+
+export type Practice = {
+  prac_id: string;
+  prac_type: string;
+  prac_name: string;
+  prac_address: string;
+  prac_phone_number: string;
+  practice_schedule: Schedule[];
+};
+
+export type PracticeResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: {
+    psycholog: Psycholog;
+    practice: Practice[];
+  };
+};
+
+export type AvailableSlotResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: {
+    psycholog: Psycholog;
+    available_slot: AvailableSlot[];
+  };
 };
 
 export type SpecializationResponse = {
