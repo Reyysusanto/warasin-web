@@ -8,14 +8,14 @@ import { usePathname } from "next/navigation";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaChevronDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { DetailUserSuccessResponse } from "@/types/user";
 import { getNavigationUserDetailService } from "@/services/navigationBar";
+import { UserResponse } from "@/types/user";
 
 const NavigationBar = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [dropDown, setDropDown] = useState(false);
-  const [user, setUser] = useState<DetailUserSuccessResponse | null>(null);
+  const [user, setUser] = useState<UserResponse | null>(null);
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -38,20 +38,20 @@ const NavigationBar = () => {
       sections.forEach((section) => observer.unobserve(section));
     };
   }, []);
-  
+
   useEffect(() => {
     const getUser = async () => {
       const data = await getNavigationUserDetailService();
 
-      if(!data) {
-        setUser(null)
+      if (!data) {
+        setUser(null);
       } else {
         if (data.status === true) {
           setUser(data);
-        } 
+        }
       }
     };
-  
+
     getUser();
   }, []);
 
@@ -61,7 +61,7 @@ const NavigationBar = () => {
   };
 
   const options = [
-    { name: "Konsulin", path: "/concultation" },
+    { name: "Konsulin", path: "/consultation" },
     { name: "Tanyain", path: "/chatbot" },
     { name: "Ajarin", path: "/news" },
     { name: "Dopamin", path: "/dopamin" },
