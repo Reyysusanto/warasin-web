@@ -1,17 +1,11 @@
-import CardConsultation from "./_components/ConsultationCard";
-import CreateConsultation from "./_components/CreateConsultation";
+import ConsultationSection from "./_components/ConsultationCard";
 
-const consultationDashboard = () => {
+const ConsultationPage = () => {
   return (
-    <div className="bg-white text-gray-800 rounded-xl p-6 w-full shadow-md">
-      <CreateConsultation />
-      <div className="flex flex-col md:grid md:grid-cols-3 gap-4">
-        <CardConsultation />
-        <CardConsultation />
-        <CardConsultation />
-      </div>
+    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+      <ConsultationSection />
     </div>
   );
 };
 
-export default consultationDashboard;
+export default ConsultationPage;

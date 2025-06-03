@@ -46,7 +46,7 @@ const PracticeCard = ({
               Jadwal Praktik
             </h4>
             <div className="grid grid-cols-1 gap-2">
-              {practice.practice_schedule!.map((schedule) => (
+              {practice.practice_schedule.map((schedule) => (
                 <div
                   key={schedule.prac_sched_id}
                   className="bg-gray-50 rounded-lg p-3"

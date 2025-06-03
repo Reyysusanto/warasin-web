@@ -170,7 +170,7 @@ const UpdateProfilePage = () => {
   return (
     <div className="bg-white shadow-md mb-6 p-6 rounded-lg space-y-5 w-full">
       <h2 className="text-xl font-semibold text-gray-800 mb-2">
-        Add New Doctor
+        My Profile
       </h2>
 
       <div className="grid md:grid-cols-2 gap-4">
