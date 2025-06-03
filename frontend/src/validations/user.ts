@@ -32,6 +32,7 @@ const userDetailSchema = z.object({
     .min(10, "No Handphone tidak valid")
     .max(16, "No Hanphone tidak valid"),
   birth_date: z.date(),
+  image: z.string().optional(),
   gender: z.boolean().nullable(),
   province: z.string(),
   city: z.string(),

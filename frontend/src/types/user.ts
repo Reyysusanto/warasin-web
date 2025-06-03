@@ -61,6 +61,7 @@ export type AllUserResponse = {
 
 export type UpdateDetailUserRequest = {
   name: string;
+  image: string;
   phone_number: string;
   email: string;
   birth_date: string;

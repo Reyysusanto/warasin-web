@@ -11,11 +11,11 @@ import {
 } from "@/types/master";
 import TimeSlotCard from "./_components/AvailableSlot";
 import PracticeCard from "./_components/Practices";
-import { getAvailableSlot } from "@/services/dashboardPsychologService/profile/time-practices/getAvailableSlotService";
-import { getAllPracticesService } from "@/services/dashboardPsychologService/profile/time-practices/getAllPractices";
-import { createPracticeService } from "@/services/dashboardPsychologService/profile/time-practices/createPractice";
-import { updatePracticeService } from "@/services/dashboardPsychologService/profile/time-practices/updatePractice";
-import { deletePracticeService } from "@/services/dashboardPsychologService/profile/time-practices/deletePractice";
+import { getAvailableSlot } from "@/services/dashboardPsychologService/time-practices/getAvailableSlotService";
+import { getAllPracticesService } from "@/services/dashboardPsychologService/time-practices/getAllPractices";
+import { createPracticeService } from "@/services/dashboardPsychologService/time-practices/createPractice";
+import { updatePracticeService } from "@/services/dashboardPsychologService/time-practices/updatePractice";
+import { deletePracticeService } from "@/services/dashboardPsychologService/time-practices/deletePractice";
 
 const PsychologistDashboard = () => {
   const [timeSlots, setTimeSlots] = useState<AvailableSlot[]>([]);
