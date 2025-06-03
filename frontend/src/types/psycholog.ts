@@ -104,3 +104,17 @@ export type PsychologResponse = {
     education: Education[] | null;
   };
 };
+
+export type AllPsychologUserResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: Psycholog[];
+};
+
+export type PsychologUserResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: Psycholog;
+};

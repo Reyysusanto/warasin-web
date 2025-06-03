@@ -1,9 +1,8 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
 import {
-  DetailUserSuccessResponse,
   UpdateDetailUserRequest,
-  UpdateDetailUserSuccessResponse,
+  UserResponse,
 } from "@/types/user";
 import axios, { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -33,11 +32,11 @@ export const getUserFromToken = (): TokenPayload | null => {
 };
 
 export const getUserDetailService = async (): Promise<
-  DetailUserSuccessResponse | ErrorResponse
+  UserResponse | ErrorResponse
 > => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get<DetailUserSuccessResponse | ErrorResponse>(
+    const response = await axios.get<UserResponse | ErrorResponse>(
       `${baseURL}/user/get-detail-user`,
       {
         headers: {
@@ -48,7 +47,7 @@ export const getUserDetailService = async (): Promise<
     );
 
     if (response.status === 200) {
-      return response.data as DetailUserSuccessResponse;
+      return response.data as UserResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -66,11 +65,11 @@ export const getUserDetailService = async (): Promise<
 
 export const updateDetailUserService = async (
   data: Partial<UpdateDetailUserRequest>
-): Promise<UpdateDetailUserSuccessResponse | ErrorResponse> => {
+): Promise<UserResponse | ErrorResponse> => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.patch<
-      UpdateDetailUserSuccessResponse | ErrorResponse
+      UserResponse | ErrorResponse
     >(`${baseURL}/user/update-user`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -79,7 +78,7 @@ export const updateDetailUserService = async (
     });
 
     if (response.status === 200) {
-      return response.data as UpdateDetailUserSuccessResponse;
+      return response.data as UserResponse;
     } else {
       return response.data as ErrorResponse;
     }

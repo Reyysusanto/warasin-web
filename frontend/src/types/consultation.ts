@@ -47,6 +47,15 @@ export type ConsultationUser = {
   practice: Practice;
 };
 
+export type ConsultationUserRequest = {
+  consul_date: string;
+  consul_rate: number;
+  consul_status: number;
+  consul_comment: string;
+  slot_id: string;
+  prac_id: string;
+};
+
 export type AllConsultationUserResponse = {
   status: true;
   message: string;
@@ -69,5 +78,21 @@ export type AllConsultationUserResponse = {
     per_page: number;
     max_page: number;
     count: number;
+  };
+};
+
+export type ConsultationUserResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: {
+    consul_id: string;
+    consul_date: string;
+    consul_rate: number;
+    consul_comment: string;
+    consul_status: number;
+    psycholog: Psycholog;
+    available_slot: AvailableSlot;
+    practice: Practice;
   };
 };
