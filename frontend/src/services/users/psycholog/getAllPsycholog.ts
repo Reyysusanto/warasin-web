@@ -3,18 +3,26 @@ import { ErrorResponse } from "@/types/error";
 import { AllPsychologUserResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
-export const getAllPsychologUserService = async (): Promise<
-  AllPsychologUserResponse | ErrorResponse
-> => {
+export const getAllPsychologUserService = async (filters?: {
+  name?: string;
+  city?: string;
+}): Promise<AllPsychologUserResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+
+  if (filters?.name) params.append("name", filters.name);
+  if (filters?.city) params.append("city", filters.city);
 
   try {
-    const response = await axios.get(`${baseURL}/user/get-all-psycholog`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.get(
+      `${baseURL}/user/get-all-psycholog?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
       return response.data as AllPsychologUserResponse;

@@ -1,6 +1,7 @@
 "use client";
 
 import { getDetailConsultationUserService } from "@/services/users/consultation/getDetailConsultation";
+import { getAllPsychologUserService } from "@/services/users/psycholog/getAllPsycholog";
 import { AvailableSlot, Practice } from "@/types/master";
 import { Psycholog } from "@/types/psycholog";
 import dayjs from "dayjs";
@@ -46,6 +47,12 @@ const EditConsultationPage = () => {
         setPsycholog(data.psycholog);
       }
     };
+
+    // const fetchPsycholog = async () => {
+    //     const allPsycholog = await getAllPsychologUserService();
+
+
+    // }
 
     fetchConsultation();
   }, [params.id]);
