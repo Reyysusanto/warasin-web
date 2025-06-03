@@ -78,6 +78,13 @@ export type AvailableSlotResponse = {
   };
 };
 
+export type AvailableSlotUserResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: AvailableSlot[];
+};
+
 export type Schedule = {
   prac_sched_id: string;
   prac_sched_day: string;
@@ -109,4 +116,11 @@ export type PracticeResponse = {
     psycholog: Psycholog;
     practice: Practice[];
   };
+};
+
+export type AllPracticeResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: Practice[];
 };

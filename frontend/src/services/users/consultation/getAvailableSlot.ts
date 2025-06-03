@@ -1,21 +1,16 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { AllPsychologUserResponse } from "@/types/psycholog";
+import { AvailableSlotUserResponse } from "@/types/master";
 import axios, { AxiosError } from "axios";
 
-export const getAllPsychologUserService = async (filters?: {
-  name?: string;
-  city?: string;
-}): Promise<AllPsychologUserResponse | ErrorResponse> => {
+export const getAvailableSlotUserService = async (
+  psyId: string
+): Promise<AvailableSlotUserResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
-  const params = new URLSearchParams();
-
-  if (filters?.name) params.append("name", filters.name);
-  if (filters?.city) params.append("city", filters.city);
 
   try {
     const response = await axios.get(
-      `${baseURL}/user/get-all-psycholog?${params.toString()}`,
+      `${baseURL}/user/get-all-available-slot/${psyId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -25,7 +20,7 @@ export const getAllPsychologUserService = async (filters?: {
     );
 
     if (response.status === 200) {
-      return response.data as AllPsychologUserResponse;
+      return response.data as AvailableSlotUserResponse;
     } else {
       return response.data as ErrorResponse;
     }
