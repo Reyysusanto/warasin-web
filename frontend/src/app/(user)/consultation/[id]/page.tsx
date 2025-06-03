@@ -4,31 +4,43 @@ import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Roadmap from "./_components/education";
 import KonsulSection from "./_components/konsul";
-
-const profile = {
-  name: "Dr. Nadira Pratama, M.Psi., Psikolog",
-  str: "1234567890",
-  spesialis: "Psikologi Klinis",
-  pendidikan: "S2 Psikologi Klinis – Universitas Indonesia",
-  experience: 7,
-  language: "Bahasa Indonesia, Inggris",
-  desc: "Dengan pengalaman lebih dari 7 tahun sebagai psikolog klinis, saya telah membantu banyak individu mengatasi kecemasan, stres, dan berbagai tantangan emosional. Saya percaya bahwa setiap orang memiliki kekuatan untuk bangkit, dan melalui terapi kognitif-perilaku, saya berupaya membimbing klien memahami pola pikir serta emosi mereka. Pendekatan saya bersifat empatik dan berbasis solusi, sehingga setiap sesi menjadi ruang aman bagi klien untuk bertumbuh dan menemukan keseimbangan dalam hidupnya.",
-};
-
-const specials = [
-    "Manajemen Kecemasan & Stres", 
-    "Gangguan Emosional",
-    "Terapi Kognitif-Perilaku",
-    "Kesehatan Mental Kerja",
-    "Peningkatan Kesejahteraan Psikologis",
-];
-
+import { Psycholog } from "@/types/psycholog";
+import { useParams } from "next/navigation";
+import { getDetailPsychologUserService } from "@/services/users/psycholog/getDetailPsycholog";
+import { getAllPracticeUserService } from "@/services/users/consultation/getAllPractice";
+import { Practice } from "@/types/master";
 
 const DetailPage = () => {
   const [selectedTab, setSelectedTab] = useState<string>("info");
+  const [psycholog, setPsycholog] = useState<Psycholog>();
+  const [practice, setPractice] = useState<Practice[]>([]);
+  const params = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const id = params.id as string;
+      const result = await getDetailPsychologUserService(id);
+
+      if (result.status === true) {
+        setPsycholog(result.data);
+      }
+    };
+
+    const fetchPractice = async () => {
+      const id = params.id as string;
+      const result = await getAllPracticeUserService(id);
+
+      if (result.status === true) {
+        setPractice(result.data);
+      }
+    };
+
+    fetchData();
+    fetchPractice();
+  }, [params.id]);
 
   return (
     <div className="w-full min-h-screen overflow-hidden bg-gradient-to-tr from-[#ECEEFF] to-white scroll-smooth">
@@ -45,24 +57,38 @@ const DetailPage = () => {
           />
           <div className="flex flex-col w-full gap-4">
             <h2 className="text-primaryColor text-4xl font-medium">
-              {profile.name}
+              {psycholog?.psy_name}
             </h2>
             <div>
               <p className="text-base text-primaryTextColor font-regular">
-                Nomor STR: {profile.str}
+                Nomor STR: {psycholog?.psy_str_number}
               </p>
               <p className="text-base text-primaryTextColor font-regular">
-                Spesialis: {profile.spesialis}
+                Spesialis:{" "}
+                {psycholog?.specialization
+                  ? psycholog.specialization.map((s) => s.spe_name)
+                  : []}
               </p>
               <p className="text-base text-primaryTextColor font-regular">
-                Pendidikan: {profile.pendidikan}
+                Pendidikan:{" "}
+                {psycholog?.education && psycholog.education.length > 0
+                  ? psycholog.education
+                      .map(
+                        (e) =>
+                          `${e.edu_degree} ${e.edu_major} – ${e.edu_institution} (${e.edu_graduation_year})`
+                      )
+                      .join(", ")
+                  : "-"}
               </p>
               <p className="text-base text-primaryTextColor font-regular">
-                {profile.experience} tahun pengalaman - {profile.language}
+                {psycholog?.psy_work_year} tahun pengalaman -{" "}
+                {psycholog?.language
+                  ? psycholog.language.map((l) => l.lang_name)
+                  : []}
               </p>
             </div>
             <p className="text-base text-primaryTextColor font-regular">
-              {profile.desc}
+              {psycholog?.psy_description}
             </p>
           </div>
         </div>
@@ -91,24 +117,16 @@ const DetailPage = () => {
                   Lokasi
                 </h2>
                 <div className="flex flex-col gap-2">
-                  <Image
-                    src={"/Images/hospital.png"}
-                    width={200}
-                    height={200}
-                    alt="Hospital"
-                    className="w-full md:w-1/2 rounded-md"
-                  />
                   <h3 className="text-primaryTextColor font-medium text-2xl">
-                    Klinik Mental, RSUD DR. Soetomo
+                    {practice.length > 0
+                      ? practice.map((p) => (
+                          <p key={p.prac_id}>{p.prac_address}</p>
+                        ))
+                      : "Belum ada alamat praktik"}
                   </h3>
+
                   <p className="text-primaryTextColor font-normal text-sm md:text-lg">
-                    Surabaya, Jawa Timur
-                  </p>
-                  <p className="text-primaryTextColor text-sm">
-                    <span className="text-primaryColor font-medium text-lg">
-                      Buka Sekarang
-                    </span>{" "}
-                    Hari ini: 7 AM - 7 PM
+                    {psycholog?.city.city_name}
                   </p>
                 </div>
               </div>
@@ -122,22 +140,30 @@ const DetailPage = () => {
                     Biografi
                   </h4>
                   <p className="text-primaryTextColor font-normal text-sm md:text-lg">
-                  Dengan pengalaman lebih dari 7 tahun sebagai psikolog klinis, saya telah membantu banyak individu mengatasi kecemasan, stres, dan berbagai tantangan emosional. Saya percaya bahwa setiap orang memiliki kekuatan untuk bangkit, dan melalui terapi kognitif-perilaku, saya berupaya membimbing klien memahami pola pikir serta emosi mereka. Pendekatan saya bersifat empatik dan berbasis solusi, sehingga setiap sesi menjadi ruang aman bagi klien untuk bertumbuh dan menemukan keseimbangan dalam hidupnya.
+                    Dengan pengalaman lebih dari 7 tahun sebagai psikolog
+                    klinis, saya telah membantu banyak individu mengatasi
+                    kecemasan, stres, dan berbagai tantangan emosional. Saya
+                    percaya bahwa setiap orang memiliki kekuatan untuk bangkit,
+                    dan melalui terapi kognitif-perilaku, saya berupaya
+                    membimbing klien memahami pola pikir serta emosi mereka.
+                    Pendekatan saya bersifat empatik dan berbasis solusi,
+                    sehingga setiap sesi menjadi ruang aman bagi klien untuk
+                    bertumbuh dan menemukan keseimbangan dalam hidupnya.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <h4 className="text-primaryTextColor font-medium text-xl">
                     Spesialisasi
                   </h4>
-                  {specials.map((special) => (
+                  {psycholog?.specialization?.map((special) => (
                     <div
-                        className="flex items-center gap-3"
-                        key={special}
+                      className="flex items-center gap-3"
+                      key={special.spe_id}
                     >
-                        <AiOutlineMedicineBox 
-                        className="text-xl"
-                        />
-                        <p className="text-primaryTextColor text-base">{special}</p>
+                      <AiOutlineMedicineBox className="text-xl" />
+                      <p className="text-primaryTextColor text-base">
+                        {special.spe_name}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -145,15 +171,13 @@ const DetailPage = () => {
                   <h4 className="text-primaryTextColor font-medium text-xl">
                     Pendidikan
                   </h4>
-                  <Roadmap />
+                  <Roadmap education={psycholog?.education ?? null} />
                 </div>
               </div>
             </div>
           )}
 
-          {selectedTab !== "info" && (
-            <KonsulSection />
-          )}
+          {selectedTab !== "info" && <KonsulSection />}
         </section>
       </main>
 
