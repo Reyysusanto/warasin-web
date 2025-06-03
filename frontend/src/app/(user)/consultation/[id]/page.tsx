@@ -26,6 +26,7 @@ const specials = [
     "Peningkatan Kesejahteraan Psikologis",
 ];
 
+
 const DetailPage = () => {
   const [selectedTab, setSelectedTab] = useState<string>("info");
 

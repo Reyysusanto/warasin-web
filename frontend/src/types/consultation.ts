@@ -54,6 +54,7 @@ export type ConsultationUserRequest = {
   consul_comment: string;
   slot_id: string;
   prac_id: string;
+  psy_id: string;
 };
 
 export type AllConsultationUserResponse = {
