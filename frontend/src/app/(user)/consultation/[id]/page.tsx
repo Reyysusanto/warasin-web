@@ -114,19 +114,41 @@ const DetailPage = () => {
             <div className="flex flex-col py-6 gap-y-14">
               <div className="flex flex-col gap-y-4">
                 <h2 className="text-2xl md:text-4xl text-primaryColor font-semibold">
-                  Lokasi
+                  Lokasi Praktik
                 </h2>
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-primaryTextColor font-medium text-2xl">
-                    {practice.length > 0
-                      ? practice.map((p) => (
-                          <p key={p.prac_id}>{p.prac_address}</p>
-                        ))
-                      : "Belum ada alamat praktik"}
-                  </h3>
 
-                  <p className="text-primaryTextColor font-normal text-sm md:text-lg">
-                    {psycholog?.city.city_name}
+                {practice.length > 0 ? (
+                  <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+                    {practice.map((p) => (
+                      <div
+                        key={p.prac_id}
+                        className="border border-gray-300 bg-blue-50 rounded-xl shadow-sm p-4 w-full md:w-[48%]"
+                      >
+                        <h3 className="text-primaryTextColor font-semibold text-lg">
+                          {p.prac_name}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {p.prac_address}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {p.prac_phone_number}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-base text-tertiaryTextColor">
+                    Belum ada alamat praktik yang tersedia.
+                  </p>
+                )}
+
+                <div className="mt-6">
+                  <h4 className="text-xl text-primaryTextColor font-medium">
+                    Domisili Psikolog
+                  </h4>
+                  <p className="text-base text-gray-600">
+                    {psycholog?.city.city_name},{" "}
+                    {psycholog?.city.province.province_name}
                   </p>
                 </div>
               </div>
@@ -140,15 +162,7 @@ const DetailPage = () => {
                     Biografi
                   </h4>
                   <p className="text-primaryTextColor font-normal text-sm md:text-lg">
-                    Dengan pengalaman lebih dari 7 tahun sebagai psikolog
-                    klinis, saya telah membantu banyak individu mengatasi
-                    kecemasan, stres, dan berbagai tantangan emosional. Saya
-                    percaya bahwa setiap orang memiliki kekuatan untuk bangkit,
-                    dan melalui terapi kognitif-perilaku, saya berupaya
-                    membimbing klien memahami pola pikir serta emosi mereka.
-                    Pendekatan saya bersifat empatik dan berbasis solusi,
-                    sehingga setiap sesi menjadi ruang aman bagi klien untuk
-                    bertumbuh dan menemukan keseimbangan dalam hidupnya.
+                    {psycholog?.psy_description}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
