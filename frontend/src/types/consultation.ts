@@ -82,6 +82,12 @@ export type AllConsultationUserResponse = {
   };
 };
 
+export type CreateConsultation = {
+  consul_date: string;
+  slot_id: string;
+  prac_id: string;
+};
+
 export type ConsultationUserResponse = {
   status: true;
   message: string;
@@ -93,6 +99,22 @@ export type ConsultationUserResponse = {
     consul_comment: string;
     consul_status: number;
     psycholog: Psycholog;
+    available_slot: AvailableSlot;
+    practice: Practice;
+  };
+};
+
+export type CreateConsultationResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: {
+    consul_id: string;
+    consul_date: string;
+    consul_rate: number;
+    consul_comment: string;
+    consul_status: number;
+    user: User;
     available_slot: AvailableSlot;
     practice: Practice;
   };
