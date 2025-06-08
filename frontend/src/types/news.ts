@@ -61,6 +61,19 @@ export type AllNewsDetailResponse = {
   data: News[];
 };
 
+export type HistoryNews = {
+  news_detail_id: string;
+  news_detail_date: string;
+  news: News;
+};
+
+export type GetAllNewsDetailResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: HistoryNews[];
+};
+
 export type CreateNewsUserRequest = {
   news_detail_date: string;
   news_id: string;

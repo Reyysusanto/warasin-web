@@ -6,8 +6,9 @@ import NavigationBar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
 import { createNewsUserService } from "@/services/users/news/createNews";
 import { getAllNewsUserService } from "@/services/users/news/getAllNews";
+import { getAllNewsDetailUserService } from "@/services/users/news/getAllNewsDetailUser";
 import { getDetailNewsService } from "@/services/users/news/getDetailNews";
-import { News } from "@/types/news";
+import { HistoryNews, News } from "@/types/news";
 import dayjs from "dayjs";
 import { Calendar, Clock } from "lucide-react";
 import Image from "next/image";
@@ -18,6 +19,8 @@ import { useEffect, useState } from "react";
 const NewsDetailPage = () => {
   const params = useParams();
   const [allNews, setAllNews] = useState<News[]>([]);
+  const [newsHistory, setNewsHistory] = useState<HistoryNews[]>([]);
+  const [completeRead, setCompleteRead] = useState<boolean>(false);
   const [newsData, setNewsData] = useState({
     news_image: "",
     news_title: "",
@@ -73,6 +76,27 @@ const NewsDetailPage = () => {
     getDetailNews();
     getAllNews();
   }, [params.id]);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      const newsId = params.id as string;
+      try {
+        const result = await getAllNewsDetailUserService();
+
+        if (result.status === true) {
+          setNewsHistory(result.data);
+
+          if (newsHistory.find((history) => history.news.news_id === newsId)) {
+            setCompleteRead(true);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchHistory();
+  }, [params.id, newsHistory]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -163,7 +187,8 @@ const NewsDetailPage = () => {
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={() => handleComplete()}
-                  className="rounded-md bg-primaryColor text-white font-medium text-lg px-4 py-3"
+                  disabled={completeRead}
+                  className="rounded-md bg-primaryColor text-white font-medium text-base px-4 py-3 disabled:bg-gray-500"
                 >
                   Tandai selesai dibaca
                 </button>
