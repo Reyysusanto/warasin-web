@@ -1,15 +1,15 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { AllNewsResponse } from "@/types/news";
+import { AllNewsDetailResponse } from "@/types/news";
 import axios, { AxiosError } from "axios";
 
-export const getAllNewsUserService = async (): Promise<
-  AllNewsResponse | ErrorResponse
+export const getAllNewsDetailUserService = async (): Promise<
+  AllNewsDetailResponse | ErrorResponse
 > => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(`${baseURL}/user/get-all-news`, {
+    const response = await axios.get(`${baseURL}/user/get-all-news-detail`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const getAllNewsUserService = async (): Promise<
     });
 
     if (response.status === 200) {
-      return response.data as AllNewsResponse;
+      return response.data as AllNewsDetailResponse;
     } else {
       return response.data as ErrorResponse;
     }
