@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
+import { createNewsUserService } from "@/services/users/news/createNews";
 import { getAllNewsUserService } from "@/services/users/news/getAllNews";
 import { getDetailNewsService } from "@/services/users/news/getDetailNews";
-import { NewsLlist } from "@/types/news";
+import { News } from "@/types/news";
+import dayjs from "dayjs";
 import { Calendar, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,12 +17,16 @@ import { useEffect, useState } from "react";
 
 const NewsDetailPage = () => {
   const params = useParams();
-  const [allNews, setAllNews] = useState<NewsLlist[]>([]);
+  const [allNews, setAllNews] = useState<News[]>([]);
   const [newsData, setNewsData] = useState({
     news_image: "",
     news_title: "",
     news_body: "",
     news_date: "",
+  });
+  const [createNews, setCreateNews] = useState({
+    news_detail_date: "",
+    news_id: "",
   });
   const [loading, setLoading] = useState(true);
 
@@ -37,6 +44,11 @@ const NewsDetailPage = () => {
             news_title: data.news_title,
             news_body: data.news_body,
             news_date: data.news_date,
+          });
+
+          setCreateNews({
+            news_detail_date: dayjs().format("YYYY-MM-DD"),
+            news_id: data.news_id,
           });
         }
       } catch (error) {
@@ -85,6 +97,20 @@ const NewsDetailPage = () => {
     );
   }
 
+  const handleComplete = async () => {
+    try {
+      const result = await createNewsUserService(createNews);
+
+      if (result.status === true) {
+        alert("History news berhasil ditambahkan");
+      } else {
+        alert("History news telah ditambahkan sebelumnya");
+      }
+    } catch (error: any) {
+      alert(`Terjadi error : ${error.message}`);
+    }
+  };
+
   const dateInfo = formatDate(newsData.news_date);
 
   return (
@@ -131,6 +157,16 @@ const NewsDetailPage = () => {
                 <div className="first-letter:text-5xl first-letter:font-bold first-letter:text-primaryColor first-letter:float-left first-letter:mr-2 first-letter:leading-none first-letter:mt-1">
                   {newsData.news_body}
                 </div>
+              </div>
+
+              {/* complete reading news */}
+              <div className="mt-4 flex justify-end">
+                <button
+                  onClick={() => handleComplete()}
+                  className="rounded-md bg-primaryColor text-white font-medium text-lg px-4 py-3"
+                >
+                  Tandai selesai dibaca
+                </button>
               </div>
             </div>
           </article>

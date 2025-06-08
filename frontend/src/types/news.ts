@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type News = {
   news_id: string;
   news_image: string;
@@ -50,4 +52,28 @@ export type NewsResponse = {
     news_date: string;
   };
   timestamp: string;
+};
+
+export type AllNewsDetailResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: News[];
+};
+
+export type CreateNewsUserRequest = {
+  news_detail_date: string;
+  news_id: string;
+};
+
+export type CreateNewsUserResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: {
+    news_detail_id: string;
+    news_detail_date: string;
+    user: User;
+    news: News;
+  };
 };

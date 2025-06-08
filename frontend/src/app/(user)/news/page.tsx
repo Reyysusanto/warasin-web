@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Footer from "@/components/footer";
 import { getAllNewsUserService } from "@/services/users/news/getAllNews";
-import { NewsLlist } from "@/types/news";
+import { News } from "@/types/news";
 
 const dummyRating = {
   average: 4.6,
@@ -23,7 +23,7 @@ const dummyRating = {
 };
 
 const UserNewsPage = () => {
-  const [newsList, setNewsList] = useState<NewsLlist[]>([]);
+  const [newsList, setNewsList] = useState<News[]>([]);
   const [ratingStats] = useState(dummyRating);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);

@@ -1,23 +1,27 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { AllNewsResponse } from "@/types/news";
+import { CreateNewsUserRequest, CreateNewsUserResponse } from "@/types/news";
 import axios, { AxiosError } from "axios";
 
-export const getAllNewsUserService = async (): Promise<
-  AllNewsResponse | ErrorResponse
-> => {
+export const createNewsUserService = async (
+  data: CreateNewsUserRequest
+): Promise<CreateNewsUserResponse | ErrorResponse> => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(`${baseURL}/user/get-all-news`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.post(
+      `${baseURL}/user/create-news-detail`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
-      return response.data as AllNewsResponse;
+      return response.data as CreateNewsUserResponse;
     } else {
       return response.data as ErrorResponse;
     }
@@ -36,7 +40,7 @@ export const getAllNewsUserService = async (): Promise<
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Gagal mengambil data"
+              "Gagal menambahkan data"
           );
         }
 
@@ -46,6 +50,8 @@ export const getAllNewsUserService = async (): Promise<
         }
       }
     }
-    throw new Error("Terjadi kesalahan saat mengambil data. Silakan coba lagi");
+    throw new Error(
+      "Terjadi kesalahan saat menambahkan data. Silakan coba lagi"
+    );
   }
 };
