@@ -87,7 +87,7 @@ export default function Home() {
                   Layanan Kami
                 </Link>
                 <Link
-                  href={decoded ? "/concultation" : "/login"}
+                  href={decoded ? "/consultation" : "/login"}
                   className="border-primaryColor flex text-primaryColor border-2 px-6 py-2 md:py-3 rounded-lg items-center gap-2 hover:bg-primaryColor/10 transition-colors duration-200"
                 >
                   <TbCalendarCheck className="text-3xl" />

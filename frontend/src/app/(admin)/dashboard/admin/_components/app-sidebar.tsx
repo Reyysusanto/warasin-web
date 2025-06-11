@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   CameraIcon,
-  ClipboardListIcon,
   ClipboardPlusIcon,
   FileCodeIcon,
   FileTextIcon,
@@ -13,11 +12,11 @@ import {
   SettingsIcon,
   StethoscopeIcon,
   UsersIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "./nav-main"
-import { NavSecondary } from "./nav-secondary"
-import { NavUser } from "./nav-user"
+import { NavMain } from "./nav-main";
+import { NavSecondary } from "./nav-secondary";
+import { NavUser } from "./nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -26,8 +25,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Image from "next/image"
+} from "@/components/ui/sidebar";
+import Image from "next/image";
 
 const data = {
   user: {
@@ -50,11 +49,6 @@ const data = {
       title: "Doctors",
       url: "/dashboard/admin/doctors",
       icon: StethoscopeIcon,
-    },
-    {
-      title: "Consultation",
-      url: "/dashboard/admin/consultation",
-      icon: ClipboardListIcon,
     },
     {
       title: "News",
@@ -127,7 +121,7 @@ const data = {
       icon: HelpCircleIcon,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -140,13 +134,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <Image 
-                  width={30}
-                  height={30}
-                  src={'/Images/logo.png'}
-                  alt=""
-                />
-                <span className="text-base font-semibold text-primaryColor">Warasin</span>
+                <Image width={30} height={30} src={"/Images/logo.png"} alt="" />
+                <span className="text-base font-semibold text-primaryColor">
+                  Warasin
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -160,5 +151,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

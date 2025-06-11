@@ -31,12 +31,12 @@ const Services = [
     service: "Dopamin",
     desc: "Pesan motivasi harian untuk meningkatkan kesehatan mental pengguna.",
   },
-  {
-    icon: "terapiin",
-    link: "",
-    service: "Terapiin",
-    desc: "Lagu terapi yang dapat membantu meredakan stres dan depresi berat.",
-  },
+  // {
+  //   icon: "terapiin",
+  //   link: "",
+  //   service: "Terapiin",
+  //   desc: "Lagu terapi yang dapat membantu meredakan stres dan depresi berat.",
+  // },
   {
     icon: "emosiin",
     link: "",
@@ -64,7 +64,7 @@ const ServicePage = () => {
           </FadeInFromRight>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 px-10 md:w-3/4 gap-6 md:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-12 md:w-3/4 mx-auto px-4 justify-items-center">
           {Services.map((service, index) => (
             <FadeInFromLeft key={index}>
               <CardService

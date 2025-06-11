@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ import { getUserDetailAdminService } from "@/services/dahsboardService/user/getD
 import BooleanOption from "./_components/BooleanOption";
 import { Role } from "@/types/role";
 import { getRoleService } from "@/services/role";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 type userDetailAdminSchemaType = z.infer<typeof userDetailAdminSchema>;
 
@@ -37,7 +39,6 @@ type UserData = {
 
 const EditProfilePage = () => {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState<string>();
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -216,7 +217,7 @@ const EditProfilePage = () => {
       const result = await updateUserAdminService(id, formattedData);
 
       if (result?.status === true) {
-        setSuccess("User berhasil diupdate");
+        await showSuccessAlert("User Berhasil Diperbarui", result.message);
         const refresh = await getUserDetailAdminService(id);
         if (refresh.status === true) {
           const newData = refresh.data;
@@ -239,13 +240,13 @@ const EditProfilePage = () => {
           setValue("role", newData.role.role_id ?? "");
         }
       } else {
-        alert("Gagal mengupdate user");
+        await showErrorAlert("User Gagal Diperbarui", result?.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Error) {
-        alert(error.message);
+        await showErrorAlert("User Gagal Diperbarui", error.message);
       } else {
-        alert("Terjadi kesalahan yang tidak diketahui");
+        await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
       }
     } finally {
       setLoading(false);
@@ -260,11 +261,6 @@ const EditProfilePage = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-y-6"
           >
-            {success && (
-              <p className="text-green-500 font-semibold text-sm">
-                {success}
-              </p>
-            )}
             <div className="grid grid-cols-2 gap-x-5 gap-y-1">
               <Input
                 id="name"

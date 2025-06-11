@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { getDetailNewsService } from "@/services/dahsboardService/news/getDetailNews";
 import { updateNewsAdminService } from "@/services/dahsboardService/news/updateNews";
 import { UpdateNewsRequest } from "@/types/news";
@@ -25,7 +26,6 @@ type NewsData = {
 const UpdateDetailNewsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string>("");
   const params = useParams();
   const [newsData, setNewsData] = useState<NewsData>({
@@ -43,6 +43,12 @@ const UpdateDetailNewsPage = () => {
   } = useForm<GetNewsSchemaType>({
     resolver: zodResolver(GetNewsSchema),
   });
+
+  useEffect(() => {
+    if (error) {
+      showErrorAlert("Terjadi Suatu Masalah", error);
+    }
+  }, [error]);
 
   useEffect(() => {
     const getNewsData = async () => {
@@ -97,7 +103,6 @@ const UpdateDetailNewsPage = () => {
 
   const onSubmit = async (data: GetNewsSchemaType) => {
     setError(null);
-    setSuccess(null);
     setLoading(true);
 
     if (!imageBase64) {
@@ -128,7 +133,6 @@ const UpdateDetailNewsPage = () => {
 
       const result = await updateNewsAdminService(id, formattedData);
       if (result?.status === true) {
-        setSuccess("Berita berhasil ditambahkan");
         const refresh = await getDetailNewsService(id);
         if (refresh.status === true) {
           const newData = refresh.data;
@@ -144,11 +148,13 @@ const UpdateDetailNewsPage = () => {
           setValue("image", newData.news_image);
           setValue("date", newData.news_date);
         }
+
+        await showSuccessAlert("Berita Berhasil Diperbarui", result.message);
       } else {
-        setError("Berita gagal diperbarui");
+        await showErrorAlert("Berita Gagal Diperbarui", result?.message);
       }
     } catch (error: any) {
-      setError(error.message || "Terjadi kesalahan");
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     } finally {
       setLoading(false);
     }
@@ -161,9 +167,6 @@ const UpdateDetailNewsPage = () => {
         className="bg-white shadow-md mb-8 p-8 rounded-xl space-y-6 w-full"
       >
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Create News</h2>
-
-        {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-600">{success}</p>}
 
         <div>
           <label htmlFor="image" className="block mb-1 font-medium">

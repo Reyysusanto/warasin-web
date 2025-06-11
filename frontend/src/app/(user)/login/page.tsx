@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import Header from "../_components/header";
 import Image from "next/image";
@@ -12,13 +12,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "./_components/input";
 import { loginService } from "@/services/login";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 type LoginSchemaType = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -33,17 +33,22 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+  useEffect(() => {
+    if (errorMessage) {
+      showErrorAlert("Login Gagal", errorMessage);
+    }
+  }, [errorMessage]);
+
   const onSubmit = async (data: LoginSchemaType) => {
     setErrorMessage("");
-    setSuccessMessage("");
 
     try {
       const success = await loginService(data);
       if (success) {
-        setSuccessMessage("Login berhasil!");
+        await showSuccessAlert("Login Berhasil", "Selamat datang di Warasin");
         router.push("/");
       } else {
-        setErrorMessage("login gagal");
+        await showErrorAlert("Login Gagal", errorMessage);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -62,12 +67,6 @@ const Login = () => {
           className="w-full max-w-md p-6 rounded-lg"
         >
           <Header />
-          {errorMessage && (
-            <p className="text-red-500 text-center mb-4">{errorMessage}</p>
-          )}
-          {successMessage && (
-            <p className="text-green-500 text-center mb-4">{successMessage}</p>
-          )}
 
           <Input
             id="email"

@@ -22,6 +22,7 @@ import { getAllLanguageService } from "@/services/dahsboardService/doctor/getAll
 import { FaTrashAlt } from "react-icons/fa";
 import { getAllSpecializationService } from "@/services/dahsboardService/doctor/getAllSpecialization";
 import EducationForm from "./_components/FormEducation";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const DetailDoctorPage = () => {
   const [loading, setLoading] = useState(false);
@@ -64,6 +65,12 @@ const DetailDoctorPage = () => {
     specialization: [] as Specialization[] | null,
     education: [] as Education[] | null,
   });
+
+  useEffect(() => {
+    if (error) {
+      showErrorAlert("Terjadi Suatu Kesalahan", error);
+    }
+  }, [error]);
 
   // Validation function
   const validateForm = () => {
@@ -449,7 +456,7 @@ const DetailDoctorPage = () => {
       const result = await updatePsychologAdminService(id, formattedData);
 
       if (result?.status === true) {
-        setSuccess("Psycholog berhasil diperbarui");
+        await showSuccessAlert("Psycholog Berhasil Diperbarui", result.message);
         const refresh = await getDetailPsychologService(id);
         if (refresh.status === true) {
           const newData = refresh.data;
@@ -469,10 +476,10 @@ const DetailDoctorPage = () => {
           });
         }
       } else {
-        setError("Gagal memperbarui psycholog");
+        await showErrorAlert("Psycholog Gagal Diperbarui", result?.message);
       }
     } catch (error: any) {
-      setError(error.message || "Terjadi kesalahan");
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     } finally {
       setLoading(false);
     }

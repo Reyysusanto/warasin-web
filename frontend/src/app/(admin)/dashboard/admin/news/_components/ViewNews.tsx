@@ -7,6 +7,7 @@ import { getAllNewsService } from "@/services/dahsboardService/news/getAllNews";
 import { News } from "@/types/news";
 import dayjs from "dayjs";
 import { deleteNewsService } from "@/services/dahsboardService/news/deleteNews";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const ViewNewsPage = () => {
   const [newsList, setNewsList] = useState<News[]>([]);
@@ -34,16 +35,13 @@ const ViewNewsPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmed = confirm("Apakah Anda yakin ingin menghapus berita ini?");
-    if (!confirmed) return;
-
     try {
       const result = await deleteNewsService(id);
       if (result.status) {
         setNewsList((prev) => prev.filter((news) => news.news_id !== id));
-        alert("Berita berhasil dihapus");
+        await showSuccessAlert("Berita Berhasil Dihapus", result.message);
       } else {
-        alert("Gagal menghapus berita");
+        await showErrorAlert("Berita Gagal Dihapus", result.message);
       }
     } catch (error) {
       alert(error || "Terjadi kesalahan saat menghapus berita");
