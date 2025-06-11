@@ -24,12 +24,14 @@ import { UpdateDetailUserRequest } from "@/types/user";
 import GenderOption from "./_components/GenderOption";
 import { ConsultationUser } from "@/types/consultation";
 import { getAllConsultationUserService } from "@/services/users/consultation/getAllConsultation";
-import { Camera } from "lucide-react";
+import { Camera, Quote } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { deleteConsultationUserService } from "@/services/users/consultation/deleteConsultation";
 import { HistoryNews } from "@/types/news";
 import { getAllNewsDetailUserService } from "@/services/users/news/getAllNewsDetailUser";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import { MotivationHistory } from "@/types/motivation";
+import { getAllHistoryMotivationService } from "@/services/users/motivation/getAllHistoryMotivation";
 
 const options = [
   {
@@ -74,6 +76,9 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
+  const [motivationHistory, setMotivationHistory] = useState<
+    MotivationHistory[]
+  >([]);
   const [newsHistory, setNewsHistory] = useState<HistoryNews[]>([]);
   const [consultations, setConsultations] = useState<ConsultationUser[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
@@ -233,7 +238,16 @@ const ProfilePage = () => {
       }
     };
 
+    const fetchMotivations = async () => {
+      const result = await getAllHistoryMotivationService();
+
+      if (result.status === true) {
+        setMotivationHistory(result.data);
+      }
+    };
+
     fetchConsultations();
+    fetchMotivations();
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -570,11 +584,58 @@ const ProfilePage = () => {
           <div className="rounded-md min-h-screen flex flex-col gap-8">
             <div>
               <h1 className="text-3xl font-bold text-primaryTextColor mb-8">
+                Riwayat Motivasi
+              </h1>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {motivationHistory?.map((motivation) => (
+                  <div
+                    key={motivation.user_mot_id}
+                    className="group cursor-pointer"
+                  >
+                    <div className="bg-white rounded-2xl p-6 shadow-md group-hover:shadow-2xl transition-all duration-300 border border-gray-100 group-hover:border-blue-200">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                          <Quote className="w-6 h-6 text-white" />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
+                            <span>
+                              {new Date(
+                                motivation.user_mot_date
+                              ).toLocaleDateString("id-ID")}
+                            </span>
+                            <span>•</span>
+                            <span className="text-blue-600 font-medium">
+                              {
+                                motivation.motivation.motivation_category
+                                  .motivation_category_name
+                              }
+                            </span>
+                          </div>
+
+                          <p className="text-gray-800 mb-3 leading-relaxed">
+                            {motivation.motivation.motivation_content}
+                          </p>
+
+                          <p className="text-sm text-gray-600 font-medium">
+                            — {motivation.motivation.motivation_author}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-primaryTextColor mb-8">
                 Riwayat Berita
               </h1>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {newsHistory.map((news) => (
+                {newsHistory?.map((news) => (
                   <div
                     key={news.news_detail_id}
                     className="relative bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 group"

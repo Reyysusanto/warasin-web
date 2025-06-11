@@ -115,3 +115,10 @@ export type MotivationHistoryUserResponse = {
   timestamp: string;
   data: MotivationHistory;
 };
+
+export type AllMotivationHistoryUserResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: MotivationHistory[];
+};
