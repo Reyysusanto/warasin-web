@@ -45,28 +45,26 @@ const PsychologCard = ({
   return (
     <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-blue-200 transform hover:-translate-y-2">
       {/* Header with gradient background */}
-      <div className="relative bg-primaryColor p-6 pb-12">
+      <div className="relative bg-primaryColor p-6 pb-6">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
 
         {/* Profile Image */}
         <div className="relative flex justify-center">
-          <div className="relative">
-            <Image
-              src={psy_image || "/Images/default-profile.png"}
-              width={100}
-              height={100}
-              alt={name}
-              className="relative rounded-full w-24 h-24 object-cover border-4 border-white shadow-lg"
-            />
-          </div>
+          <Image
+            src={psy_image || "/Images/default-profile.png"}
+            width={100}
+            height={100}
+            alt={name}
+            className="relative rounded-full w-24 h-24 object-cover border-4 border-white shadow-lg"
+          />
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-6 pb-6 -mt-6 relative">
+      <div className="px-6 py-4">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2 transition-colors">
+          <h2 className="text-2xl font-bold text-primaryTextColor mb-2">
             {name}
           </h2>
         </div>

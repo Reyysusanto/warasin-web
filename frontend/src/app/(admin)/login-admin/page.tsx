@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,13 +11,13 @@ import { LoginAdminSchema } from "@/validations/admin";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginAdminService } from "@/services/LoginAdmin";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 type LoginAdminSchemaType = z.infer<typeof LoginAdminSchema>;
 
 const LoginDashboard = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -28,26 +28,34 @@ const LoginDashboard = () => {
     resolver: zodResolver(LoginAdminSchema),
   });
 
+  useEffect(() => {
+    if (errorMessage) {
+      showErrorAlert("Login Admin Gagal", errorMessage);
+    }
+  }, [errorMessage]);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const onSubmit = async (data: LoginAdminSchemaType) => {
     setErrorMessage("");
-    setSuccessMessage("");
 
     try {
       const successLogin = await LoginAdminService(data);
 
       if (successLogin) {
-        setSuccessMessage("Login admin berhasil");
+        await showSuccessAlert(
+          "Login Admin Berhasil",
+          "Selamat datang di Warasin"
+        );
         router.push("/dashboard/admin");
       } else {
-        setErrorMessage("Login admin gagal");
+        await showErrorAlert("Login Admin Gagal", errorMessage);
       }
     } catch (error) {
       if (error instanceof Error) {
-        setErrorMessage(error.message);
+        await showErrorAlert("Login Admin Gagal", error.message);
       } else {
         setErrorMessage("Terjadi kesalahan yang tidak diketahui");
       }
@@ -62,12 +70,7 @@ const LoginDashboard = () => {
           className="w-full max-w-md p-6 rounded-lg"
         >
           <Header />
-          {errorMessage && (
-            <p className="text-red-500 text-center mb-4">{errorMessage}</p>
-          )}
-          {successMessage && (
-            <p className="text-green-500 text-center mb-4">{successMessage}</p>
-          )}
+
           <div className="mb-4 mt-3">
             <label
               htmlFor="email"
@@ -153,7 +156,10 @@ const LoginDashboard = () => {
 
             <p className="mt-4 text-tertiaryTextColor text-sm text-center">
               Login sebagai{" "}
-              <Link href="/login-psycholog" className="text-primaryColor hover:underline">
+              <Link
+                href="/login-psycholog"
+                className="text-primaryColor hover:underline"
+              >
                 Psycholog
               </Link>
             </p>

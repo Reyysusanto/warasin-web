@@ -9,6 +9,7 @@ import { deleteUserService } from "@/services/dahsboardService/user/deleteUser";
 import { useRouter } from "next/navigation";
 import { GetAllUsers } from "@/services/dahsboardService/user/users";
 import { User } from "@/types/user";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const UserDashboard = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -37,28 +38,29 @@ const UserDashboard = () => {
   };
 
   const editData = (id: string) => {
-    router.push(`/dashboard/admin/users/${id}`)
+    router.push(`/dashboard/admin/users/${id}`);
   };
 
   const removeData = async (id: string) => {
-    const confirmed = window.confirm("Are you sure you want to delete this user?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
     if (!confirmed) return;
-  
+
     try {
       const res = await deleteUserService(id);
-  
+
       if (res.status === true) {
         setUserList((prev) => prev.filter((user) => user.user_id !== id));
         setSelectedUsers((prev) => prev.filter((uid) => uid !== id));
-        alert("User deleted successfully");
+        await showSuccessAlert("Akun User Berhasil Dihapus", res.message);
       } else {
-        alert(res.message || "Failed to delete user");
+        await showErrorAlert("Akun User Gagal Dihapus", res.message);
       }
     } catch (error: any) {
-      alert(error || "Error occurred while deleting user");
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     }
   };
-  
 
   return (
     <div className="bg-white text-gray-800 flex flex-col rounded-xl p-6 gap-4 w-full shadow-md">

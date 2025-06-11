@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaUserAlt,
   FaEnvelope,
@@ -18,6 +18,7 @@ import { z } from "zod";
 import { registerSchema } from "@/validations/user";
 import Input from "./_components/input";
 import { registerService } from "@/services/register";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 type RegisterSchemaType = z.infer<typeof registerSchema>;
 
@@ -33,7 +34,6 @@ const RegisterPage = () => {
 
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -41,6 +41,12 @@ const RegisterPage = () => {
   const confirmPassword = watch("confirmPassword");
   const passwordsMatch =
     password && confirmPassword && password === confirmPassword;
+
+  useEffect(() => {
+    if (errorMessage) {
+      showErrorAlert("Registrasi Gagal", errorMessage);
+    }
+  }, [errorMessage]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -52,7 +58,6 @@ const RegisterPage = () => {
 
   const onSubmit = async (data: RegisterSchemaType) => {
     setErrorMessage("");
-    setSuccessMessage("");
 
     try {
       const registerSuccess = await registerService({
@@ -61,9 +66,13 @@ const RegisterPage = () => {
         password: data.password,
       });
       if (registerSuccess) {
+        await showSuccessAlert(
+          "Registrasi Berhasil",
+          "Silahkan login terlebih dahulu"
+        );
         router.push("/login");
       } else {
-        setErrorMessage("Gagal registrasi");
+        await showErrorAlert("Registrasi Gagal", errorMessage);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -82,12 +91,7 @@ const RegisterPage = () => {
           className="w-full max-w-md p-6 rounded-lg"
         >
           <Header />
-          {errorMessage && (
-            <p className="text-red-500 text-center mb-4">{errorMessage}</p>
-          )}
-          {successMessage && (
-            <p className="text-green-500 text-center mb-4">{successMessage}</p>
-          )}
+
           <Input
             id="name"
             label="Nama"

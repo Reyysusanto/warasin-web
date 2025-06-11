@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
@@ -126,12 +127,18 @@ const NewsDetailPage = () => {
       const result = await createNewsUserService(createNews);
 
       if (result.status === true) {
-        alert("History news berhasil ditambahkan");
+        await showSuccessAlert(
+          "History News Ditambahkan",
+          "History news berhasil ditambahkan"
+        );
       } else {
-        alert("History news telah ditambahkan sebelumnya");
+        await showErrorAlert(
+          "Terjadi Suatu Masalah",
+          "History news telah ditambahkan sebelumnya"
+        );
       }
     } catch (error: any) {
-      alert(`Terjadi error : ${error.message}`);
+      showErrorAlert("Terjadi Suatu Masalah", error.message);
     }
   };
 

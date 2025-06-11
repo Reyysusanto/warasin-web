@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { createCategoryMotivationService } from "@/services/dahsboardService/motivation/createCategory";
 import { deleteCategoryMotivationService } from "@/services/dahsboardService/motivation/deleteCategoryMotivation";
 import { getAllCategoryMotivation } from "@/services/dahsboardService/motivation/getAllCategoryMotivation";
@@ -18,7 +19,6 @@ type CreateCategoryMotivationSchemaType = z.infer<
 const CategorySection = () => {
   const [categories, setCategories] = useState<CategoryList[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [categoryInput, setCategoryInput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +37,12 @@ const CategorySection = () => {
     fetchCategory();
   }, []);
 
+  useEffect(() => {
+    if (error) {
+      showErrorAlert("Terjadi Suatu Masalah", error);
+    }
+  }, [error]);
+
   const {
     register,
     handleSubmit,
@@ -46,6 +52,7 @@ const CategorySection = () => {
   });
 
   const onSubmit = async (data: CreateCategoryMotivationSchemaType) => {
+    setError(null);
     const formattedData = {
       name: data.name,
     };
@@ -55,23 +62,24 @@ const CategorySection = () => {
       const result = await createCategoryMotivationService(formattedData);
 
       if (result.status) {
-        setSuccess("Kategori motivasi berhasil ditambahkan");
+        await showSuccessAlert(
+          "Kategori Motivasi Berhasil Ditambahkan",
+          result.message
+        );
       } else {
-        setError("Kategori motivasi gagal ditambahkan");
+        await showErrorAlert(
+          "Kategori Motivasi Gagal Ditambahkan",
+          result.message
+        );
       }
     } catch (error: any) {
-      setError(error.message || "Terjadi kesalahan");
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteCategory = async (category_id: string) => {
-    const confirmed = window.confirm(
-      "Apakah anda yakin akan menghapus category ini?"
-    );
-    if (!confirmed) return;
-
     try {
       const result = await deleteCategoryMotivationService(category_id);
 
@@ -81,10 +89,10 @@ const CategorySection = () => {
             (category) => category.motivation_category_id !== category_id
           )
         );
-        alert("User deleted successfully");
+        await showSuccessAlert("Delete Category Successfully", result.message);
       }
-    } catch (error) {
-      alert(error || "Error occurred while deleting user");
+    } catch (error: any) {
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     }
   };
 
@@ -93,19 +101,9 @@ const CategorySection = () => {
       <section className="bg-white p-6 rounded shadow">
         <h2 className="text-xl font-bold mb-4">Kategori Motivasi</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {error && (
-            <div className="border border-dashed border-dangerColor text-dangerColor px-3 py-2 mb-4 rounded-lg">
-              <span>{error}</span>
-            </div>
-          )}
           {errors.name && (
             <div className="border border-dashed border-dangerColor text-dangerColor px-3 py-2 mb-4 rounded-lg">
               <span>{errors.name.message}</span>
-            </div>
-          )}
-          {success && (
-            <div className="border border-dashed border-green-500 text-green-500 px-3 py-2 mb-4 rounded-lg">
-              <span>{success}</span>
             </div>
           )}
           <div className="flex space-x-4 mb-4">

@@ -29,6 +29,7 @@ import { useRouter } from "next/navigation";
 import { deleteConsultationUserService } from "@/services/users/consultation/deleteConsultation";
 import { HistoryNews } from "@/types/news";
 import { getAllNewsDetailUserService } from "@/services/users/news/getAllNewsDetailUser";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 const options = [
   {
@@ -317,15 +318,20 @@ const ProfilePage = () => {
             setValue("birth_date", new Date(newData.user_birth_date));
           }
           setValue("gender", newData.user_gender);
+          await showSuccessAlert("Update User Berhasil", refresh.message);
+          router.refresh();
         }
       } else {
-        alert("Gagal mengupdate user");
+        await showErrorAlert("Update User Gagal", result.message);
       }
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        await showErrorAlert("Update User Gagal", error.message);
       } else {
-        alert("Terjadi kesalahan yang tidak diketahui");
+        await showErrorAlert(
+          "Update User Gagal",
+          "Terjadi error yang tidak diketahui"
+        );
       }
     } finally {
       setLoading(false);
@@ -413,6 +419,7 @@ const ProfilePage = () => {
             <div className="flex w-full md:w-1/2 justify-between mb-6 border-b-2">
               {options.map((option) => (
                 <button
+                  type="button"
                   key={option.key}
                   onClick={() => setSelectedTab(option.key)}
                   className={`w-1/2 py-2 text-lg font-semibold ${

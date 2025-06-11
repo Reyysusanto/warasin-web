@@ -14,6 +14,7 @@ import { z } from "zod";
 import FormInput from "./FormInput";
 import FormSelect from "./FormSelect";
 import FormTextarea from "./FormDescription";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 type CreatePsychologSchemaType = z.infer<typeof createPsychologSchema>;
 
@@ -59,6 +60,12 @@ const AddDoctorForm = () => {
       role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
     },
   });
+
+  useEffect(() => {
+    if (error) {
+      showErrorAlert("Terjadi Suatu Masalah", error);
+    }
+  }, [error]);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -126,15 +133,14 @@ const AddDoctorForm = () => {
       const result = await CreatePsychologService(payload);
       console.log(result);
       if (result.status === true) {
-        setSuccess("Psycholog berhasil ditambahkan");
+        await showSuccessAlert("Create Psycholog Berhasil", result.message);
         setSelectedProvince("");
         setCities([]);
       } else {
-        setError("Gagal menambahkan psycholog");
+        await showErrorAlert("Create Psycholog Gagal", result.message);
       }
     } catch (err: any) {
-      console.log(err);
-      setError(err.message || "Terjadi kesalahan");
+      await showErrorAlert("Terjadi Suatu Kesalahan", err.message);
     } finally {
       setLoading(false);
     }

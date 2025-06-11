@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -11,6 +12,7 @@ import { createUserService } from "@/services/dahsboardService/user/createUser";
 import { getRoleService } from "@/services/role";
 import { City, Province } from "@/types/master";
 import { Role } from "@/types/role";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 type CreateUserSchemaType = z.infer<typeof createUserSchema>;
 
@@ -20,7 +22,6 @@ const AddUserPage = () => {
   const [cities, setCities] = useState<City[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [roles, setRoles] = useState<Role[]>([]);
-  const [success, setSuccess] = useState<string>();
   const [selectedRole, setSelectedRole] = useState("");
 
   const {
@@ -92,19 +93,19 @@ const AddUserPage = () => {
 
     try {
       const result = await createUserService(formattedData);
-      if (result) {
-        setSuccess("User berhasil ditambahkan");
+      if (result?.status === true) {
         setSelectedProvince("");
         setSelectedRole("");
         setCities([]);
+        await showSuccessAlert("User Berhasil Ditambahkan", result.message);
       } else {
-        alert("Gagal menambahkan user");
+        await showErrorAlert("User Gagal Ditambahkan", result?.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Error) {
-        alert(error.message);
+        await showErrorAlert("User Gagal Ditambahkan", error.message);
       } else {
-        alert("Terjadi kesalahan yang tidak diketahui");
+        await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
       }
     } finally {
       setLoading(false);
@@ -114,9 +115,6 @@ const AddUserPage = () => {
   return (
     <div className="w-full p-6 bg-white rounded-md shadow-md mt-10">
       <h2 className="text-2xl font-semibold mb-6">Tambah User Baru</h2>
-      {success && (
-        <p className="text-green-500 font-semibold text-sm">{success}</p>
-      )}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div>
           <label className="block">Nama</label>

@@ -14,12 +14,12 @@ import { z } from "zod";
 import { MdDelete, MdModeEdit } from "react-icons/md";
 import { deleteMotivationService } from "@/services/dahsboardService/motivation/deleteMotivation";
 import { useRouter } from "next/navigation";
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 
 type CreateMotivationSchemaType = z.infer<typeof createMotivationSchema>;
 
 const MotivationSection = () => {
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoryList[]>([]);
   const [motivationList, setMotivationList] = useState<MotivationList[]>([]);
   const [loading, setLoading] = useState(false);
@@ -37,6 +37,12 @@ const MotivationSection = () => {
   } = useForm<CreateMotivationSchemaType>({
     resolver: zodResolver(createMotivationSchema),
   });
+
+  useEffect(() => {
+    if (error) {
+      showErrorAlert("Terjadi Suatu Masalah", error);
+    }
+  }, [error]);
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -66,48 +72,60 @@ const MotivationSection = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    const confirmed = confirm("Apakah Anda yakin ingin menghapus berita ini?");
-    if (!confirmed) return;
-
     try {
       const result = await deleteMotivationService(id);
       if (result.status) {
         setMotivationList((prev) =>
           prev.filter((motivation) => motivation.motivation_id !== id)
         );
-        alert("Motivasi berhasil dihapus");
+        await showSuccessAlert("Motivasi Berhasil Dihapus", result.message);
       } else {
-        alert("Gagal menghapus kalimat motivasi");
+        await showErrorAlert(
+          "Gagal Menghapus Kalimat Motivasi",
+          result.message
+        );
       }
-    } catch (error) {
-      alert(error || "Terjadi kesalahan saat menghapus motivasi");
+    } catch (error: any) {
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     }
   };
 
   const editMotivation = (motivationId: string) => {
-    router.push(`/dashboard/admin/motivation/${motivationId}`)
-  }
+    router.push(`/dashboard/admin/motivation/${motivationId}`);
+  };
 
   const onSubmit = async (data: CreateMotivationSchemaType) => {
+    setError(null);
     const formattedData = {
       author: data.author,
       content: data.content,
       motivation_category_id: data.motivation_category_id,
     };
-    console.log(formattedData);
 
     try {
       setLoading(true);
       const result = await createMotivationService(formattedData);
-      console.log(result);
 
       if (result.status) {
-        setSuccess("Kategori motivasi berhasil ditambahkan");
+        await showSuccessAlert(
+          "Kategori Motivasi Berhasil Ditambahkan",
+          result.message
+        );
+
+        const allMotivation = await GetAllMotivationsService();
+        if (allMotivation.status === true) {
+          setMotivationList(allMotivation.data);
+        }
+
+        router.refresh();
       } else {
-        setError("Kategori motivasi gagal ditambahkan");
+        await showErrorAlert(
+          "Kategori Motivasi Gagal Ditambahkan",
+          result.message
+        );
       }
     } catch (error: any) {
-      setError(error.message || "Terjadi kesalahan");
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     } finally {
       setLoading(false);
     }
@@ -118,8 +136,6 @@ const MotivationSection = () => {
       <section className="bg-white p-6 rounded shadow">
         <h2 className="text-xl font-bold mb-4">Pesan Motivasi</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {error && <p className="text-red-500">{error}</p>}
-          {success && <p className="text-green-600">{success}</p>}
           <div className="space-y-4 mb-4">
             <input
               type="text"

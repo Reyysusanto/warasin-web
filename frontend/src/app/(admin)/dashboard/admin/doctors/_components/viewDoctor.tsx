@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { deletePsychologService } from "@/services/dahsboardService/doctor/deletePsycholog";
 import { getAllPsychologService } from "@/services/dahsboardService/doctor/getAllPsycholog";
 import { Psycholog } from "@/types/psycholog";
@@ -6,14 +7,21 @@ import { PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const ViewDoctor = () => {
   const [psychologList, setPsychologList] = useState<Psycholog[]>([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    if (error) {
+      showErrorAlert("Terjadi Suatu Masalah", error);
+    }
+  }, [error]);
+
   const editData = (id: string) => {
-    router.push(`/dashboard/admin/doctors/${id}`)
+    router.push(`/dashboard/admin/doctors/${id}`);
   };
 
   useEffect(() => {
@@ -35,29 +43,40 @@ const ViewDoctor = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    const confirmed = confirm("Apakah Anda yakin ingin menghapus berita ini?");
-    if (!confirmed) return;
-
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        showSuccessAlert(
+          "Psycholog Berhasil Dihapus",
+          "Psycholog Berhasil Dihapus"
+        );
+      }
+    });
     try {
       const result = await deletePsychologService(id);
       if (result.status) {
         setPsychologList((prev) =>
           prev.filter((psycholog) => psycholog.psy_id !== id)
         );
-        alert("Psycholog berhasil dihapus");
+        await showSuccessAlert("Psycholog Berhasil Dihapus", result.message);
       } else {
-        alert("Gagal menghapus psycholog");
+        await showErrorAlert("Psycholog Gagal Dihapus", result.message);
       }
-    } catch (error) {
-      alert(error || "Terjadi kesalahan saat menghapus psycholog");
+    } catch (error: any) {
+      await showErrorAlert("Terjadi Suatu Masalah", error.message);
     }
   };
 
   return (
     <>
       <h2 className="text-xl font-semibold mb-6">All Doctors</h2>
-
-      {error && <p className="text-red-500">{error}</p>}
 
       <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full table-auto text-sm text-left">

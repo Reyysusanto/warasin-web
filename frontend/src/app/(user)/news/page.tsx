@@ -268,7 +268,7 @@ const UserNewsPage = () => {
                   hari-hari terasa berat.
                 </p>
                 <Button
-                  onClick={() => router.push(`/concultation`)}
+                  onClick={() => router.push(`/consultation`)}
                   className="mt-3 w-fit"
                 >
                   Temukan psikolog terbaikmu

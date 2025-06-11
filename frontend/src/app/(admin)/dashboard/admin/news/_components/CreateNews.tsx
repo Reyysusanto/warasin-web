@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { createNewsService } from "@/services/dahsboardService/news/createNews";
 import { CreateNewsSchema } from "@/validations/news";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -26,14 +27,19 @@ const CreateNews = () => {
     resolver: zodResolver(CreateNewsSchema),
   });
 
+  useEffect(() => {
+    if (error) {
+      showErrorAlert("Terjadi Suatu Masalah", error);
+    }
+  }, [error]);
+
   const fileToBase64 = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
       reader.readAsDataURL(file);
-    }
-  );
+    });
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -70,12 +76,12 @@ const CreateNews = () => {
     try {
       const result = await createNewsService(formattedData);
       if (result?.status) {
-        setSuccess("Berita berhasil ditambahkan");
+        await showSuccessAlert("Berita Berhasil Ditambahkan", result.message);
       } else {
-        setError("Berita gagal ditambahkan");
+        await showErrorAlert("Berita Gagal Ditambahkan", result?.message);
       }
     } catch (error: any) {
-      setError(error.message || "Terjadi kesalahan");
+      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
     } finally {
       setLoading(false);
     }
