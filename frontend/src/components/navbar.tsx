@@ -64,8 +64,7 @@ const NavigationBar = () => {
     { name: "Konsulin", path: "/consultation" },
     { name: "Tanyain", path: "/chatbot" },
     { name: "Ajarin", path: "/news" },
-    { name: "Dopamin", path: "/dopamin" },
-    { name: "Terapiin", path: "/terapiin" },
+    { name: "Dopamin", path: "/motivations" },
     { name: "Emosiin", path: "/emosiin" },
     { name: "Lihat Semuanya", path: "/layanan" },
   ];

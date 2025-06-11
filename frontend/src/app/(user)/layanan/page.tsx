@@ -27,7 +27,7 @@ const Services = [
   },
   {
     icon: "dopamin",
-    link: "",
+    link: "/motivations",
     service: "Dopamin",
     desc: "Pesan motivasi harian untuk meningkatkan kesehatan mental pengguna.",
   },

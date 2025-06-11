@@ -82,3 +82,16 @@ export type DeleteMotivationResponse = {
   };
   timestamp: string;
 };
+
+export type AllMotivationResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: MotivationList[];
+  meta: {
+    page: number;
+    per_page: number;
+    max_page: number;
+    count: number;
+  };
+};
