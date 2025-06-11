@@ -1,20 +1,16 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import {
-  MotivationHistoryRequest,
-  MotivationHistoryUserResponse,
-} from "@/types/motivation";
+import { AllMotivationHistoryUserResponse } from "@/types/motivation";
 import axios, { AxiosError } from "axios";
 
-export const createMotivationUserService = async (
-  data: MotivationHistoryRequest
-): Promise<MotivationHistoryUserResponse | ErrorResponse> => {
+export const getAllHistoryMotivationService = async (): Promise<
+  AllMotivationHistoryUserResponse | ErrorResponse
+> => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.post(
-      `${baseURL}/user/create-user-motivation`,
-      data,
+    const response = await axios.get(
+      `${baseURL}/user/get-all-user-motivation`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -24,7 +20,7 @@ export const createMotivationUserService = async (
     );
 
     if (response.status === 200) {
-      return response.data as MotivationHistoryUserResponse;
+      return response.data as AllMotivationHistoryUserResponse;
     } else {
       return response.data as ErrorResponse;
     }
