@@ -95,3 +95,23 @@ export type AllMotivationResponse = {
     count: number;
   };
 };
+
+export type MotivationHistory = {
+  user_mot_id: string;
+  user_mot_date: string;
+  user_mot_reaction: number;
+  motivation: MotivationList;
+};
+
+export type MotivationHistoryRequest = {
+  user_mot_display_date: string;
+  user_mot_reaction: number;
+  mot_id: string;
+};
+
+export type MotivationHistoryUserResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: MotivationHistory;
+};
