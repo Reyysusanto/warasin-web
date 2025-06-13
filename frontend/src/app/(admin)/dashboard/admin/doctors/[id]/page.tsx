@@ -23,6 +23,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import { getAllSpecializationService } from "@/services/dahsboardService/doctor/getAllSpecialization";
 import EducationForm from "./_components/FormEducation";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import { useAuthRedirectLoginAdmin } from "@/services/useAuthRedirect";
 
 const DetailDoctorPage = () => {
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ const DetailDoctorPage = () => {
     edu_institution: "",
     edu_graduation_year: "",
   });
+  useAuthRedirectLoginAdmin();
 
   const selectedDataSpecialization = specialization.find(
     (item) => item.spe_id === selectedSpecialization

@@ -15,10 +15,12 @@ import Input from "./_components/FormInput";
 import Textarea from "./_components/FormTextArea";
 import Options from "./_components/FormSelect";
 import { UpdateMotivationRequest } from "@/types/motivation";
+import { useAuthRedirectLoginAdmin } from "@/services/useAuthRedirect";
 
 type CreateMotivationSchemaType = z.infer<typeof createMotivationSchema>;
 
 const UpdateMotivation = () => {
+  useAuthRedirectLoginAdmin();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoryList[]>([]);

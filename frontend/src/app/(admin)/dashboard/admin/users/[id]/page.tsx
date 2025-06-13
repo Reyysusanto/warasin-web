@@ -19,6 +19,7 @@ import BooleanOption from "./_components/BooleanOption";
 import { Role } from "@/types/role";
 import { getRoleService } from "@/services/role";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import { useAuthRedirectLoginAdmin } from "@/services/useAuthRedirect";
 
 type userDetailAdminSchemaType = z.infer<typeof userDetailAdminSchema>;
 
@@ -38,6 +39,7 @@ type UserData = {
 };
 
 const EditProfilePage = () => {
+  useAuthRedirectLoginAdmin();
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);

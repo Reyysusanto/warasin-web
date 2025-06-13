@@ -10,8 +10,10 @@ import { useRouter } from "next/navigation";
 import { GetAllUsers } from "@/services/dahsboardService/user/users";
 import { User } from "@/types/user";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import { useAuthRedirectLoginAdmin } from "@/services/useAuthRedirect";
 
 const UserDashboard = () => {
+  useAuthRedirectLoginAdmin();
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [userList, setUserList] = useState<User[]>([]);
   const router = useRouter();

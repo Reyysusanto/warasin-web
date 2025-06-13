@@ -32,6 +32,7 @@ import { getAllNewsDetailUserService } from "@/services/users/news/getAllNewsDet
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { MotivationHistory } from "@/types/motivation";
 import { getAllHistoryMotivationService } from "@/services/users/motivation/getAllHistoryMotivation";
+import { useAuthRedirect } from "@/services/useAuthRedirect";
 
 const options = [
   {
@@ -71,6 +72,7 @@ const getStatusLabel = (status: number) => {
 };
 
 const ProfilePage = () => {
+  useAuthRedirect();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedTab, setSelectedTab] = useState<string>("personal");
   const [loading, setLoading] = useState(false);

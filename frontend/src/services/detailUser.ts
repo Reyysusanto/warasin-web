@@ -55,7 +55,6 @@ export const getUserDetailService = async (): Promise<
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
-        window.location.href = "/login";
         throw new Error("Email atau password salah");
       }
     }
@@ -89,7 +88,6 @@ export const updateDetailUserService = async (
       if (axiosError.response) {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
-          window.location.href = "/login";
           throw new Error("Token kadaluarsa");
         }
 

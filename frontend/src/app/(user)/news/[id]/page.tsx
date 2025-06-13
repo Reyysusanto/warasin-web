@@ -5,6 +5,7 @@ import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
+import { useAuthRedirect } from "@/services/useAuthRedirect";
 import { createNewsUserService } from "@/services/users/news/createNews";
 import { getAllNewsUserService } from "@/services/users/news/getAllNews";
 import { getAllNewsDetailUserService } from "@/services/users/news/getAllNewsDetailUser";
@@ -33,6 +34,7 @@ const NewsDetailPage = () => {
     news_id: "",
   });
   const [loading, setLoading] = useState(true);
+  useAuthRedirect();
 
   useEffect(() => {
     const getDetailNews = async () => {

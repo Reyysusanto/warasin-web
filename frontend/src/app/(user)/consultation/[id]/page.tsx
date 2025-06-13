@@ -12,12 +12,14 @@ import { useParams } from "next/navigation";
 import { getDetailPsychologUserService } from "@/services/users/psycholog/getDetailPsycholog";
 import { getAllPracticeUserService } from "@/services/users/consultation/getAllPractice";
 import { Practice } from "@/types/master";
+import { useAuthRedirect } from "@/services/useAuthRedirect";
 
 const DetailPage = () => {
   const [selectedTab, setSelectedTab] = useState<string>("info");
   const [psycholog, setPsycholog] = useState<Psycholog>();
   const [practice, setPractice] = useState<Practice[]>([]);
   const params = useParams();
+  useAuthRedirect();
 
   useEffect(() => {
     const fetchData = async () => {

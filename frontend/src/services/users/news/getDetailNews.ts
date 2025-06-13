@@ -31,7 +31,6 @@ export const getDetailNewsService = async (
       if (axiosError.response) {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
-          window.location.href = "/login";
         }
       }
     }

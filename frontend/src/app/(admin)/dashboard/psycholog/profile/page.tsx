@@ -2,9 +2,7 @@
 
 import { getCityService, getProvincesService } from "@/services/province";
 import { City, Province } from "@/types/master";
-import {
-  psychologSchema,
-} from "@/validations/psycholog";
+import { psychologSchema } from "@/validations/psycholog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -14,10 +12,12 @@ import FormInput from "./_components/Input";
 import FormSelect from "./_components/Option";
 import FormTextarea from "./_components/TextArea";
 import { getPsychologDetailService } from "@/services/dashboardPsychologService/profile/getDetailProfile";
+import { useAuthRedirectLoginPsycholog } from "@/services/useAuthRedirect";
 
 type GetDetailPsychologSchemaType = z.infer<typeof psychologSchema>;
 
 const UpdateProfilePage = () => {
+  useAuthRedirectLoginPsycholog();
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
@@ -169,9 +169,7 @@ const UpdateProfilePage = () => {
 
   return (
     <div className="bg-white shadow-md mb-6 p-6 rounded-lg space-y-5 w-full">
-      <h2 className="text-xl font-semibold text-gray-800 mb-2">
-        My Profile
-      </h2>
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">My Profile</h2>
 
       <div className="grid md:grid-cols-2 gap-4">
         <FormInput
