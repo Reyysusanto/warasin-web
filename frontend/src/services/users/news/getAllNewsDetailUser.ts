@@ -28,7 +28,6 @@ export const getAllNewsDetailUserService = async (): Promise<
       if (axiosError.response) {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
-          window.location.href = "/login";
           throw new Error("Token telah kadaluarsa");
         }
 

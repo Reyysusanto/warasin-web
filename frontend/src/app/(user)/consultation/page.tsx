@@ -11,11 +11,13 @@ import FadeInFromLeft from "@/components/animation/FadeInFromLeft";
 import { Psycholog } from "@/types/psycholog";
 import { getAllPsychologUserService } from "@/services/users/psycholog/getAllPsycholog";
 import PsychologCard from "./_components/DoctorCard";
+import { useAuthRedirect } from "@/services/useAuthRedirect";
 
 const ConsultationPage = () => {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
   const [psychologs, setPsychologs] = useState<Psycholog[]>([]);
+  useAuthRedirect();
 
   useEffect(() => {
     const fetchPsycholog = async () => {

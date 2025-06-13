@@ -4,6 +4,7 @@
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { getDetailNewsService } from "@/services/dahsboardService/news/getDetailNews";
 import { updateNewsAdminService } from "@/services/dahsboardService/news/updateNews";
+import { useAuthRedirectLoginAdmin } from "@/services/useAuthRedirect";
 import { UpdateNewsRequest } from "@/types/news";
 import { GetNewsSchema } from "@/validations/news";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +25,7 @@ type NewsData = {
 };
 
 const UpdateDetailNewsPage = () => {
+  useAuthRedirectLoginAdmin();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string>("");

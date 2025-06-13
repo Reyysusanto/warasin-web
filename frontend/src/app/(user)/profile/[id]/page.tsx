@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useAuthRedirect } from "@/services/useAuthRedirect";
 import { getAllPracticeUserService } from "@/services/users/consultation/getAllPractice";
 import { getAvailableSlotUserService } from "@/services/users/consultation/getAvailableSlot";
 import { getDetailConsultationUserService } from "@/services/users/consultation/getDetailConsultation";
@@ -34,6 +35,7 @@ const EditConsultationPage = () => {
     prac_id: "",
     psy_id: "",
   });
+  useAuthRedirect();
 
   useEffect(() => {
     const fetchData = async () => {

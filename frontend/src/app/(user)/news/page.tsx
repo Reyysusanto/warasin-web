@@ -9,6 +9,7 @@ import Image from "next/image";
 import Footer from "@/components/footer";
 import { getAllNewsUserService } from "@/services/users/news/getAllNews";
 import { News } from "@/types/news";
+import { useAuthRedirect } from "@/services/useAuthRedirect";
 
 const dummyRating = {
   average: 4.6,
@@ -28,6 +29,7 @@ const UserNewsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const router = useRouter();
+  useAuthRedirect();
 
   useEffect(() => {
     const getAllNews = async () => {
@@ -46,8 +48,8 @@ const UserNewsPage = () => {
   }, []);
 
   const handleViewMore = (id: string) => {
-    router.push(`/news/${id}`)
-  }
+    router.push(`/news/${id}`);
+  };
 
   const filteredNews = newsList.filter(
     (news) =>
@@ -135,9 +137,7 @@ const UserNewsPage = () => {
 
                   <div className="mt-4">
                     <button
-                      onClick={() =>
-                        handleViewMore(news.news_id)
-                      }
+                      onClick={() => handleViewMore(news.news_id)}
                       className="text-sm font-medium text-blue-600 hover:underline"
                     >
                       Lihat Selengkapnya →

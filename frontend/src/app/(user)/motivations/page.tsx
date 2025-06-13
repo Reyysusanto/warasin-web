@@ -6,9 +6,11 @@ import { MotivationCard } from "./_components/motivationCard";
 import Footer from "@/components/footer";
 import { GetAllMotivationsUserService } from "@/services/users/motivation/getAllMotivation";
 import NavigationBar from "@/components/navbar";
+import { useAuthRedirect } from "@/services/useAuthRedirect";
 
 const MotivationPage = () => {
   const [motivationData, setMotivationData] = useState<MotivationList[]>([]);
+  useAuthRedirect();
 
   useEffect(() => {
     const fetchMotivation = async () => {
@@ -29,7 +31,7 @@ const MotivationPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
       <NavigationBar />
-      <div className="bg-white shadow-lg">
+      <div className="bg-white md:pt-10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <div className="flex justify-center mb-4">

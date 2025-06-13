@@ -16,8 +16,10 @@ import { getAllPracticesService } from "@/services/dashboardPsychologService/tim
 import { createPracticeService } from "@/services/dashboardPsychologService/time-practices/createPractice";
 import { updatePracticeService } from "@/services/dashboardPsychologService/time-practices/updatePractice";
 import { deletePracticeService } from "@/services/dashboardPsychologService/time-practices/deletePractice";
+import { useAuthRedirectLoginPsycholog } from "@/services/useAuthRedirect";
 
 const PsychologistDashboard = () => {
+  useAuthRedirectLoginPsycholog();
   const [timeSlots, setTimeSlots] = useState<AvailableSlot[]>([]);
   const [practices, setPractices] = useState<Practice[]>([]);
   const [showModal, setShowModal] = useState(false);

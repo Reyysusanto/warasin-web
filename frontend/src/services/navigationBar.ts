@@ -1,14 +1,14 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { DetailUserSuccessResponse } from "@/types/user";
+import { UserResponse } from "@/types/user";
 import axios from "axios";
 
 export const getNavigationUserDetailService = async (): Promise<
-  DetailUserSuccessResponse | ErrorResponse | undefined
+  UserResponse | ErrorResponse | undefined
 > => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get<DetailUserSuccessResponse>(
+    const response = await axios.get<UserResponse>(
       `${baseURL}/user/get-detail-user`,
       {
         headers: {
@@ -19,9 +19,9 @@ export const getNavigationUserDetailService = async (): Promise<
     );
 
     if (response.data.status === true) {
-      return response.data as DetailUserSuccessResponse;
+      return response.data as UserResponse;
     } else {
-      return response.data as ErrorResponse;
+      return response.data as unknown as ErrorResponse;
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
