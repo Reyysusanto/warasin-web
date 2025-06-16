@@ -16,7 +16,7 @@ export type createNewsRequest = {
 };
 
 export type UpdateNewsRequest = {
-  image: string;
+  image: File | null;
   title: string;
   body: string;
   date: string;

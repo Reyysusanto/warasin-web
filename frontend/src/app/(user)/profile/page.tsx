@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Footer from "@/components/footer";
@@ -33,6 +32,7 @@ import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { MotivationHistory } from "@/types/motivation";
 import { getAllHistoryMotivationService } from "@/services/users/motivation/getAllHistoryMotivation";
 import { useAuthRedirect } from "@/services/useAuthRedirect";
+import { assetsURL } from "@/config/api";
 
 const options = [
   {
@@ -81,12 +81,14 @@ const ProfilePage = () => {
   const [motivationHistory, setMotivationHistory] = useState<
     MotivationHistory[]
   >([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [newsHistory, setNewsHistory] = useState<HistoryNews[]>([]);
   const [consultations, setConsultations] = useState<ConsultationUser[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
-  const fileInputRef = useRef(null);
   const router = useRouter();
-  const [preview, setPreview] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData>({
     user_name: "",
     user_image: "",
@@ -107,7 +109,7 @@ const ProfilePage = () => {
     resolver: zodResolver(userDetailSchema),
     defaultValues: {
       name: "",
-      image: "",
+      image: null,
       email: "",
       no_hp: "",
       province: "",
@@ -116,6 +118,13 @@ const ProfilePage = () => {
       gender: null as boolean | null,
     },
   });
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_profile.png";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/user/${imagePath}`;
+  };
 
   const fileToBase64 = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -127,14 +136,55 @@ const ProfilePage = () => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    // Validasi ukuran file
+    if (file.size > 2 * 1024 * 1024) {
+      await showErrorAlert("Ukuran gambar terlalu besar", "Maksimal 2MB");
+      resetFileInput();
+      return;
+    }
+
+    // Validasi tipe file
+    if (!file.type.match(/image\/(jpeg|jpg|png|webp)/)) {
+      await showErrorAlert(
+        "Format tidak valid",
+        "Hanya menerima JPG/JPEG/PNG/WEBP"
+      );
+      resetFileInput();
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
       const imageUrl = URL.createObjectURL(file);
-      setPreview(imageUrl);
+      if (!imageUrl) throw new Error("Gagal membuat preview gambar");
 
       const base64 = await fileToBase64(file);
-      setValue("image", base64);
+
+      setPreview(imageUrl);
+      setImageFile(file);
+      setValue("image", base64, { shouldValidate: true });
+    } catch (error) {
+      console.error("Error processing image:", error);
+      await showErrorAlert("Error", "Gagal memproses gambar");
+      resetFileInput();
+    } finally {
+      setIsUploading(false);
     }
   };
+
+  // Fungsi untuk reset input file
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setPreview(null);
+    setImageFile(null);
+    setValue("image", null);
+  };
+
   useEffect(() => {
     const getUserData = async () => {
       try {
@@ -278,7 +328,7 @@ const ProfilePage = () => {
       }
 
       if (data.image !== userData.user_image) {
-        formattedData.image = data.image;
+        formattedData.image = imageFile;
       }
 
       if (data.email !== userData.user_email) {
@@ -310,7 +360,6 @@ const ProfilePage = () => {
 
       if (result.status === true) {
         const refresh = await getUserDetailService();
-        console.log(refresh);
         if (refresh.status === true) {
           const newData = refresh.data;
           setUserData({
@@ -334,8 +383,8 @@ const ProfilePage = () => {
             setValue("birth_date", new Date(newData.user_birth_date));
           }
           setValue("gender", newData.user_gender);
-          await showSuccessAlert("Update User Berhasil", refresh.message);
-          router.refresh();
+          await showSuccessAlert("Update User Berhasil", result.message);
+          window.location.reload();
         }
       } else {
         await showErrorAlert("Update User Gagal", result.message);
@@ -394,33 +443,44 @@ const ProfilePage = () => {
                   className="hidden"
                 />
                 <div
-                  onClick={() => (fileInputRef.current as any).click()}
-                  className="cursor-pointer w-full h-full rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 hover:shadow-md transition"
+                  onClick={() => !isUploading && fileInputRef.current?.click()}
+                  className={`cursor-pointer w-full h-full rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 hover:shadow-md transition ${
+                    isUploading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
-                  {userData.user_image ? (
+                  {isUploading ? (
+                    <div className="animate-pulse flex flex-col items-center">
+                      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-xs mt-2 text-gray-500">
+                        Mengupload...
+                      </span>
+                    </div>
+                  ) : userData.user_image ? (
                     <Image
-                      height={80}
-                      width={80}
-                      src={userData.user_image}
-                      alt="preview"
+                      height={128}
+                      width={128}
+                      src={getFullImageUrl(userData.user_image)}
+                      alt="Profile"
                       className="w-full h-full object-cover"
+                      priority
                     />
                   ) : preview ? (
                     <Image
-                      height={80}
-                      width={80}
-                      src={preview || "/Images/default_profile.png"}
-                      alt="preview"
+                      height={128}
+                      width={128}
+                      src={preview}
+                      alt="Preview"
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <Camera className="w-8 h-8 text-gray-500" />
+                    <div className="flex flex-col items-center">
+                      <Camera className="w-8 h-8 text-gray-500" />
+                      <span className="text-xs text-gray-500 mt-1">
+                        Upload Foto
+                      </span>
+                    </div>
                   )}
                 </div>
-
-                <p className="text-sm text-center mt-2 text-gray-500">
-                  Upload Foto
-                </p>
               </div>
               <div className="flex flex-col text-center">
                 <h3 className="text-primaryTextColor font-bold text-xl">

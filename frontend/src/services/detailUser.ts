@@ -41,7 +41,7 @@ export const getUserDetailService = async (): Promise<
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -72,7 +72,7 @@ export const updateDetailUserService = async (
     >(`${baseURL}/user/update-user`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
 

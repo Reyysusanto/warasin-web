@@ -8,17 +8,27 @@ import { News } from "@/types/news";
 import dayjs from "dayjs";
 import { deleteNewsService } from "@/services/dahsboardService/news/deleteNews";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import { assetsURL } from "@/config/api";
 
 const ViewNewsPage = () => {
   const [newsList, setNewsList] = useState<News[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_image.jpg";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/news/${imagePath}`;
+  };
+
   const fetchNews = async () => {
     setLoading(true);
     try {
       const result = await getAllNewsService();
       if (result.status) {
+        console.log(result.data);
         setNewsList(result.data);
       } else {
         setError(result.message);
@@ -70,8 +80,11 @@ const ViewNewsPage = () => {
               className="border rounded-md p-4 flex flex-col gap-3"
             >
               <Image
-                src={news.news_image || "/Images/default_image.jpg"}
-                alt={news.news_title}
+                src={
+                  getFullImageUrl(news.news_image) ||
+                  "/Images/default_image.jpg"
+                }
+                alt={news.news_image}
                 width={600}
                 height={300}
                 className="object-cover w-full h-52 rounded-md"

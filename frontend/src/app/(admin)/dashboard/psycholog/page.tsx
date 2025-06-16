@@ -1,9 +1,7 @@
-import { useAuthRedirectLoginPsycholog } from "@/services/useAuthRedirect";
 import { ChartAreaInteractive } from "./_components/chart-area-interactive";
 import { SectionCards } from "./_components/section-cards";
 
 export default function Page() {
-  useAuthRedirectLoginPsycholog();
 
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">

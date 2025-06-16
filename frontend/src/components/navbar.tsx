@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CgProfile } from "react-icons/cg";
 import { usePathname } from "next/navigation";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaChevronDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { getNavigationUserDetailService } from "@/services/navigationBar";
 import { UserResponse } from "@/types/user";
+import { assetsURL } from "@/config/api";
 
 const NavigationBar = () => {
   const router = useRouter();
@@ -18,6 +18,14 @@ const NavigationBar = () => {
   const [user, setUser] = useState<UserResponse | null>(null);
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_profile.png";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/user/${imagePath}`;
+  };
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
@@ -53,7 +61,7 @@ const NavigationBar = () => {
     };
 
     getUser();
-  }, []);
+  }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -245,10 +253,10 @@ const NavigationBar = () => {
         } md:flex gap-x-3 mt-4 md:mt-0 w-full md:w-auto`}
       >
         {user ? (
-          <div className="flex flex-col md:flex-row gap-3 w-full">
+          <div className="flex flex-col md:flex-row md:gap-10 w-full">
             <Link
               href={"/profile"}
-              className="flex w-full items-center justify-between gap-4"
+              className="flex items-center justify-between gap-2 pr-4"
             >
               <div className="flex flex-col">
                 <h4 className="font-semibold text-base text-primaryTextColor">
@@ -258,7 +266,16 @@ const NavigationBar = () => {
                   {user.data.user_email}
                 </p>
               </div>
-              <CgProfile className="text-4xl bg-backgroundSecondaryColor rounded-full" />
+              <Image
+                height={48}
+                width={48}
+                src={
+                  getFullImageUrl(user.data.user_image) ||
+                  "/Images/default_profile.png"
+                }
+                alt="Profile"
+                className="flex w-12 h-12 rounded-full object-cover"
+              />
             </Link>
             <button
               onClick={handleLogout}
