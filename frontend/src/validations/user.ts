@@ -7,7 +7,6 @@ const registerSchema = z
     password: z
       .string()
       .min(8, "Password minimal 8 karakter")
-      .regex(/[A-Z]/, "Password harus mengandung minimal 1 huruf besar")
       .regex(/[0-9]/, "Password harus mengandung minimal 1 angka"),
     confirmPassword: z.string().min(1, "Konfirmasi password harus diisi"),
   })
@@ -32,7 +31,7 @@ const userDetailSchema = z.object({
     .min(10, "No Handphone tidak valid")
     .max(16, "No Hanphone tidak valid"),
   birth_date: z.date(),
-  image: z.string().optional(),
+  image: z.string().nullable(),
   gender: z.boolean().nullable(),
   province: z.string(),
   city: z.string(),

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
 import { NewsResponse } from "@/types/news";
@@ -19,7 +17,7 @@ export const createNewsService = async (
     >(`${baseURL}/admin/create-news`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
 

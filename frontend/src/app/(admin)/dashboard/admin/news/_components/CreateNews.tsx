@@ -6,6 +6,7 @@ import { createNewsService } from "@/services/dahsboardService/news/createNews";
 import { CreateNewsSchema } from "@/validations/news";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -16,7 +17,8 @@ const CreateNews = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [imageBase64, setImageBase64] = useState<string>("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
     register,
@@ -43,15 +45,30 @@ const CreateNews = () => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const base64 = await fileToBase64(file);
-        setImageBase64(base64);
-        setValue("image", base64);
-      } catch (error) {
-        console.error(error);
-        setError("Gagal membaca gambar");
-      }
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Ukuran gambar terlalu besar (Maksimal 2MB)");
+      return;
+    }
+
+    if (!file.type.match(/image\/(jpeg|jpg|png|webp)/)) {
+      setError("Format file tidak didukung (Hanya JPG/JPEG/PNG/WEBP)");
+      return;
+    }
+
+    try {
+      const imageUrl = URL.createObjectURL(file);
+      if (!imageUrl) throw new Error("Gagal membuat preview gambar");
+
+      const base64 = await fileToBase64(file);
+
+      setPreviewUrl(imageUrl);
+      setImageFile(file);
+      setValue("image", base64, { shouldValidate: true });
+    } catch (error) {
+      console.error("Error processing image:", error);
+      await showErrorAlert("Error", "Gagal memproses gambar");
     }
   };
 
@@ -60,16 +77,10 @@ const CreateNews = () => {
     setSuccess(null);
     setLoading(true);
 
-    if (!imageBase64) {
-      setError("Gambar harus diunggah");
-      setLoading(false);
-      return;
-    }
-
     const formattedData = {
       title: data.title,
       body: data.body,
-      image: data.image,
+      image: imageFile,
       date: dayjs().format("YYYY-MM-DD"),
     };
 
@@ -108,6 +119,16 @@ const CreateNews = () => {
             onChange={handleImageChange}
             className="w-full"
           />
+
+          {previewUrl && (
+            <Image
+              height={80}
+              width={200}
+              src={previewUrl}
+              alt="Preview"
+              className="max-w-xs max-h-40"
+            />
+          )}
           {errors.image && (
             <p className="text-red-500">{errors.image.message}</p>
           )}

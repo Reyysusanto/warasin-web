@@ -2,6 +2,7 @@
 "use client";
 
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import { assetsURL } from "@/config/api";
 import { getDetailNewsService } from "@/services/dahsboardService/news/getDetailNews";
 import { updateNewsAdminService } from "@/services/dahsboardService/news/updateNews";
 import { useAuthRedirectLoginAdmin } from "@/services/useAuthRedirect";
@@ -11,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,14 +29,68 @@ const UpdateDetailNewsPage = () => {
   useAuthRedirectLoginAdmin();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [imageBase64, setImageBase64] = useState<string>("");
   const params = useParams();
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [newsData, setNewsData] = useState<NewsData>({
     news_image: "",
     news_title: "",
     news_body: "",
     news_date: "",
   });
+
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_image.jpg";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/news/${imagePath}`;
+  };
+
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      console.error("Tidak ada file yang dipilih");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const imageUrl = URL.createObjectURL(file);
+
+      setPreview(imageUrl);
+      setImageFile(file);
+
+      const base64 = await fileToBase64(file);
+      setValue("image", base64, { shouldValidate: true });
+    } catch (error) {
+      console.error("Error generating preview:", error);
+      setError("Gagal membuat preview gambar");
+      resetFileInput();
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setPreview(null);
+    setImageFile(null);
+    setValue("image", null);
+  };
 
   const {
     register,
@@ -81,37 +136,9 @@ const UpdateDetailNewsPage = () => {
     getNewsData();
   }, [setValue, params.id]);
 
-  const fileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const base64 = await fileToBase64(file);
-        setImageBase64(base64);
-        setValue("image", base64);
-      } catch (error) {
-        console.error(error);
-        setError("Gagal membaca gambar");
-      }
-    }
-  };
-
   const onSubmit = async (data: GetNewsSchemaType) => {
     setError(null);
     setLoading(true);
-
-    if (!imageBase64) {
-      setError("Gambar harus diunggah");
-      setLoading(false);
-      return;
-    }
 
     try {
       const id = params.id as string;
@@ -126,12 +153,14 @@ const UpdateDetailNewsPage = () => {
       }
 
       if (data.image !== newsData.news_image) {
-        formattedData.image = data.image;
+        formattedData.image = imageFile;
       }
 
       if (data.date !== newsData.news_date) {
         formattedData.date = dayjs(data.date).format("YYYY-MM-DD");
       }
+
+      console.log(formattedData);
 
       const result = await updateNewsAdminService(id, formattedData);
       if (result?.status === true) {
@@ -183,9 +212,30 @@ const UpdateDetailNewsPage = () => {
           {errors.image && (
             <p className="text-red-500">{errors.image.message}</p>
           )}
-          {newsData.news_image && (
+          {isUploading ? (
+            <div className="animate-pulse flex flex-col items-center">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-xs mt-2 text-gray-500">Mengupload...</span>
+            </div>
+          ) : newsData.news_image ? (
             <Image
-              src={newsData.news_image}
+              src={getFullImageUrl(newsData.news_image)}
+              alt={newsData.news_title}
+              width={200}
+              height={100}
+              className="mt-4 w-full max-h-60 object-cover rounded-md"
+            />
+          ) : preview ? (
+            <Image
+              height={128}
+              width={128}
+              src={preview}
+              alt="Preview"
+              className="mt-4 w-full max-h-60 object-cover rounded-md"
+            />
+          ) : (
+            <Image
+              src={"/Images/default_image.jpg"}
               alt="Preview"
               width={200}
               height={100}
