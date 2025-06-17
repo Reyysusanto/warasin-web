@@ -8,13 +8,14 @@ import { City, Province } from "@/types/master";
 import { Role } from "@/types/role";
 import { createPsychologSchema } from "@/validations/psycholog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FormInput from "./FormInput";
 import FormSelect from "./FormSelect";
 import FormTextarea from "./FormDescription";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import Image from "next/image";
 
 type CreatePsychologSchemaType = z.infer<typeof createPsychologSchema>;
 
@@ -25,6 +26,10 @@ const AddDoctorForm = () => {
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [selectedProvince, setSelectedProvince] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRole, setSelectedRole] = useState("");
@@ -33,6 +38,7 @@ const AddDoctorForm = () => {
     name: "",
     str_number: "",
     email: "",
+    image: null,
     password: "",
     work_year: "",
     description: "",
@@ -60,6 +66,65 @@ const AddDoctorForm = () => {
       role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
     },
   });
+
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validasi ukuran file
+    if (file.size > 2 * 1024 * 1024) {
+      await showErrorAlert("Ukuran gambar terlalu besar", "Maksimal 2MB");
+      resetFileInput();
+      return;
+    }
+
+    // Validasi tipe file
+    if (!file.type.match(/image\/(jpeg|jpg|png|webp)/)) {
+      await showErrorAlert(
+        "Format tidak valid",
+        "Hanya menerima JPG/JPEG/PNG/WEBP"
+      );
+      resetFileInput();
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const imageUrl = URL.createObjectURL(file);
+      if (!imageUrl) throw new Error("Gagal membuat preview gambar");
+
+      const base64 = await fileToBase64(file);
+
+      setPreview(imageUrl);
+      setImageFile(file);
+      setValue("psy_image", base64, { shouldValidate: true });
+    } catch (error) {
+      console.error("Error processing image:", error);
+      await showErrorAlert("Error", "Gagal memproses gambar");
+      resetFileInput();
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Fungsi untuk reset input file
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setPreview(null);
+    setImageFile(null);
+    setValue("psy_image", null);
+  };
 
   useEffect(() => {
     if (error) {
@@ -121,6 +186,7 @@ const AddDoctorForm = () => {
       name: data.psy_name,
       str_number: data.psy_str_number,
       email: data.psy_email,
+      image: imageFile,
       password: data.psy_password,
       work_year: data.psy_work_year,
       description: data.psy_description,
@@ -128,6 +194,7 @@ const AddDoctorForm = () => {
       city_id: data.city_id,
       role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
     };
+    console.log(payload);
 
     try {
       const result = await CreatePsychologService(payload);
@@ -159,6 +226,38 @@ const AddDoctorForm = () => {
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <div className="grid md:grid-cols-2 gap-4">
+        <div className="w-32 h-32">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            ref={fileInputRef}
+            className="hidden"
+            id="profile-image"
+          />
+          <label
+            htmlFor="profile-image"
+            className={`cursor-pointer w-full h-full rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-300 hover:shadow-md transition ${
+              isUploading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {preview && (
+              <Image
+                height={128}
+                width={128}
+                src={preview}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+            )}
+          </label>
+          {errors.psy_image && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.psy_image.message}
+            </p>
+          )}
+        </div>
+
         <FormInput
           label="Psycholog Name"
           id="name"

@@ -5,6 +5,7 @@ import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import Footer from "@/components/footer";
 import NavigationBar from "@/components/navbar";
 import { Card } from "@/components/ui/card";
+import { assetsURL } from "@/config/api";
 import { useAuthRedirect } from "@/services/useAuthRedirect";
 import { createNewsUserService } from "@/services/users/news/createNews";
 import { getAllNewsUserService } from "@/services/users/news/getAllNews";
@@ -35,6 +36,14 @@ const NewsDetailPage = () => {
   });
   const [loading, setLoading] = useState(true);
   useAuthRedirect();
+
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_image.jpg";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/news/${imagePath}`;
+  };
 
   useEffect(() => {
     const getDetailNews = async () => {
@@ -159,7 +168,10 @@ const NewsDetailPage = () => {
               <Image
                 height={400}
                 width={800}
-                src={newsData.news_image || "/Images/default_image.jpg"}
+                src={
+                  getFullImageUrl(newsData.news_image) ||
+                  "/Images/default_image.jpg"
+                }
                 alt={newsData.news_title}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
               />
@@ -223,7 +235,7 @@ const NewsDetailPage = () => {
                     <Image
                       width={200}
                       height={200}
-                      src={news.news_image || "/Images/default_image.jpg"}
+                      src={getFullImageUrl(news.news_image) || "/Images/default_image.jpg"}
                       alt={news.news_title}
                       className="w-full h-36 object-cover bg-gray-200 rounded-lg mb-3"
                     />

@@ -10,6 +10,7 @@ import Footer from "@/components/footer";
 import { getAllNewsUserService } from "@/services/users/news/getAllNews";
 import { News } from "@/types/news";
 import { useAuthRedirect } from "@/services/useAuthRedirect";
+import { assetsURL } from "@/config/api";
 
 const dummyRating = {
   average: 4.6,
@@ -30,6 +31,14 @@ const UserNewsPage = () => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const router = useRouter();
   useAuthRedirect();
+
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_image.jpg";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/news/${imagePath}`;
+  };
 
   useEffect(() => {
     const getAllNews = async () => {
@@ -111,7 +120,10 @@ const UserNewsPage = () => {
                 <Image
                   height={200}
                   width={200}
-                  src={news.news_image || "/Images/default_image.jpg"}
+                  src={
+                    getFullImageUrl(news.news_image) ||
+                    "/Images/default_image.jpg"
+                  }
                   alt={news.news_image}
                   className="w-full h-48 object-cover"
                 />
