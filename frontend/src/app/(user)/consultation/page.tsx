@@ -12,6 +12,7 @@ import { Psycholog } from "@/types/psycholog";
 import { getAllPsychologUserService } from "@/services/users/psycholog/getAllPsycholog";
 import PsychologCard from "./_components/DoctorCard";
 import { useAuthRedirect } from "@/services/useAuthRedirect";
+import { assetsURL } from "@/config/api";
 
 const ConsultationPage = () => {
   const [search, setSearch] = useState("");
@@ -33,6 +34,14 @@ const ConsultationPage = () => {
 
     fetchPsycholog();
   }, [search, city]);
+
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_image.jpg";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/psycholog/${imagePath}`;
+  };
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-tr from-[#ECEEFF] to-white">
@@ -111,7 +120,7 @@ const ConsultationPage = () => {
                     id={psycholog.psy_id}
                     name={psycholog.psy_name}
                     psy_image={
-                      psycholog.psy_image || "/Images/default_profile.png"
+                      getFullImageUrl(psycholog.psy_image) || "/Images/default_profile.png"
                     }
                     specialty={
                       psycholog.specialization

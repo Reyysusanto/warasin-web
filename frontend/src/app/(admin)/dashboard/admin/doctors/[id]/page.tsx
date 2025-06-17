@@ -5,7 +5,7 @@ import { getCityService, getProvincesService } from "@/services/province";
 import { getRoleService } from "@/services/role";
 import { City, Province } from "@/types/master";
 import { Role } from "@/types/role";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FormInput from "./_components/FormInput";
 import FormSelect from "./_components/FormSelect";
 import FormTextarea from "./_components/FormDescription";
@@ -18,12 +18,14 @@ import {
   PsychologRequest,
   Specialization,
 } from "@/types/psycholog";
+import Image from "next/image";
 import { getAllLanguageService } from "@/services/dahsboardService/doctor/getAllLanguage";
 import { FaTrashAlt } from "react-icons/fa";
 import { getAllSpecializationService } from "@/services/dahsboardService/doctor/getAllSpecialization";
 import EducationForm from "./_components/FormEducation";
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
 import { useAuthRedirectLoginAdmin } from "@/services/useAuthRedirect";
+import { assetsURL } from "@/config/api";
 
 const DetailDoctorPage = () => {
   const [loading, setLoading] = useState(false);
@@ -32,6 +34,10 @@ const DetailDoctorPage = () => {
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [language, setLanguage] = useState<Language[]>([]);
   const [specialization, setSpecialization] = useState<Specialization[]>([]);
   const [selectedProvince, setSelectedProvince] = useState("");
@@ -57,6 +63,7 @@ const DetailDoctorPage = () => {
     name: "",
     str_number: "",
     email: "",
+    image: "",
     password: "",
     work_year: "",
     description: "",
@@ -118,6 +125,45 @@ const DetailDoctorPage = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_image.jpg";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/psycholog/${imagePath}`;
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      console.error("Tidak ada file yang dipilih");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const imageUrl = URL.createObjectURL(file);
+
+      setPreview(imageUrl);
+      setImageFile(file);
+    } catch (error) {
+      console.error("Error generating preview:", error);
+      setError("Gagal membuat preview gambar");
+      resetFileInput();
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setPreview(null);
+    setImageFile(null);
+  };
+
   useEffect(() => {
     const getPsychologData = async () => {
       const psy_id = params.id as string;
@@ -127,6 +173,7 @@ const DetailDoctorPage = () => {
           const data = response.data;
           setFormData({
             name: data.psy_name,
+            image: data.psy_image,
             str_number: data.psy_str_number,
             email: data.psy_email,
             password: data.psy_password,
@@ -398,6 +445,10 @@ const DetailDoctorPage = () => {
           formattedData.email = formData.email;
         }
 
+        if (imageFile) {
+          formattedData.image = imageFile;
+        }
+
         if (formData.str_number !== original.psy_str_number) {
           formattedData.str_number = formData.str_number;
         }
@@ -455,6 +506,8 @@ const DetailDoctorPage = () => {
         }
       }
 
+      console.log(formattedData);
+
       const result = await updatePsychologAdminService(id, formattedData);
 
       if (result?.status === true) {
@@ -462,11 +515,13 @@ const DetailDoctorPage = () => {
         const refresh = await getDetailPsychologService(id);
         if (refresh.status === true) {
           const newData = refresh.data;
+          console.log(newData);
           setFormData({
             name: newData.psy_name,
             str_number: newData.psy_str_number,
             email: newData.psy_email,
             password: newData.psy_password,
+            image: newData.psy_image,
             work_year: newData.psy_work_year,
             description: newData.psy_description,
             phone_number: newData.psy_phone_number,
@@ -500,6 +555,48 @@ const DetailDoctorPage = () => {
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="image" className="block mb-1 font-medium">
+            Image Header
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full"
+          />
+          {isUploading ? (
+            <div className="animate-pulse flex flex-col items-center">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-xs mt-2 text-gray-500">Mengupload...</span>
+            </div>
+          ) : formData.image ? (
+            <Image
+              src={getFullImageUrl(formData.image)}
+              alt={formData.name}
+              width={200}
+              height={100}
+              className="mt-4 w-full max-h-60 object-cover rounded-md"
+            />
+          ) : preview ? (
+            <Image
+              height={128}
+              width={128}
+              src={preview}
+              alt="Preview"
+              className="mt-4 w-full max-h-60 object-cover rounded-md"
+            />
+          ) : (
+            <Image
+              src={"/Images/default_image.jpg"}
+              alt="Preview"
+              width={200}
+              height={100}
+              className="mt-4 w-full max-h-60 object-cover rounded-md"
+            />
+          )}
+        </div>
+
         <FormInput
           label="Psycholog Name"
           id="name"

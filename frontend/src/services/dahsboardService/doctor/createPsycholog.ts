@@ -16,10 +16,11 @@ export const CreatePsychologService = async (
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );
+    console.log(response);
 
     if (response.status === 200) {
       return response.data as PsychologResponse;

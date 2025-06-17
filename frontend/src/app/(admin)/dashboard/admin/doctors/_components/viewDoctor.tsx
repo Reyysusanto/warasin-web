@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { showErrorAlert, showSuccessAlert } from "@/components/alert";
+import { assetsURL } from "@/config/api";
 import { deletePsychologService } from "@/services/dahsboardService/doctor/deletePsycholog";
 import { getAllPsychologService } from "@/services/dahsboardService/doctor/getAllPsycholog";
 import { Psycholog } from "@/types/psycholog";
@@ -22,6 +23,14 @@ const ViewDoctor = () => {
 
   const editData = (id: string) => {
     router.push(`/dashboard/admin/doctors/${id}`);
+  };
+
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return "/Images/default_profile.png";
+
+    if (imagePath.startsWith("http")) return imagePath;
+
+    return `${assetsURL}/psycholog/${imagePath}`;
   };
 
   useEffect(() => {
@@ -98,15 +107,21 @@ const ViewDoctor = () => {
                 className="border-b border-gray-200 hover:bg-gray-50 transition"
               >
                 <td className="px-4 py-4 flex items-center gap-3 whitespace-nowrap">
-                  <Image
-                    src={psycholog.psy_image || "/Images/default_profile.png"}
-                    alt={psycholog.psy_name}
-                    width={36}
-                    height={36}
-                    className="rounded-full object-cover"
-                  />
+                  <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
+                    <Image
+                      src={
+                        getFullImageUrl(psycholog.psy_image) ||
+                        "/Images/default_profile.png"
+                      }
+                      alt={psycholog.psy_name}
+                      width={60}
+                      height={60}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
                   <span className="font-medium">{psycholog.psy_name}</span>
                 </td>
+
                 <td className="px-4 py-4">{psycholog.psy_str_number}</td>
                 <td className="px-4 py-4">{psycholog.psy_email}</td>
                 <td className="px-4 py-4">{psycholog.psy_phone_number}</td>

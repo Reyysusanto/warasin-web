@@ -1,11 +1,11 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { CreatePsychologRequest, PsychologResponse } from "@/types/psycholog";
+import { PsychologRequest, PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const updatePsychologAdminService = async (
   psy_id: string,
-  data: Partial<CreatePsychologRequest>
+  data: Partial<PsychologRequest>
 ) => {
   try {
     const token = localStorage.getItem("token");
@@ -15,7 +15,7 @@ export const updatePsychologAdminService = async (
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );

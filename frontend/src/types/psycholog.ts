@@ -61,6 +61,7 @@ export type PsychologRequest = {
   name: string;
   str_number: string;
   email: string;
+  image: File | null;
   password: string;
   work_year: string;
   description: string;

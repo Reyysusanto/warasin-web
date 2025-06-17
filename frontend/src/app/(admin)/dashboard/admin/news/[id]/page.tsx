@@ -147,20 +147,17 @@ const UpdateDetailNewsPage = () => {
       if (data.title !== newsData.news_title) {
         formattedData.title = data.title;
       }
-
       if (data.body !== newsData.news_body) {
         formattedData.body = data.body;
       }
 
-      if (data.image !== newsData.news_image) {
+      if (imageFile) {
         formattedData.image = imageFile;
       }
 
       if (data.date !== newsData.news_date) {
         formattedData.date = dayjs(data.date).format("YYYY-MM-DD");
       }
-
-      console.log(formattedData);
 
       const result = await updateNewsAdminService(id, formattedData);
       if (result?.status === true) {
@@ -181,6 +178,7 @@ const UpdateDetailNewsPage = () => {
         }
 
         await showSuccessAlert("Berita Berhasil Diperbarui", result.message);
+        location.reload();
       } else {
         await showErrorAlert("Berita Gagal Diperbarui", result?.message);
       }
