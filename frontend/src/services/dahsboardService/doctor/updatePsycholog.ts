@@ -1,11 +1,11 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { PsychologRequest, PsychologResponse } from "@/types/psycholog";
+import { PsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const updatePsychologAdminService = async (
   psy_id: string,
-  data: Partial<PsychologRequest>
+  data: FormData
 ) => {
   try {
     const token = localStorage.getItem("token");
@@ -20,6 +20,11 @@ export const updatePsychologAdminService = async (
       }
     );
 
+    console.log(psy_id)
+    console.log("data")
+    console.log(data)
+    console.log("response")
+    console.log(response)
     if (response.status === 200) {
       return response.data as PsychologResponse;
     } else {
