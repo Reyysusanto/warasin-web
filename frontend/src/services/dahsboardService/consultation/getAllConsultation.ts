@@ -1,10 +1,10 @@
 import { baseURL } from "@/config/api";
-import { GetAllConsultationResponse } from "@/types/consultation";
+import { AllConsultationResponse } from "@/types/consultation";
 import { ErrorResponse } from "@/types/error";
 import axios, { AxiosError } from "axios";
 
 export const getAllConsultationAdminSrevice = async (): Promise<
-  GetAllConsultationResponse | ErrorResponse
+  AllConsultationResponse | ErrorResponse
 > => {
   const token = localStorage.getItem("token");
 
@@ -17,7 +17,7 @@ export const getAllConsultationAdminSrevice = async (): Promise<
     });
 
     if (response.status === 200) {
-      return response.data as GetAllConsultationResponse;
+      return response.data as AllConsultationResponse;
     } else {
       return response.data as ErrorResponse;
     }
