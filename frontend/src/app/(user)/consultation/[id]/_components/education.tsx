@@ -1,5 +1,5 @@
 type Education = {
-  edu_id: string;
+  edu_id: string | null;
   edu_degree: string;
   edu_major: string;
   edu_institution: string;
