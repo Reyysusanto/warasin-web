@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
 import { UserResponse } from "@/types/user";

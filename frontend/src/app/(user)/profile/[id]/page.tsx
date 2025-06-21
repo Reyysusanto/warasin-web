@@ -162,6 +162,7 @@ const EditConsultationPage = () => {
 
         if (result.status === true) {
           setSuccess("Konsultasi berhasil diperbarui");
+          router.push("/profile")
         } else {
           setError(result.message || "Gagal memperbarui konsultasi");
         }
