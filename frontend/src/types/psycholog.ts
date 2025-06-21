@@ -106,6 +106,13 @@ export type PsychologResponse = {
   };
 };
 
+export type AllPsychologResponse = {
+  status: true;
+  message: string;
+  timestamp: string;
+  data: Psycholog[];
+};
+
 export type AllPsychologUserResponse = {
   status: true;
   message: string;

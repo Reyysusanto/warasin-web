@@ -1,10 +1,10 @@
 import { baseURL } from "@/config/api";
 import { ErrorResponse } from "@/types/error";
-import { GetAllPsychologResponse } from "@/types/psycholog";
+import { AllPsychologResponse } from "@/types/psycholog";
 import axios, { AxiosError } from "axios";
 
 export const getAllPsychologService = async (): Promise<
-  GetAllPsychologResponse | ErrorResponse
+  AllPsychologResponse | ErrorResponse
 > => {
   const token = localStorage.getItem("token");
 
@@ -17,7 +17,7 @@ export const getAllPsychologService = async (): Promise<
     });
 
     if (response.status === 200) {
-      return response.data as GetAllPsychologResponse;
+      return response.data as AllPsychologResponse;
     } else {
       return response.data as ErrorResponse;
     }
