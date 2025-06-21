@@ -11,7 +11,7 @@ import {
   getUserDetailService,
   updateDetailUserService,
 } from "@/services/detailUser";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaStar, FaTrashCan } from "react-icons/fa6";
 import { z } from "zod";
 import { userDetailSchema } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -681,9 +681,25 @@ const ProfilePage = () => {
                             {motivation.motivation.motivation_content}
                           </p>
 
-                          <p className="text-sm text-gray-600 font-medium">
-                            — {motivation.motivation.motivation_author}
-                          </p>
+                          <div className="flex justify-between">
+                            <p className="text-sm text-gray-600 font-medium">
+                              — {motivation.motivation.motivation_author}
+                            </p>
+
+                            <div className="flex gap-1">
+                              {Array.from({
+                                length: motivation.user_mot_reaction || 0,
+                              }).map((_, index) => (
+                                <FaStar
+                                  key={index}
+                                  className="text-yellow-400 size-5"
+                                />
+                              ))}
+                              <p className="text-sm text-gray-600 font-semibold">
+                                {motivation.user_mot_reaction}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -88,6 +88,7 @@ const CreateNews = () => {
       const result = await createNewsService(formattedData);
       if (result?.status) {
         await showSuccessAlert("Berita Berhasil Ditambahkan", result.message);
+        location.reload();
       } else {
         await showErrorAlert("Berita Gagal Ditambahkan", result?.message);
       }
