@@ -15,7 +15,6 @@ import { updatePsychologAdminService } from "@/services/dahsboardService/doctor/
 import {
   Education,
   Language,
-  PsychologRequest,
   Specialization,
 } from "@/types/psycholog";
 import Image from "next/image";
@@ -70,9 +69,9 @@ const DetailDoctorPage = () => {
     phone_number: "",
     city_id: "",
     role_id: "dc3f6a8e-4875-4297-a285-4f2439595ee2",
-    language: [] as Language[] | null,
-    specialization: [] as Specialization[] | null,
-    education: [] as Education[] | null,
+    language: null as Language[] | null,
+    specialization: null as Specialization[] | null,
+    education: null as Education[] | null,
   });
 
   useEffect(() => {
@@ -81,7 +80,6 @@ const DetailDoctorPage = () => {
     }
   }, [error]);
 
-  // Validation function
   const validateForm = () => {
     const errors: { [key: string]: string } = {};
 
@@ -282,7 +280,6 @@ const DetailDoctorPage = () => {
       [id]: value,
     }));
 
-    // Clear validation error when user starts typing
     if (validationErrors[id]) {
       setValidationErrors((prev) => ({
         ...prev,
@@ -396,17 +393,19 @@ const DetailDoctorPage = () => {
       return;
     }
 
+    const newEducation: Education = {
+      edu_id: null,
+      edu_degree,
+      edu_major,
+      edu_institution,
+      edu_graduation_year,
+    };
+
     setFormData((prev) => ({
       ...prev,
-      education: [
-        ...(prev.education || []),
-        {
-          edu_degree,
-          edu_major,
-          edu_institution,
-          edu_graduation_year,
-        },
-      ],
+      education: prev.education
+        ? [...prev.education, newEducation]
+        : [newEducation],
     }));
 
     setEducationInput({
@@ -420,9 +419,7 @@ const DetailDoctorPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setError(null);
     setSuccess(null);
@@ -430,92 +427,122 @@ const DetailDoctorPage = () => {
 
     try {
       const id = params.id as string;
-      const formattedData: Partial<PsychologRequest> = {};
+      const form = new FormData();
 
-      // Only include changed fields
       const originalData = await getDetailPsychologService(id);
-      if (originalData.status === true) {
-        const original = originalData.data;
+      if (!originalData.status) throw new Error("Gagal mengambil data asli");
 
-        if (formData.name !== original.psy_name) {
-          formattedData.name = formData.name;
-        }
+      const original = originalData.data;
 
-        if (formData.email !== original.psy_email) {
-          formattedData.email = formData.email;
-        }
-
-        if (imageFile) {
-          formattedData.image = imageFile;
-        }
-
-        if (formData.str_number !== original.psy_str_number) {
-          formattedData.str_number = formData.str_number;
-        }
-
-        if (formData.password !== original.psy_password) {
-          formattedData.password = formData.password;
-        }
-
-        if (formData.phone_number !== original.psy_phone_number) {
-          formattedData.phone_number = formData.phone_number;
-        }
-
-        if (formData.work_year !== original.psy_work_year) {
-          formattedData.work_year = formData.work_year;
-        }
-
-        if (formData.description !== original.psy_description) {
-          formattedData.description = formData.description;
-        }
-
-        if (formData.city_id && formData.city_id !== original.city.city_id) {
-          formattedData.city_id = formData.city_id;
-        }
-
-        if (formData.role_id !== original.role.role_id) {
-          formattedData.role_id = formData.role_id;
-        }
-
-        const isLanguageChanged =
-          JSON.stringify(formData.language) !==
-          JSON.stringify(original.language);
-
-        const isSpecializationChanged =
-          JSON.stringify(formData.specialization) !==
-          JSON.stringify(original.specialization);
-
-        const isEducationChanged =
-          JSON.stringify(formData.education) !==
-          JSON.stringify(original.education);
-
-        if (isLanguageChanged && formData.language) {
-          formattedData.language_master = formData.language.map(
-            (lang: any) => lang.lang_id
-          );
-        }
-
-        if (isSpecializationChanged && formData.specialization) {
-          formattedData.specialization = formData.specialization.map(
-            (spe: any) => spe.spe_id
-          );
-        }
-
-        if (isEducationChanged && formData.education) {
-          formattedData.education = formData.education;
-        }
+      if (formData.name !== original.psy_name) {
+        form.append("name", formData.name);
       }
 
-      console.log(formattedData);
+      if (formData.email !== original.psy_email) {
+        form.append("email", formData.email);
+      }
 
-      const result = await updatePsychologAdminService(id, formattedData);
+      if (formData.str_number !== original.psy_str_number) {
+        form.append("str_number", formData.str_number);
+      }
 
-      if (result?.status === true) {
-        await showSuccessAlert("Psycholog Berhasil Diperbarui", result.message);
+      if (formData.password !== original.psy_password) {
+        form.append("password", formData.password);
+      }
+
+      if (formData.work_year !== original.psy_work_year) {
+        form.append("work_year", formData.work_year);
+      }
+
+      if (formData.phone_number !== original.psy_phone_number) {
+        form.append("phone_number", formData.phone_number);
+      }
+
+      if (formData.description !== original.psy_description) {
+        form.append("description", formData.description);
+      }
+
+      if (formData.city_id !== original.city.city_id) {
+        form.append("city_id", formData.city_id);
+      }
+
+      if (formData.role_id !== original.role.role_id) {
+        form.append("role_id", formData.role_id);
+      }
+
+      if (imageFile) {
+        form.append("image", imageFile);
+      }
+
+      const originalLangIds = original.language
+        ?.map((l: any) => l.lang_id)
+        .sort();
+      const newLangIds = formData.language?.map((l) => l.lang_id).sort();
+      if (JSON.stringify(originalLangIds) !== JSON.stringify(newLangIds)) {
+        formData.language?.forEach((lang) => {
+          form.append("language_master", lang.lang_id);
+        });
+      }
+
+      const originalSpeIds = original.specialization
+        ?.map((s: any) => s.spe_id)
+        .sort();
+      const newSpeIds = formData.specialization?.map((s) => s.spe_id).sort();
+      if (JSON.stringify(originalSpeIds) !== JSON.stringify(newSpeIds)) {
+        formData.specialization?.forEach((spe) => {
+          form.append("specialization", spe.spe_id);
+        });
+      }
+
+      const isEducationChanged =
+        JSON.stringify(
+          (original.education || []).map((e: any) => ({
+            degree: e.edu_degree,
+            major: e.edu_major,
+            institution: e.edu_institution,
+            graduation_year: e.edu_graduation_year,
+          }))
+        ) !==
+        JSON.stringify(
+          (formData.education || []).map((e) => ({
+            degree: e.edu_degree,
+            major: e.edu_major,
+            institution: e.edu_institution,
+            graduation_year: e.edu_graduation_year,
+          }))
+        );
+
+      if (isEducationChanged && formData.education) {
+        formData.education.forEach((edu, index) => {
+          form.append(`education[${index}].degree`, edu.edu_degree);
+          form.append(`education[${index}].major`, edu.edu_major);
+          form.append(`education[${index}].institution`, edu.edu_institution);
+          form.append(
+            `education[${index}].graduation_year`,
+            edu.edu_graduation_year
+          );
+        });
+      }
+
+      // Debug log
+      console.log("FormData akan dikirim:");
+      for (const pair of form.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
+
+      // Kirim ke service
+      const response = await updatePsychologAdminService(id, form);
+
+      if (response?.status === true) {
+        await showSuccessAlert(
+          "Psycholog Berhasil Diperbarui",
+          response.message
+        );
+
+        // Refresh data terbaru
         const refresh = await getDetailPsychologService(id);
         if (refresh.status === true) {
           const newData = refresh.data;
-          console.log(newData);
           setFormData({
             name: newData.psy_name,
             str_number: newData.psy_str_number,
@@ -533,10 +560,13 @@ const DetailDoctorPage = () => {
           });
         }
       } else {
-        await showErrorAlert("Psycholog Gagal Diperbarui", result?.message);
+        await showErrorAlert("Psycholog Gagal Diperbarui", response?.message);
       }
-    } catch (error: any) {
-      await showErrorAlert("Terjadi Suatu Kesalahan", error.message);
+    } catch (err: any) {
+      await showErrorAlert(
+        "Terjadi Suatu Kesalahan",
+        err.message || String(err)
+      );
     } finally {
       setLoading(false);
     }
