@@ -11,33 +11,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type DBConnector interface {
-	Connect(dsn string) (*gorm.DB, error)
-}
-
-type RealDB struct{}
-
-func (r *RealDB) Connect(dsn string) (*gorm.DB, error) {
-	return gorm.Open(postgres.New(postgres.Config{
-		DSN:                  dsn,
-		PreferSimpleProtocol: true,
-	}), &gorm.Config{})
-}
-
-type DatabaseConnectionManager struct {
-	DBConnector DBConnector
-}
-
-func NewDatabaseConnectionManager(dbConnector DBConnector) *DatabaseConnectionManager {
-	return &DatabaseConnectionManager{DBConnector: dbConnector}
-}
-
-func (d *DatabaseConnectionManager) SetUpPostgreSQLConnection() *gorm.DB {
+func SetUpPostgreSQLConnection() *gorm.DB {
 	if os.Getenv("APP_ENV") != constants.ENUM_RUN_PRODUCTION {
-		if _, err := os.Stat(".env"); err == nil {
-			if err := godotenv.Load(".env"); err != nil {
-				log.Fatalf("Failed to load .env file: %v", err)
-			}
+		if err := godotenv.Load(".env"); err != nil {
+			panic(fmt.Errorf("failed to laod .env file: %v", err))
 		}
 	}
 
@@ -47,25 +24,27 @@ func (d *DatabaseConnectionManager) SetUpPostgreSQLConnection() *gorm.DB {
 	dbName := os.Getenv("DB_NAME")
 	dbPort := os.Getenv("DB_PORT")
 
-	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v TimeZone=Asia/Jakarta", dbHost, dbUser, dbPass, dbName, dbPort)
+	dsn := fmt.Sprintf("host=%v, user=%v password=%v dbname=%v port=%v TimeZone=Asia/Jakarta", dbHost, dbUser, dbPass, dbName, dbPort)
+	log.Printf("connecting to postgres: %v", dsn)
 
-	db, err := d.DBConnector.Connect(dsn)
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN:                  dsn,
+		PreferSimpleProtocol: true,
+	}), &gorm.Config{})
 	if err != nil {
-		panic(fmt.Sprintf("Failed to connect to database: %v", err))
+		panic(fmt.Errorf("failed to connect postgres: %v", err))
 	}
 
+	log.Println("postgres connection established")
 	return db
 }
 
 func ClosePostgreSQLConnection(db *gorm.DB) {
 	dbSQL, err := db.DB()
 	if err != nil {
-		log.Fatalf("Error getting database connection: %v", err)
+		panic(fmt.Errorf("error closing postgres connection: %v", err))
 	}
 
-	if err := dbSQL.Close(); err != nil {
-		log.Fatalf("Error closing database connection: %v", err)
-	}
-
-	log.Println("Postgres connection closed successfully")
+	dbSQL.Close()
+	log.Println("postgres connection closed")
 }

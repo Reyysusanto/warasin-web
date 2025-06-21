@@ -1,48 +1,143 @@
 [
   {
-    "permission_id": "0a42cdea-bbb8-40d5-a39e-8c9d01fc2021",
-    "permission_endpoint": "/api/v1/user/register",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
-    "permission_id": "32a9713c-3e60-46ec-bc96-5edb38c2b3e4",
-    "permission_endpoint": "/api/v1/user/login",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
-    "permission_id": "5d6dce4d-dc4e-4e33-a58d-89cfd0bfb0a6",
-    "permission_endpoint": "/api/v1/user/refresh-token",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
-    "permission_id": "f23d3b87-42a1-4c87-91ef-ec2ce75843aa",
-    "permission_endpoint": "/api/v1/user/send-verification-email",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
-    "permission_id": "c7b0a5c9-cdcb-4651-b355-003fa3efec4e",
-    "permission_endpoint": "/api/v1/user/verify-email",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
-    "permission_id": "21995d56-4a60-4b6f-aeef-4a94b7c9346b",
-    "permission_endpoint": "/api/v1/user/send-forgot-password-email",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
-    "permission_id": "d5cf2826-c0cb-4b9f-aac3-bf3d8a17406b",
-    "permission_endpoint": "/api/v1/user/forgot-password",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
-    "permission_id": "11fd5fa4-23fd-49ec-b1f1-5cd982f5192d",
-    "permission_endpoint": "/api/v1/user/update-password",
-    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
-  },
-  {
     "permission_id": "b3177e49-9628-40e5-8cf4-4b3482e4adcf",
     "permission_endpoint": "/api/v1/user/get-detail-user",
     "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "107527ce-e8bb-406a-841f-2d61b3c5c956",
+    "permission_endpoint": "/api/v1/user/update-user",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "20641f74-c47d-43c9-b3bd-a530e985ee7f",
+    "permission_endpoint": "/api/v1/user/get-all-news",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "863fd528-c339-4cfb-9604-3e79c6687802",
+    "permission_endpoint": "/api/v1/user/get-all-motivation",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "5a582a50-2067-46d8-8b36-acb0a9496b9e",
+    "permission_endpoint": "/api/v1/user/get-all-motivation/:id",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "31fb25ce-8f9c-4d07-88c5-3d8b0399e468",
+    "permission_endpoint": "/api/v1/user/get-detail-news/:id",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "d8f620ff-93f3-40eb-a76a-dcc2bcbd05d5",
+    "permission_endpoint": "/api/v1/user/create-user-motivation",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "14bc3a73-bab0-4561-bec1-b3792ebc65a8",
+    "permission_endpoint": "/api/v1/user/get-all-user-motivation",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "35aba8bb-d88b-4703-8bb5-674957dc3c42",
+    "permission_endpoint": "/api/v1/user/create-consultation",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "467bc6bf-91a5-437a-bae9-f478be9b6ed0",
+    "permission_endpoint": "/api/v1/user/get-all-consultation",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "f700e399-8c30-4562-9cf7-e1d1e726da34",
+    "permission_endpoint": "/api/v1/user/get-detail-consultation/:id",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "ecfc2c92-f9f6-4f77-bf4b-0aca723eaeb8",
+    "permission_endpoint": "/api/v1/user/update-consultation/:id",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "d5c11ce8-f6bc-4d06-99ad-e5a3a55c284d",
+    "permission_endpoint": "/api/v1/user/delete-consultation/:id",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "1efee736-e54e-4a1e-a9c9-71bac59c1ddd",
+    "permission_endpoint": "/api/v1/user/get-all-psycholog",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "764d8d02-518d-43d8-8768-57b3403765bd",
+    "permission_endpoint": "/api/v1/user/get-detail-psycholog/:id",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "b8263087-8825-442f-bd18-27d9f7547eab",
+    "permission_endpoint": "/api/v1/user/get-all-practice/:psyID",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "8d982c1a-bc80-4fba-86cc-b5ade27f6adc",
+    "permission_endpoint": "/api/v1/user/get-all-available-slot/:psyID",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "bffba83c-f7b3-46b8-bfe2-4a83fca1da44",
+    "permission_endpoint": "/api/v1/user/create-news-detail",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "0b1a9dae-3c16-4530-8543-c99a2f1ec1a1",
+    "permission_endpoint": "/api/v1/user/get-all-news-detail",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "d4d958e9-1e22-4516-8d71-0fe29636663e",
+    "permission_endpoint": "/api/v1/user/chat",
+    "role_id": "1d1bba3e-4f22-47d2-ae7d-741ae6b44b85"
+  },
+  {
+    "permission_id": "eaf063c7-0dbc-4021-b33d-78475bd11b09",
+    "permission_endpoint": "/api/v1/psycholog/get-detail-psycholog",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
+  },
+  {
+    "permission_id": "affeb045-45f8-4830-90fd-768385d43c2e",
+    "permission_endpoint": "/api/v1/psycholog/create-practice",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
+  },
+  {
+    "permission_id": "5574471b-7f2b-4439-89dd-37621985eb96",
+    "permission_endpoint": "/api/v1/psycholog/get-all-practice",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
+  },
+  {
+    "permission_id": "405c3ff1-545e-44b7-9978-12a1f2f19621",
+    "permission_endpoint": "/api/v1/psycholog/update-practice/:id",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
+  },
+  {
+    "permission_id": "89506458-7564-43b9-a534-97efa4459150",
+    "permission_endpoint": "/api/v1/psycholog/delete-practice/:id",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
+  },
+  {
+    "permission_id": "f19424f4-c3d9-4060-b264-33a4b57d72df",
+    "permission_endpoint": "/api/v1/psycholog/get-all-available-slot",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
+  },
+  {
+    "permission_id": "4e32702b-457e-4cb0-8d61-c71765d3e7ff",
+    "permission_endpoint": "/api/v1/psycholog/get-all-consultation",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
+  },
+  {
+    "permission_id": "54ca5497-94ba-47b7-8f9b-5265eb282747",
+    "permission_endpoint": "/api/v1/psycholog/update-consultation/:id",
+    "role_id": "dc3f6a8e-4875-4297-a285-4f2439595ee2"
   },
   {
     "permission_id": "aa4f1680-2e51-44d2-89d3-5d527e83a710",
@@ -55,8 +150,158 @@
     "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
   },
   {
+    "permission_id": "2d766618-5908-40b5-9bd3-b233a391456f",
+    "permission_endpoint": "/api/v1/admin/get-all-role",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "5b0c05b6-1be0-4e5e-b507-bb3de130b763",
+    "permission_endpoint": "/api/v1/admin/create-user",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
     "permission_id": "9cb764b1-b6d9-460e-81ee-39d2451f7a1f",
     "permission_endpoint": "/api/v1/admin/get-all-user",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "a5a7b61b-e235-44a6-8476-61081f67a093",
+    "permission_endpoint": "/api/v1/admin/get-detail-user/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "6167e893-af82-4168-8411-7463bedd8aa4",
+    "permission_endpoint": "/api/v1/admin/update-user/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "0f9d6de4-7de8-4161-9af1-6d0277f423e8",
+    "permission_endpoint": "/api/v1/admin/delete-user/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "05d4a596-5faf-4816-b657-3bf206768a21",
+    "permission_endpoint": "/api/v1/admin/create-news",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "43a53e7c-7551-4a8c-96f8-3b493fa9614f",
+    "permission_endpoint": "/api/v1/admin/get-all-news",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "ed268911-acdf-491e-86e8-c09e727b61f2",
+    "permission_endpoint": "/api/v1/admin/get-detail-news/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "6480502b-49e9-4d8c-8258-cfb3cb566576",
+    "permission_endpoint": "/api/v1/admin/update-news/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "0612c967-b59b-4ba6-9083-c53f92246f0f",
+    "permission_endpoint": "/api/v1/admin/delete-news/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "9e9969da-8636-4257-b59a-87eeed76cb4f",
+    "permission_endpoint": "/api/v1/admin/create-motivation-category",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "9b005216-e569-4241-a40f-8db14d8eae94",
+    "permission_endpoint": "/api/v1/admin/get-all-motivation-category",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "44251e79-ecb5-43ef-afda-76704ef7b839",
+    "permission_endpoint": "/api/v1/admin/get-detail-motivation-category/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "aa9a865a-2dc0-4d4a-bca0-f8d81061d422",
+    "permission_endpoint": "/api/v1/admin/update-motivation-category/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "8aba3e0f-0cf5-4510-b958-6497e19f0547",
+    "permission_endpoint": "/api/v1/admin/delete-motivation-category/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "485748bf-9db0-4802-8282-64c3025b36fe",
+    "permission_endpoint": "/api/v1/admin/create-motivation",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "604df661-2832-4151-8444-072fb566bb09",
+    "permission_endpoint": "/api/v1/admin/get-all-motivation",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "991be66b-849a-48d0-9a4e-43fa4149c6b3",
+    "permission_endpoint": "/api/v1/admin/get-detail-motivation/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "8d771007-fc74-45a7-ac85-507dd009e9a2",
+    "permission_endpoint": "/api/v1/admin/update-motivation/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "d96dc4d3-769e-47b2-b690-aee440ca9c50",
+    "permission_endpoint": "/api/v1/admin/delete-motivation/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "4cfa4216-1051-411a-b028-6e807a9b3e51",
+    "permission_endpoint": "/api/v1/admin/create-psycholog",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "d424b022-ff8a-4d66-81c8-77d33c78b8cc",
+    "permission_endpoint": "/api/v1/admin/get-all-psycholog",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "3850450f-1844-44f6-9bf3-846ce3a30ef3",
+    "permission_endpoint": "/api/v1/admin/get-detail-psycholog/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "d36fbbe7-f5b7-43dd-a0a6-3021a1e98b44",
+    "permission_endpoint": "/api/v1/admin/update-psycholog/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "7c0faead-17ab-4f53-8eb5-ec8536d130a6",
+    "permission_endpoint": "/api/v1/admin/delete-psycholog/:id",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "0efbd4b0-d02e-476a-a496-594fc9e31364",
+    "permission_endpoint": "/api/v1/admin/get-all-user-motivation",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "c60d0f32-0bb3-44e4-8dcf-a8150849d6d0",
+    "permission_endpoint": "/api/v1/admin/get-all-user-news",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "b523d45d-bf4b-454c-aac2-5a253e5503f6",
+    "permission_endpoint": "/api/v1/admin/get-all-language-master",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "336056ce-b847-40a0-92e4-90ef593fbd2c",
+    "permission_endpoint": "/api/v1/admin/get-all-specialization",
+    "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
+  },
+  {
+    "permission_id": "1592544f-6a91-40dc-bb07-36a4e861364d",
+    "permission_endpoint": "/api/v1/admin/get-all-consultation",
     "role_id": "d96b99e9-1346-49e5-920b-8eab44e2c6f4"
   }
 ]

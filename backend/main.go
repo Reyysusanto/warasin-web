@@ -15,9 +15,7 @@ import (
 )
 
 func main() {
-	realDB := &database.RealDB{}
-	dbManager := database.NewDatabaseConnectionManager(realDB)
-	db := dbManager.SetUpPostgreSQLConnection()
+	db := database.SetUpPostgreSQLConnection()
 	defer database.ClosePostgreSQLConnection(db)
 
 	if len(os.Args) > 1 {
@@ -28,20 +26,30 @@ func main() {
 	var (
 		jwtService = service.NewJWTService()
 
+		masterRepo    = repository.NewMasterRepository(db)
+		masterService = service.NewMasterService(masterRepo, jwtService)
+		masterHandler = handler.NewMasterHandler(masterService)
+
 		userRepo    = repository.NewUserRepository(db)
-		userService = service.NewUserService(userRepo, jwtService)
-		userHandler = handler.NewUserHandler(userService)
+		userService = service.NewUserService(userRepo, masterRepo, jwtService)
+		userHandler = handler.NewUserHandler(userService, masterService)
 
 		adminRepo    = repository.NewAdminRepository(db)
-		adminService = service.NewAdminService(adminRepo, jwtService)
-		adminHandler = handler.NewAdminHandler(adminService)
+		adminService = service.NewAdminService(adminRepo, masterRepo, jwtService)
+		adminHandler = handler.NewAdminHandler(adminService, masterService)
+
+		psyRepo    = repository.NewPsychologRepository(db)
+		psyService = service.NewPsychologService(psyRepo, masterRepo, jwtService)
+		psyHandler = handler.NewPsychologHandler(psyService, masterService)
 	)
 
 	server := gin.Default()
 	server.Use(middleware.CORSMiddleware())
 
-	routes.User(server, userHandler, jwtService)
-	routes.Admin(server, adminHandler, jwtService)
+	routes.User(server, userHandler, masterHandler, jwtService)
+	routes.Admin(server, adminHandler, masterHandler, jwtService)
+	routes.Psycholog(server, psyHandler, masterHandler, jwtService)
+	routes.Master(server, masterHandler, jwtService)
 
 	server.Static("/assets", "./assets")
 

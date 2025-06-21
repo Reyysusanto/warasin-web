@@ -2,6 +2,7 @@ package migrations
 
 import (
 	"github.com/Reyysusanto/warasin-web/backend/entity"
+
 	"gorm.io/gorm"
 )
 
@@ -13,7 +14,7 @@ func Migrate(db *gorm.DB) error {
 		&entity.City{},
 		&entity.User{},
 		&entity.Psycholog{},
-		&entity.Consulation{},
+		&entity.Consultation{},
 		&entity.Education{},
 
 		&entity.MotivationCategory{},
@@ -33,6 +34,9 @@ func Migrate(db *gorm.DB) error {
 		&entity.Practice{},
 		&entity.PracticeSchedule{},
 		&entity.AvailableSlot{},
+
+		&entity.Conversation{},
+		&entity.Message{},
 	); err != nil {
 		return err
 	}
